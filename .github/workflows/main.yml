@@ -17,7 +17,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -g expo-cli
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -25,8 +29,6 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Run Yarn Install
-        run: yarn install
-
-      - name: Create build
-        run: eas build --platform android --local --non-interactive
+      - name: Build APK
+        run: |
+          expo build:android -t apk --no-wait
