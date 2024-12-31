@@ -29,7 +29,7 @@ jobs:
           EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build --platform android --profile preview --local --non-interactive --output ${{ github.workspace }}/app-release.apk
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: ${{ github.workspace }}/app-release.apk
