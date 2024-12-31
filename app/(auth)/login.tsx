@@ -25,7 +25,7 @@ const Login = () => {
   return (
     <ImageBackground source={images.chalkboard}>
       <SafeAreaView className='h-full'>
-        {router.canGoBack() && <NavHeader iconProps={{ color:'white', icon: 'arrow-back', onPress: () => router.back()}} />}
+        {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} />}
         <ScrollView>
           <View className='p-5'>
             <CustomTitle color='white' title='Login' />
