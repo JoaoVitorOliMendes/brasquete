@@ -16,13 +16,13 @@ jobs:
       - name: Setup Node  
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: '18'
           
       - name: Install dependencies
         run: |
+          npm install -g expo-cli eas-cli
           npm install
-          npm install -g expo-cli
 
       - name: Build APK
         run: |
-          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} expo build:android -t apk --no-wait
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} expo build:android -t apk --no-wait --non-interactive
