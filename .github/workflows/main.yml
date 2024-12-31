@@ -16,7 +16,8 @@ jobs:
       - name: Setup Node  
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 20.x
+          cache: "npm"
           
       - name: Install dependencies
         run: |
@@ -25,4 +26,10 @@ jobs:
 
       - name: Build APK
         run: |
-          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build --platform android --local --non-interactive
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build --platform android --profile preview --local --non-interactive --output ${{ github.workspace }}/app-release.apk
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: ${{ github.workspace }}/app-release.apk
