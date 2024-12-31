@@ -25,4 +25,4 @@ jobs:
 
       - name: Build APK
         run: |
-          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} npx expo build:android -t apk --no-wait --non-interactive
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build --platform android --local --non-interactive
