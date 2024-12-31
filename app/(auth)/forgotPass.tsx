@@ -9,7 +9,7 @@ const ForgotPass = () => {
 
     return (
         <SafeAreaView className='h-full'>
-            {router.canGoBack() ? <NavHeader icon='arrow-back' onPress={() => router.back()} /> : null}
+            {router.canGoBack() && <NavHeader iconProps={{ color: 'black', icon: 'arrow-back', onPress: () => router.back() }} />}
             <Text> ForgotPass</Text>
         </SafeAreaView >
     )
