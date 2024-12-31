@@ -23,12 +23,6 @@ jobs:
           npm install
           npm install -g expo-cli
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
       - name: Build APK
         run: |
-          expo build:android -t apk --no-wait
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} expo build:android -t apk --no-wait
