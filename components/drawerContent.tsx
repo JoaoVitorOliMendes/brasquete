@@ -1,22 +1,25 @@
 import { View, Image, ScrollView } from 'react-native'
 import React from 'react'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer'
 import { images } from '@/constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DrawerLink from './drawerLink'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
+import { useAuth } from '@/context/AuthContext'
 
 const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponentProps) => {
+  const { onLogout } = useAuth()
   const router = useRouter()
+
   return (
     <View className='flex-1 bg-primary'>
-      <SafeAreaView className='p-5 flex flex-column items-center'>
-        <Image
-          className='rounded-full w-48 h-48 my-5 mb-20'
-          source={images.person}
-        />
-        <ScrollView className='w-full'>
+      <SafeAreaView className='p-5'>
+        <ScrollView className='w-full flex flex-column'>
+          <Image
+            className='rounded-full !w-48 !h-48 my-5 mb-20 self-center'
+            source={images.person}
+          />
           {
             state.routes.map((val, idx) => {
               const options = descriptors[val.key].options
@@ -49,7 +52,7 @@ const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponen
               )
             }}
             focused={false}
-            onPress={() => router.replace('/')}
+            onPress={async () => onLogout && await onLogout()}
           />
         </ScrollView>
       </SafeAreaView>
