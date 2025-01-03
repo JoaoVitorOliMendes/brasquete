@@ -5,6 +5,9 @@ import { useEffect } from 'react';
 import React from 'react';
 import "../global.css";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
+import { setCustomText } from 'react-native-global-props';
+import { AuthProvider } from '@/context/AuthContext';
 
 SplashScreen.preventAutoHideAsync()
 
@@ -21,12 +24,20 @@ export default function RootLayout() {
 
   if (!fontsLoaded && !error) return null
 
+  const customTextGlobalProps = {
+    style: {
+      fontFamily: 'Roboto'
+    }
+  }
+
+  setCustomText(customTextGlobalProps)
+
   return (
-    <GestureHandlerRootView>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name='(auth)' />
-        <Stack.Screen name='index' />
-      </Stack>
-    </GestureHandlerRootView>
+    <AuthProvider>
+      <GestureHandlerRootView>
+        <Slot />
+      </GestureHandlerRootView>
+      <StatusBar translucent backgroundColor='transparent' />
+    </AuthProvider>
   )
 }

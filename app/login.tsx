@@ -10,16 +10,20 @@ import CustomButton from '@/components/customButton'
 import { TextInput } from 'react-native-gesture-handler'
 import CustomTitle from '@/components/customTitle'
 import { Login as LoginModel } from '@/model/Login'
+import { useAuth } from '@/context/AuthContext'
 
 const Login = () => {
+  const { onLogin } = useAuth()
   const router = useRouter()
   const { control, handleSubmit, formState: { errors } } = useForm<LoginModel>()
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
 
   const handleLogin = (data: LoginModel) => {
-    console.log(data)
-    router.replace('/home')
+    if (onLogin) {
+      onLogin(data)
+      router.replace('/')
+    }
   }
 
   return (

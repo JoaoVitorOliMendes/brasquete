@@ -7,23 +7,23 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 
 interface CustomButtonProps {
     label: string
-    type: keyof ClassTypeColor,
-    color: keyof ClassColor,
+    type?: keyof ClassTypeColor,
+    color?: keyof ClassColor,
     className?: string,
-    onPress: (event: GestureResponderEvent) => void
+    onPress?: (event: GestureResponderEvent) => void
 }
 
-const CustomButton = ({ label, type, color, className, onPress }: CustomButtonProps) => {
+const CustomButton = ({ label, type='filled', color='primary', className, onPress }: CustomButtonProps) => {
     const typeColorBtn: ClassTypeColor = {
         outline: {
-            primary: 'border-solid border-2 border-primary',
-            secondary: 'border-solid border-2 border-secondary',
-            white: 'border-solid border-2 border-white'
+            primary: 'border-primary',
+            secondary: 'border-secondary',
+            white: 'border-white'
         },
         filled: {
-            primary: 'bg-primary',
-            secondary: 'bg-secondary',
-            white: 'bg-white'
+            primary: 'bg-primary border-primary',
+            secondary: 'bg-secondary border-secondary',
+            white: 'bg-white border-white'
         }
     }
 
@@ -99,7 +99,7 @@ const CustomButton = ({ label, type, color, className, onPress }: CustomButtonPr
     return (
         // TouchableWithoutFeedback does not support styling????? https://github.com/facebook/react-native/issues/18257
         <Pressable
-            className={`${className ? className : null} overflow-hidden`}
+            className={`${className ? className : null}`}
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
@@ -108,6 +108,8 @@ const CustomButton = ({ label, type, color, className, onPress }: CustomButtonPr
                 className={`
                     p-4
                     rounded-2xl
+                    overflow-hidden
+                    border-solid border-2 
                     ${typeColorBtn[type]?.[color] ?? typeColorBtn.filled?.primary}
                 `}
                 //have no fking idea

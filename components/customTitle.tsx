@@ -4,10 +4,12 @@ import { ClassColor } from '@/model/ClassTypeColor'
 
 interface CustomTitleProps {
   title: string,
-  color: keyof ClassColor
+  color?: keyof ClassColor,
+  className?: string,
+  sizeClass?: 'text-xl' | 'text-2xl' | 'text-3xl' | 'text-4xl' | 'text-5xl'
 }
 
-const CustomTitle = ({ title, color }: CustomTitleProps) => {
+const CustomTitle = ({ title, color='black', sizeClass='text-5xl', className }: CustomTitleProps) => {
   const titleColor: ClassColor = {
     primary: 'text-primary',
     secondary: 'text-secondary',
@@ -15,7 +17,7 @@ const CustomTitle = ({ title, color }: CustomTitleProps) => {
   }
 
   return (
-    <Text className={`text-5xl leading-relaxed ${titleColor[color]}`}>{title}</Text>
+    <Text className={`${sizeClass} leading-relaxed ${titleColor[color]} ${className}`}>{title}</Text>
   )
 }
 
