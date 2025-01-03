@@ -2,13 +2,11 @@ import { View, Text, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import CustomTitle from '@/components/customTitle';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+// import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import * as Location from 'expo-location'
-import CustomButton from '@/components/customButton';
 import NavHeader from '@/components/navHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import { colors } from '@/constants';
+import { MapView, Marker, PROVIDER_GOOGLE } from '@/components/map/mymap'
 
 const GroupsDetails = () => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
