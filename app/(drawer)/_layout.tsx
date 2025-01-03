@@ -63,6 +63,16 @@ const DrawerLayout = () => {
                         />
                     ),
                 }} />
+                <Drawer.Screen name='events' options={{
+                    title: 'Eventos',
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name='calendar'
+                            size={size}
+                            color={focused ? colors.black : colors.white}
+                        />
+                    ),
+                }} />
                 <Drawer.Screen name='matches' options={{
                     title: 'Partidas',
                     drawerIcon: ({ focused, size }) => (
