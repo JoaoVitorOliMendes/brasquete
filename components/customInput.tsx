@@ -76,6 +76,7 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                         px-2
                         flex
                         flex-row
+                        min-h-16
                         gap-3
                         items-center
                         ${inuptColor[type]?.[color] ?? inuptColor.filled?.primary}
@@ -86,7 +87,7 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                             relative
                             ${!leftIcon && 'ml-4'}
                         `}>
-                            <View className='absolute w-full top-0 bottom-0 flex justify-center'>
+                            <View className='absolute w-full top-0 bottom-0 flex justify-center z-0'>
                                 <Animated.Text className='opacity-50' style={[animationStyle]}>
                                     <Text>
                                         {inputProps.placeholder}
@@ -106,9 +107,9 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                                 onFocus={handleFocus}
                                 onEndEditing={handleBlur}
                                 placeholder=''
-                                className='caret-black pl-0'
-                                value={field.value || ''}
+                                className='caret-black pl-0 z-10'
                                 onChangeText={field.onChange}
+                                value={field.value || ''}
                             >
                             </TextInput>
                         </View>
