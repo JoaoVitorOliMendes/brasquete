@@ -11,25 +11,25 @@ const Groups = () => {
 
   const data: Group[] = [
     {
-      id: 'omdcmkod',
+      id: 1,
       name: 'Grupo 1',
       level: 'Intermediário',
       address: 'Rua Reinado do Cavalo Marinho',
       dateTime: new Date()
     }, {
-      id: 'omdcmkod2',
+      id: 2,
       name: 'Grupo 1',
       level: 'Intermediário',
       address: 'Rua Reinado do Cavalo Marinho',
       dateTime: new Date()
     }, {
-      id: 'omdcmkod3',
+      id: 3,
       name: 'Grupo 1',
       level: 'Intermediário',
       address: 'Rua Reinado do Cavalo Marinho',
       dateTime: new Date()
     }, {
-      id: 'omdcmkod4',
+      id: 4,
       name: 'Grupo 1',
       level: 'Intermediário',
       address: 'Rua Reinado do Cavalo Marinho',
@@ -43,7 +43,7 @@ const Groups = () => {
       <FlatList
         data={data}
         renderItem={({ item }) => <CardGroup group={item} />}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
       />
     </SafeAreaView>
   )

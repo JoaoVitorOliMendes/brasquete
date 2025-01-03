@@ -10,7 +10,7 @@ import { MapView, Marker, PROVIDER_GOOGLE } from '@/components/map/mymap'
 
 const GroupsDetails = () => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
-    const { id } = useLocalSearchParams()
+    const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const GroupsDetails = () => {
     }, []);
 
     const group: Group = {
-        id: id.toString(),
+        id: Number.parseInt(id),
         name: 'Grupo 1',
         level: 'Intermediário',
         address: 'Rua Reinado do Cavalo Marinho',
