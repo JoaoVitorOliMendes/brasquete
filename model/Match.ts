@@ -1,9 +1,6 @@
 export interface Match {
-    group: string,
-
-}
-
-export interface GroupMember {
-    name: string
-    groupId: string
+    id: number,
+    duration: number,
+    teamOne: number,
+    teamTwo: number
 }
