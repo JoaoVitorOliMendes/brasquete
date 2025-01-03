@@ -3,12 +3,13 @@ import React from 'react'
 import CustomPressIcon, { CustomPressIconProps } from './customPressIcon'
 
 interface NavHeaderProps {
-    iconProps: CustomPressIconProps
+    iconProps: CustomPressIconProps,
+    className?: string
 }
 
-const NavHeader = ({ iconProps }: NavHeaderProps) => {
+const NavHeader = ({ iconProps, className }: NavHeaderProps) => {
     return (
-        <View className='py-1 px-4'>
+        <View className={`py-1 px-4 ${className}`}>
             <Text>
                 <CustomPressIcon {...iconProps} size={32} />
             </Text>

@@ -1,15 +1,15 @@
-import { View, Text, Alert, BackHandler, ImageBackground, SafeAreaView } from 'react-native'
+import { View, Text, Alert, BackHandler, ImageBackground } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import Drawer from 'expo-router/drawer'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
 import { colors, images } from '@/constants'
 import DrawerContent from '@/components/drawerContent'
 import LogoText from '@/components/logoText'
 import CustomButton from '@/components/customButton'
 import { useRouter } from 'expo-router'
-import { AuthContext, useAuth } from '@/context/AuthContext'
-import CustomDrawerHeader from '@/components/customDrawerHeader'
+import { useAuth } from '@/context/AuthContext'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { StatusBar } from 'expo-status-bar'
 
 const DrawerLayout = () => {
     const router = useRouter()
@@ -34,11 +34,12 @@ const DrawerLayout = () => {
     }
 
     return (
-        <GestureHandlerRootView className='flex-1'>
+        <View className='flex-1'>
+            <StatusBar backgroundColor={colors.secondary} />
             <Drawer
                 screenOptions={{
-                    headerTitle: '',
-                    header: CustomDrawerHeader,
+                    headerShown: false,
+                    headerTransparent: true
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
@@ -63,10 +64,10 @@ const DrawerLayout = () => {
                     ),
                 }} />
                 <Drawer.Screen name='matches' options={{
-                    title: 'Histórico de Partidas',
+                    title: 'Partidas',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
-                            name='time'
+                            name='basketball'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />
@@ -83,7 +84,7 @@ const DrawerLayout = () => {
                     ),
                 }} />
             </Drawer>
-        </GestureHandlerRootView>
+        </View>
     )
 }
 

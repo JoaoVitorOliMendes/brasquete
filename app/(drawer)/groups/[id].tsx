@@ -1,12 +1,34 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { View, Text, Platform } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import CustomTitle from '@/components/customTitle';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import * as Location from 'expo-location'
+import CustomButton from '@/components/customButton';
+import NavHeader from '@/components/navHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { colors } from '@/constants';
 
 const GroupsDetails = () => {
+    const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const { id } = useLocalSearchParams()
     const router = useRouter()
+
+    useEffect(() => {
+        async function getCurrentLocation() {
+
+            let { status } = await Location.requestForegroundPermissionsAsync()
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied')
+                return
+            }
+
+            let location = await Location.getCurrentPositionAsync()
+            setLocation(location)
+        }
+        getCurrentLocation()
+    }, []);
 
     const group: Group = {
         id: id.toString(),
@@ -21,22 +43,37 @@ const GroupsDetails = () => {
     }
 
     return (
-        <View className='flex-1 p-4'>
-            <MapView
-                style={{ width: '100%', height: '50%' }}
-                provider={PROVIDER_GOOGLE}
-                initialRegion={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-            />
-            <CustomTitle title={group.name || ''} sizeClass='text-4xl' />
-            <Text>Endereço: {group.address}</Text>
-            <Text>Nível: {group.level}</Text>
-            <Text>Data: {group.dateTime?.toLocaleString()}</Text>
-        </View>
+        <SafeAreaView className='h-full'>
+            {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
+            <View className='p-4 h-full'>
+                <View className='w-100 h-1/2'>
+                    {
+                        location &&
+                        <MapView
+                            style={{ width: '100%', height: '100%' }}
+                            provider={PROVIDER_GOOGLE}
+                            initialRegion={{
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
+                                longitudeDelta: 0.005,
+                                latitudeDelta: 0.005
+                            }}
+                        >
+                            <Marker
+                                coordinate={{
+                                    latitude: location.coords.latitude,
+                                    longitude: location.coords.longitude
+                                }}
+                            />
+                        </MapView>
+                    }
+                </View>
+                <CustomTitle title={group.name || ''} sizeClass='text-4xl' />
+                <Text>Endereço: {group.address}</Text>
+                <Text>Nível: {group.level}</Text>
+                <Text>Data: {group.dateTime?.toLocaleString()}</Text>
+            </View>
+        </SafeAreaView>
     )
 }
 

@@ -36,8 +36,8 @@ export default function RootLayout() {
     <AuthProvider>
       <GestureHandlerRootView>
         <Slot />
-        <StatusBar translucent backgroundColor='transparent' />
       </GestureHandlerRootView>
+      <StatusBar translucent backgroundColor='transparent' />
     </AuthProvider>
   )
 }
