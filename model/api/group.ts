@@ -9,7 +9,7 @@ export interface Group {
   adminId?: number;
   createdBy?: string;
   createdDate?: string;
-  id?: number;
+  id: number;
   isPublic?: boolean;
   /** @nullable */
   level?: string | null;

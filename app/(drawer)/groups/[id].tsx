@@ -7,6 +7,7 @@ import * as Location from 'expo-location'
 import NavHeader from '@/components/navHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MapView, Marker, PROVIDER_GOOGLE } from '@/components/map/mymap'
+import { Group } from '@/model/api';
 
 const GroupsDetails = () => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -31,9 +32,7 @@ const GroupsDetails = () => {
     const group: Group = {
         id: Number.parseInt(id),
         name: 'Grupo 1',
-        level: 'Intermediário',
-        address: 'Rua Reinado do Cavalo Marinho',
-        dateTime: new Date()
+        level: 'Intermediário'
     }
 
     if (!group) {
@@ -67,9 +66,7 @@ const GroupsDetails = () => {
                     }
                 </View>
                 <CustomTitle title={group.name || ''} sizeClass='text-4xl' />
-                <Text>Endereço: {group.address}</Text>
                 <Text>Nível: {group.level}</Text>
-                <Text>Data: {group.dateTime?.toLocaleString()}</Text>
             </View>
         </SafeAreaView>
     )

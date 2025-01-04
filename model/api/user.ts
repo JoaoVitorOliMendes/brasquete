@@ -11,7 +11,7 @@ export interface User {
   createdDate?: string;
   /** @minLength 1 */
   email: string;
-  emailConfirmed: boolean;
+  emailConfirmed?: boolean;
   height?: number;
   id?: number;
   name: number;
@@ -19,8 +19,6 @@ export interface User {
   password: string;
   /** @nullable */
   position?: string | null;
-  /** @minLength 1 */
-  salt: string;
   surname: number;
   updatedBy?: string;
   updatedDate?: string;

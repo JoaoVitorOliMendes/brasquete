@@ -9,13 +9,16 @@ import { ParamListBase } from '@react-navigation/native'
 
 const CustomDrawerHeader = () => {
     const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+
     return (
         <SafeAreaView
             className='p-4 bg-secondary'
         >
-            <CustomPressIcon icon='menu' size={32} color='white' onPress={() => {
-                navigation.openDrawer()
-            }} />
+            <Text>
+                <CustomPressIcon icon='menu' size={32} color='white' onPress={() => {
+                    navigation.openDrawer()
+                }} />
+            </Text>
         </SafeAreaView>
     )
 }

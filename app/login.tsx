@@ -11,6 +11,7 @@ import { TextInput } from 'react-native-gesture-handler'
 import CustomTitle from '@/components/customTitle'
 import { Login as LoginModel } from '@/model/Login'
 import { useAuth } from '@/context/AuthContext'
+import { StatusBar } from 'expo-status-bar'
 
 const Login = () => {
   const { onLogin } = useAuth()
@@ -22,12 +23,13 @@ const Login = () => {
   const handleLogin = (data: LoginModel) => {
     if (onLogin) {
       onLogin(data)
-      router.replace('/')
+      router.replace('/(drawer)')
     }
   }
 
   return (
     <ImageBackground source={images.chalkboard}>
+      <StatusBar translucent backgroundColor='transparent' />
       <SafeAreaView className='h-full'>
         {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} />}
         <ScrollView>
@@ -35,10 +37,9 @@ const Login = () => {
             <CustomTitle color='white' title='Login' />
             <View className='mt-10'>
               <CustomInput
-                errorMsg={errors.email?.message}
                 color='white'
                 type='filled'
-                ref={emailRef}
+                inputRef={emailRef}
                 formProps={{
                   control,
                   name: 'email',
@@ -59,10 +60,9 @@ const Login = () => {
                 className='mb-4'
               />
               <CustomInput
-                errorMsg={errors.password?.message}
                 color='white'
                 type='filled'
-                ref={passwordRef}
+                inputRef={passwordRef}
                 formProps={{
                   control,
                   name: 'password',

@@ -1,24 +1,26 @@
 import { View, Text, TextInput, TextInputProps } from 'react-native'
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, RefObject, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
-import { Controller, UseControllerProps } from 'react-hook-form'
+import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import { CustomPressIconProps } from '@/components/customPressIcon'
 import CustomPressIcon from '@/components/customPressIcon'
 
-interface CustomInputProps {
+interface CustomInputProps<FormType extends FieldValues> {
     type: keyof ClassTypeColor,
     color: keyof ClassColor,
     rightIcon?: CustomPressIconProps,
     leftIcon?: CustomPressIconProps,
     className?: string,
-    formProps: UseControllerProps,
+    formProps: UseControllerProps<FormType>,
     inputProps: TextInputProps,
-    errorMsg?: string
+    errorMsg?: string,
+    inputRef: RefObject<TextInput>
+    //WOW it just works :p
 }
 
-const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, rightIcon, leftIcon, className, formProps, inputProps, errorMsg = '' }, ref) => {
+const CustomInput = <FormType extends FieldValues, >({ type, color, rightIcon, leftIcon, className, formProps, inputProps, inputRef }: CustomInputProps<FormType>) => {
     const inuptColor: ClassTypeColor = {
         outline: {
             primary: 'border-b-2 bg-primary-25 border-primary',
@@ -65,7 +67,7 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
     return (
         <Controller
             {...formProps}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
                 <View className={`
                     ${className ? className : null}
                 `}>
@@ -103,7 +105,7 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                             <TextInput
                                 {...inputProps}
                                 caretHidden={false}
-                                ref={ref}
+                                ref={inputRef}
                                 onFocus={handleFocus}
                                 onEndEditing={handleBlur}
                                 placeholder=''
@@ -116,15 +118,15 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                         {rightIcon && <CustomPressIcon {...rightIcon} />}
                     </View>
                     {
-                        errorMsg &&
+                        fieldState.error?.message &&
                         <Text className='text-red-700'>
-                            {errorMsg}
+                            {fieldState.error?.message}
                         </Text>
                     }
                 </View>
             )}
         />
     )
-})
+}
 
 export default CustomInput

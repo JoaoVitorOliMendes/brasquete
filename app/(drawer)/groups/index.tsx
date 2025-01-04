@@ -1,11 +1,12 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, ScrollView } from 'react-native'
 import React from 'react'
 import { Slot } from 'expo-router'
 import CustomTitle from '@/components/customTitle'
 import CardGroup from '@/components/cardGroup'
 import CustomDrawerHeader from '@/components/customDrawerHeader'
-import { StatusBar } from 'expo-status-bar'
+import { Group } from '@/model/api'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { StatusBar } from 'expo-status-bar'
 
 const Groups = () => {
 
@@ -13,38 +14,32 @@ const Groups = () => {
     {
       id: 1,
       name: 'Grupo 1',
-      level: 'Intermediário',
-      address: 'Rua Reinado do Cavalo Marinho',
-      dateTime: new Date()
+      level: 'Intermediário'
     }, {
       id: 2,
       name: 'Grupo 1',
-      level: 'Intermediário',
-      address: 'Rua Reinado do Cavalo Marinho',
-      dateTime: new Date()
+      level: 'Intermediário'
     }, {
       id: 3,
       name: 'Grupo 1',
-      level: 'Intermediário',
-      address: 'Rua Reinado do Cavalo Marinho',
-      dateTime: new Date()
+      level: 'Intermediário'
     }, {
       id: 4,
       name: 'Grupo 1',
-      level: 'Intermediário',
-      address: 'Rua Reinado do Cavalo Marinho',
-      dateTime: new Date()
+      level: 'Intermediário'
     },
   ]
   return (
-    <SafeAreaView>
+    <SafeAreaView className='flex-1'>
       <CustomDrawerHeader />
-      <CustomTitle title='Grupos' sizeClass='text-4xl' className='m-4' />
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <CardGroup group={item} />}
-        keyExtractor={item => item.id.toString()}
-      />
+      <ScrollView>
+        <CustomTitle title='Grupos' sizeClass='text-4xl' className='m-4' />
+        {
+          data.map((item) => {
+            return <CardGroup group={item} key={item.id} />
+          })
+        }
+      </ScrollView>
     </SafeAreaView>
   )
 }
