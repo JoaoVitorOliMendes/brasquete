@@ -12,11 +12,10 @@ interface CustomDropdownProps<FormType extends FieldValues> {
     color: keyof ClassColor,
     className?: string,
     formProps: UseControllerProps<FormType>,
-    inputProps: TextInputProps,
-    errorMsg?: string
+    inputProps: TextInputProps
 }
 
-const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, className, formProps, inputProps }: CustomDropdownProps<FormType>) => {
+const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, className = '', formProps, inputProps }: CustomDropdownProps<FormType>) => {
     const [dropdownOpened, setDropdownOpened] = useState(false)
     const [dropdownCoords, setDropdownCoords] = useState({
         top: 0,
@@ -81,9 +80,7 @@ const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, cl
         <Controller
             {...formProps}
             render={({ field, fieldState }) => (
-                <View className={`
-                    ${className ? className : null}
-                `}>
+                <View className={className}>
                     <TouchableOpacity
                         onPress={openDropdown}
                         className={`

@@ -30,9 +30,62 @@ const GroupsDetails = () => {
     }, []);
 
     const group: Group = {
-        id: Number.parseInt(id),
-        name: 'Grupo 1',
-        level: 'Intermediário'
+        id: 0,
+        name: "string",
+        level: "string",
+        location: {
+            id: 0,
+            latitude: 0,
+            longitude: 0
+        },
+        events: [
+            {
+                id: 0,
+                date: "2025-01-04T20:20:27.029Z",
+            }
+        ],
+        groupMembers: [
+            {
+                id: 0,
+                confirmed: "string",
+                position: "string",
+                userId: 0,
+                user: {
+                    id: 0,
+                    name: "string"
+                }
+            },
+            {
+                id: 0,
+                confirmed: "string",
+                position: "string",
+                userId: 0,
+                user: {
+                    id: 0,
+                    name: "string"
+                }
+            },
+            {
+                id: 0,
+                confirmed: "string",
+                position: "string",
+                userId: 0,
+                user: {
+                    id: 0,
+                    name: "string"
+                }
+            },
+            {
+                id: 0,
+                confirmed: "string",
+                position: "string",
+                userId: 0,
+                user: {
+                    id: 0,
+                    name: "string"
+                }
+            }
+        ],
     }
 
     if (!group) {

@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Team } from "./team";
+
 export interface Match {
   createdBy?: string;
   createdDate?: string;
@@ -14,4 +16,6 @@ export interface Match {
   teamTwoId?: number;
   updatedBy?: string;
   updatedDate?: string;
+  teamOne?: Team;
+  teamTwo?: Team;
 }

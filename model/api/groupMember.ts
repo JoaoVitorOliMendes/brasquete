@@ -5,6 +5,9 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Group } from "./group";
+import { User } from "./user";
+
 export interface GroupMember {
   /** @nullable */
   confirmed?: string | null;
@@ -12,9 +15,10 @@ export interface GroupMember {
   createdDate?: string;
   groupId?: number;
   id?: number;
-  /** @nullable */
   position?: string | null;
   updatedBy?: string;
   updatedDate?: string;
   userId?: number;
+  user?: User;
+  group?: Group;
 }

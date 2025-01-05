@@ -11,16 +11,13 @@ import CustomDropdown from '@/components/customDropdown'
 import { User } from '@/model/api'
 import { StatusBar } from 'expo-status-bar'
 
-interface UserRegister extends User {
-  confirmPass?: string
-}
 
 const Register = () => {
   const [showConfirmPass, setShowConfirmPass] = useState(true)
   const [showPass, setShowPass] = useState(true)
 
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm<UserRegister>()
+  const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>()
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const emailRef = useRef<TextInput>(null)
@@ -29,7 +26,7 @@ const Register = () => {
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
 
-  const handleRegister = (data: UserRegister) => {
+  const handleRegister = (data: User) => {
     console.log(data)
   }
 
@@ -168,7 +165,7 @@ const Register = () => {
               inputRef={confirmPassRef}
               formProps={{
                 control,
-                name: 'confirmPass',
+                name: 'confirmPassword',
                 rules: {
                   required: 'Por favor, confirme sua senha',
                   validate: (val) => {
@@ -183,7 +180,7 @@ const Register = () => {
               }}
               className='mb-4'
             />
-            <CustomButton color='primary' type='filled' label='Cadastrar' className='mb-5' onPress={handleSubmit(handleRegister, console.log)} />
+            <CustomButton color='primary' type='filled' label='Cadastrar' className='mb-5' onPress={handleSubmit(handleRegister)} />
           </View>
         </View>
       </ScrollView>

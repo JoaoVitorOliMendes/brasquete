@@ -5,17 +5,24 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Event } from "./event";
+import { GroupMember } from "./groupMember";
+import { Location } from "./location";
+import { User } from "./user";
+
 export interface Group {
   adminId?: number;
   createdBy?: string;
   createdDate?: string;
-  id: number;
+  id?: number;
   isPublic?: boolean;
-  /** @nullable */
   level?: string | null;
   locationId?: number;
-  /** @nullable */
   name?: string | null;
   updatedBy?: string;
   updatedDate?: string;
+  admin?: User;
+  location?: Location;
+  groupMembers?: GroupMember[];
+  events?: Event[];
 }

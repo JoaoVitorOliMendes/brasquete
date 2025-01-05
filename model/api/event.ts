@@ -5,6 +5,9 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Group } from "./group";
+import { Team } from "./team";
+
 export interface Event {
   createdBy?: string;
   createdDate?: string;
@@ -13,4 +16,6 @@ export interface Event {
   id?: number;
   updatedBy?: string;
   updatedDate?: string;
+  teams?: Team[];
+  group?: Group
 }

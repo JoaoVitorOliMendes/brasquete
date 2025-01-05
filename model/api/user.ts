@@ -5,21 +5,22 @@
  * OpenAPI spec version: 1.0
  */
 
+import { GroupMember } from "./groupMember";
+
 export interface User {
   birthDate?: string;
   createdBy?: string;
   createdDate?: string;
-  /** @minLength 1 */
-  email: string;
+  email?: string;
   emailConfirmed?: boolean;
   height?: number;
   id?: number;
-  name: number;
-  /** @minLength 1 */
-  password: string;
-  /** @nullable */
+  name?: string;
+  password?: string;
+  confirmPassword?: string;
   position?: string | null;
-  surname: number;
+  surname?: string;
   updatedBy?: string;
   updatedDate?: string;
+  groupMembers?: GroupMember[];
 }
