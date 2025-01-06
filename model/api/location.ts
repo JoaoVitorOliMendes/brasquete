@@ -16,4 +16,9 @@ export interface Location {
   updatedBy?: string;
   updatedDate?: string;
   groups?: Group[];
+  streetNumber?: string;
+  street?: string;
+  neighborhood?: string;
+  city?: string;
+  country?: string;
 }
