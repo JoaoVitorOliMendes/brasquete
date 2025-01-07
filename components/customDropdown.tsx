@@ -1,24 +1,21 @@
 import { View, Text, TextInput, TextInputProps, Modal, TouchableWithoutFeedback, TouchableOpacity, GestureResponderEvent, Pressable, FlatList, StatusBar, ListRenderItemInfo } from 'react-native'
-import React, { forwardRef, useRef, useState } from 'react'
+import React, { forwardRef, RefObject, useRef, useState } from 'react'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
-import { Controller, UseControllerProps } from 'react-hook-form'
+import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { OptionItem } from '@/model/OptionItem'
-import SelectDropdown from 'react-native-select-dropdown'
-import { CustomPressIconProps } from './customPressIcon'
 
-interface CustomDropdownProps {
+interface CustomDropdownProps<FormType extends FieldValues> {
     data: OptionItem[],
     type: keyof ClassTypeColor,
     color: keyof ClassColor,
     className?: string,
-    formProps: UseControllerProps,
-    inputProps: TextInputProps,
-    errorMsg?: string
+    formProps: UseControllerProps<FormType>,
+    inputProps: TextInputProps
 }
 
-const CustomDropdown = forwardRef<TextInput, CustomDropdownProps>(({ data, type, color, className, formProps, inputProps, errorMsg = '' }, ref) => {
+const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, className = '', formProps, inputProps }: CustomDropdownProps<FormType>) => {
     const [dropdownOpened, setDropdownOpened] = useState(false)
     const [dropdownCoords, setDropdownCoords] = useState({
         top: 0,
@@ -82,10 +79,8 @@ const CustomDropdown = forwardRef<TextInput, CustomDropdownProps>(({ data, type,
     return (
         <Controller
             {...formProps}
-            render={({ field }) => (
-                <View className={`
-                    ${className ? className : null}
-                `}>
+            render={({ field, fieldState }) => (
+                <View className={className}>
                     <TouchableOpacity
                         onPress={openDropdown}
                         className={`
@@ -151,15 +146,15 @@ const CustomDropdown = forwardRef<TextInput, CustomDropdownProps>(({ data, type,
                         </Modal>
                     </View>
                     {
-                        errorMsg &&
+                        fieldState.error?.message &&
                         <Text className='mt-1 text-red-700'>
-                            {errorMsg}
+                            {fieldState.error?.message}
                         </Text>
                     }
                 </View>
             )}
         />
     )
-})
+}
 
 export default CustomDropdown

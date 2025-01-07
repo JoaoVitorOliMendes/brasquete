@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0
  */
 
-
 export * from './event';
 export * from './group';
 export * from './groupMember';

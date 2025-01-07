@@ -4,10 +4,10 @@ import { useFonts } from 'expo-font'
 import { useEffect } from 'react';
 import React from 'react';
 import "../global.css";
+import { setCustomText } from 'react-native-global-props';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { setCustomText } from 'react-native-global-props';
-import { AuthProvider } from '@/context/AuthContext';
 
 SplashScreen.preventAutoHideAsync()
 
@@ -37,7 +37,6 @@ export default function RootLayout() {
       <GestureHandlerRootView>
         <Slot />
       </GestureHandlerRootView>
-      <StatusBar translucent backgroundColor='transparent' />
     </AuthProvider>
   )
 }

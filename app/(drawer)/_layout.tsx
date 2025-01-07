@@ -1,15 +1,12 @@
-import { View, Text, Alert, BackHandler, ImageBackground } from 'react-native'
-import React, { useContext, useEffect } from 'react'
+import { View, Text, StatusBar } from 'react-native'
+import React from 'react'
 import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
-import { colors, images } from '@/constants'
+import { colors } from '@/constants'
 import DrawerContent from '@/components/drawerContent'
-import LogoText from '@/components/logoText'
-import CustomButton from '@/components/customButton'
-import { useRouter } from 'expo-router'
+import { Redirect, useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 
 const DrawerLayout = () => {
     const router = useRouter()
@@ -19,27 +16,18 @@ const DrawerLayout = () => {
         return <Text>Loading...</Text>;
     }
 
-    if (!authState?.authenticated) {
-        return (
-            <ImageBackground source={images.onboard} className='h-full'>
-                <SafeAreaView className='h-full p-5 flex flex-col justify-between'>
-                    <LogoText />
-                    <View className='mb-10'>
-                        <CustomButton color='primary' type='filled' label='Entrar' className='w-full mb-2' onPress={() => router.push('/login')} />
-                        <CustomButton color='primary' type='outline' label='Criar Nova Conta' className='w-full' onPress={() => router.push('/register')} />
-                    </View>
-                </SafeAreaView>
-            </ImageBackground>
-        )
+    if (!isLoading && !authState?.authenticated) {
+        return <Redirect href='/home' />
     }
 
     return (
-        <View className='flex-1'>
+        <SafeAreaView className='flex-1 flex flex-row justify-start items-start'>
             <StatusBar backgroundColor={colors.secondary} />
             <Drawer
                 screenOptions={{
+                    header: () => null,
                     headerShown: false,
-                    headerTransparent: true
+                    swipeEdgeWidth: 0
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
@@ -53,21 +41,21 @@ const DrawerLayout = () => {
                         />
                     )
                 }} />
-                <Drawer.Screen name='groups' options={{
-                    title: 'Grupos',
-                    drawerIcon: ({ focused, size }) => (
-                        <Ionicons
-                            name='people'
-                            size={size}
-                            color={focused ? colors.black : colors.white}
-                        />
-                    ),
-                }} />
                 <Drawer.Screen name='events' options={{
                     title: 'Eventos',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
                             name='calendar'
+                            size={size}
+                            color={focused ? colors.black : colors.white}
+                        />
+                    ),
+                }} />
+                <Drawer.Screen name='groups' options={{
+                    title: 'Grupos',
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name='people'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />
@@ -94,7 +82,7 @@ const DrawerLayout = () => {
                     ),
                 }} />
             </Drawer>
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -5,7 +5,7 @@ import CustomDrawerHeader from '@/components/customDrawerHeader'
 
 const Home = () => {
   return (
-    <View>
+    <View className='flex-1'>
       <CustomDrawerHeader />
       <CustomTitle title='Próximos Eventos' sizeClass='text-4xl' className='m-4' />
     </View>

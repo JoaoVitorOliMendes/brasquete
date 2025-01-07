@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
+        setIsLoading(true)
         const loadToken = async () => {
             var token
             if (Platform.OS === 'web') {
@@ -49,7 +50,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
                 })
             }
         }
-        loadToken()
+        loadToken().finally(() => setIsLoading(false))
     }, [])
 
     const onRegister = async (data: Account) => {

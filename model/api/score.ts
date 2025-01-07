@@ -5,6 +5,9 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Match } from "./match";
+import { Player } from "./player";
+
 export interface Score {
   assistances?: number;
   blocks?: number;
@@ -22,4 +25,6 @@ export interface Score {
   twoPoints?: number;
   updatedBy?: string;
   updatedDate?: string;
+  player?: Player;
+  match?: Match;
 }
