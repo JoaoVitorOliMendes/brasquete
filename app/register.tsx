@@ -8,14 +8,16 @@ import CustomInput from '@/components/customInput'
 import { useForm } from 'react-hook-form'
 import CustomButton from '@/components/customButton'
 import CustomDropdown from '@/components/customDropdown'
-import { Account } from '@/model/Account'
+import { User } from '@/model/api'
+import { StatusBar } from 'expo-status-bar'
+
 
 const Register = () => {
   const [showConfirmPass, setShowConfirmPass] = useState(true)
   const [showPass, setShowPass] = useState(true)
 
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm<Account>()
+  const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>()
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const emailRef = useRef<TextInput>(null)
@@ -24,22 +26,22 @@ const Register = () => {
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
 
-  const handleRegister = (data: Account) => {
+  const handleRegister = (data: User) => {
     console.log(data)
   }
 
   return (
     <SafeAreaView className='h-full'>
+      <StatusBar translucent backgroundColor='transparent' />
       {router.canGoBack() && <NavHeader iconProps={{ icon: 'arrow-back', onPress: () => router.back()}} />}
       <ScrollView nestedScrollEnabled={true}>
         <View className='p-5'>
           <CustomTitle color='black' title='Crie sua conta' />
           <View className='mt-10'>
             <CustomInput
-              errorMsg={errors.name?.message}
               color='black'
               type='outline'
-              ref={nameRef}
+              inputRef={nameRef}
               formProps={{
                 control,
                 name: 'name',
@@ -55,10 +57,9 @@ const Register = () => {
               className='mb-4'
             />
             <CustomInput
-              errorMsg={errors.surname?.message}
               color='black'
               type='outline'
-              ref={surnameRef}
+              inputRef={surnameRef}
               formProps={{
                 control,
                 name: 'surname',
@@ -74,10 +75,9 @@ const Register = () => {
               className='mb-4'
             />
             <CustomInput
-              errorMsg={errors.email?.message}
               color='black'
               type='outline'
-              ref={emailRef}
+              inputRef={emailRef}
               formProps={{
                 control,
                 name: 'email',
@@ -98,10 +98,9 @@ const Register = () => {
               className='mb-4'
             />
             <CustomInput
-              errorMsg={errors.height?.message}
               color='black'
               type='outline'
-              ref={heightRef}
+              inputRef={heightRef}
               formProps={{
                 control,
                 name: 'height'
@@ -127,10 +126,8 @@ const Register = () => {
                   value: 'ala'
                 }
               ]}
-              errorMsg={errors.position?.message}
               color='black'
               type='outline'
-              ref={positionRef}
               formProps={{
                 control,
                 name: 'position'
@@ -143,10 +140,9 @@ const Register = () => {
             />
             <CustomInput
               rightIcon={{ icon: 'eye', onPress: (e) => setShowPass(!showPass)}}
-              errorMsg={errors.password?.message}
               color='black'
               type='outline'
-              ref={passwordRef}
+              inputRef={passwordRef}
               formProps={{
                 control,
                 name: 'password',
@@ -164,13 +160,12 @@ const Register = () => {
             />
             <CustomInput
               rightIcon={{ icon: 'eye', onPress: (e) => setShowConfirmPass(!showConfirmPass)}}
-              errorMsg={errors.confirmPass?.message}
               color='black'
               type='outline'
-              ref={confirmPassRef}
+              inputRef={confirmPassRef}
               formProps={{
                 control,
-                name: 'confirmPass',
+                name: 'confirmPassword',
                 rules: {
                   required: 'Por favor, confirme sua senha',
                   validate: (val) => {
@@ -185,7 +180,7 @@ const Register = () => {
               }}
               className='mb-4'
             />
-            <CustomButton color='primary' type='filled' label='Cadastrar' className='mb-5' onPress={handleSubmit(handleRegister, console.log)} />
+            <CustomButton color='primary' type='filled' label='Cadastrar' className='mb-5' onPress={handleSubmit(handleRegister)} />
           </View>
         </View>
       </ScrollView>

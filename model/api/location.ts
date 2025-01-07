@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Group } from "./group";
+
 export interface Location {
   createdBy?: string;
   createdDate?: string;
@@ -13,4 +15,11 @@ export interface Location {
   longitude?: number;
   updatedBy?: string;
   updatedDate?: string;
+  groups?: Group[];
+  streetNumber?: string;
+  street?: string;
+  neighborhood?: string;
+  city?: string;
+  country?: string;
+  state?: string;
 }

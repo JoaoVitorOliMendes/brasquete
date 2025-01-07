@@ -5,13 +5,20 @@
  * OpenAPI spec version: 1.0
  */
 
+import { Event } from "./event";
+import { Match } from "./match";
+import { Player } from "./player";
+
 export interface Team {
   createdBy?: string;
   createdDate?: string;
   eventId?: number;
   id?: number;
-  /** @nullable */
   teamName?: string | null;
   updatedBy?: string;
   updatedDate?: string;
+  event?: Event;
+  players?: Player[];
+  matchesOne?: Match[];
+  matchesTwo?: Match[];
 }

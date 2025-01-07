@@ -1,24 +1,26 @@
-import { View, Text, TextInput, TextInputProps } from 'react-native'
-import React, { forwardRef, useState } from 'react'
+import { View, Text, TextInput, TextInputProps, NativeSyntheticEvent, TextInputFocusEventData } from 'react-native'
+import React, { forwardRef, RefObject, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
-import { Controller, UseControllerProps } from 'react-hook-form'
+import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import { CustomPressIconProps } from '@/components/customPressIcon'
 import CustomPressIcon from '@/components/customPressIcon'
 
-interface CustomInputProps {
+interface CustomInputProps<FormType extends FieldValues> {
     type: keyof ClassTypeColor,
     color: keyof ClassColor,
     rightIcon?: CustomPressIconProps,
     leftIcon?: CustomPressIconProps,
     className?: string,
-    formProps: UseControllerProps,
+    formProps: UseControllerProps<FormType>,
     inputProps: TextInputProps,
-    errorMsg?: string
+    errorMsg?: string,
+    inputRef: RefObject<TextInput>
+    //WOW it just works :p
 }
 
-const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, rightIcon, leftIcon, className, formProps, inputProps, errorMsg = '' }, ref) => {
+const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, leftIcon, className, formProps, inputProps, inputRef }: CustomInputProps<FormType>) => {
     const inuptColor: ClassTypeColor = {
         outline: {
             primary: 'border-b-2 bg-primary-25 border-primary',
@@ -46,30 +48,33 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
         }
     })
 
-    const handleFocus = () => {
-        animation.value = {
-            top: -18,
-            fontSize: 12
-        }
-    }
-
-    const handleBlur = (e: any) => {
-        if (!e.nativeEvent.text) {
-            animation.value = {
-                top: 0,
-                fontSize: 14
-            }
-        }
-    }
-
     return (
         <Controller
             {...formProps}
-            render={({ field }) => (
-                <View className={`
+            render={({ field, fieldState }) => {
+                const handleLabel = () => {
+                    if (!field.value) {
+                        animation.value = {
+                            top: 0,
+                            fontSize: 14
+                        }
+                    } else {
+                        animation.value = {
+                            top: -18,
+                            fontSize: 12
+                        }
+                    }
+                }
+
+                useEffect(() => {
+                    handleLabel()
+                }, [field.value])
+
+                return (
+                    <View className={`
                     ${className ? className : null}
                 `}>
-                    <View className={`
+                        <View className={`
                         rounded-t-lg
                         pt-3
                         mb-1
@@ -81,50 +86,51 @@ const CustomInput = forwardRef<TextInput, CustomInputProps>(({ type, color, righ
                         items-center
                         ${inuptColor[type]?.[color] ?? inuptColor.filled?.primary}
                     `}>
-                        {leftIcon && <CustomPressIcon {...leftIcon} />}
-                        <View className={`
+                            {leftIcon && <CustomPressIcon {...leftIcon} />}
+                            <View className={`
                             flex-auto
                             relative
                             ${!leftIcon && 'ml-4'}
                         `}>
-                            <View className='absolute w-full top-0 bottom-0 flex justify-center z-0'>
-                                <Animated.Text className='opacity-50' style={[animationStyle]}>
-                                    <Text>
-                                        {inputProps.placeholder}
-                                    </Text>
-                                    {
-                                        formProps.rules?.required &&
-                                        <Text className='color-red-700'>
-                                            &nbsp;*
+                                <View className='absolute w-full top-0 bottom-0 flex justify-center z-0'>
+                                    <Animated.Text className='opacity-50' style={[animationStyle]}>
+                                        <Text>
+                                            {inputProps.placeholder}
                                         </Text>
-                                    }
-                                </Animated.Text>
+                                        {
+                                            formProps.rules?.required &&
+                                            <Text className='color-red-700'>
+                                                &nbsp;*
+                                            </Text>
+                                        }
+                                    </Animated.Text>
+                                </View>
+                                <TextInput
+                                    {...inputProps}
+                                    caretHidden={false}
+                                    ref={inputRef}
+                                    onFocus={handleLabel}
+                                    onEndEditing={handleLabel}
+                                    placeholder=''
+                                    className='caret-black pl-0 z-10'
+                                    onChangeText={field.onChange}
+                                    value={field.value || ''}
+                                >
+                                </TextInput>
                             </View>
-                            <TextInput
-                                {...inputProps}
-                                caretHidden={false}
-                                ref={ref}
-                                onFocus={handleFocus}
-                                onEndEditing={handleBlur}
-                                placeholder=''
-                                className='caret-black pl-0 z-10'
-                                onChangeText={field.onChange}
-                                value={field.value || ''}
-                            >
-                            </TextInput>
+                            {rightIcon && <CustomPressIcon {...rightIcon} />}
                         </View>
-                        {rightIcon && <CustomPressIcon {...rightIcon} />}
+                        {
+                            fieldState.error?.message &&
+                            <Text className='text-red-700'>
+                                {fieldState.error?.message}
+                            </Text>
+                        }
                     </View>
-                    {
-                        errorMsg &&
-                        <Text className='text-red-700'>
-                            {errorMsg}
-                        </Text>
-                    }
-                </View>
-            )}
+                )
+            }}
         />
     )
-})
+}
 
 export default CustomInput

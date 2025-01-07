@@ -5,14 +5,20 @@
  * OpenAPI spec version: 1.0
  */
 
+import { GroupMember } from "./groupMember";
+import { Score } from "./score";
+import { Team } from "./team";
+
 export interface Player {
   createdBy?: string;
   createdDate?: string;
   groupMemberId?: number;
   id?: number;
-  /** @nullable */
   position?: string | null;
   teamId?: number;
   updatedBy?: string;
   updatedDate?: string;
+  groupMember?: GroupMember;
+  team?: Team;
+  scores?: Score[];
 }

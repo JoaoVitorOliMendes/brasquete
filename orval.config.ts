@@ -4,7 +4,7 @@ import { defineConfig } from 'orval'
 export default defineConfig({
     base: {
         input: {
-            target: './swagger.json',
+            target: './api/swagger.json',
         },
         output: {
             target: './api/schema.ts',
