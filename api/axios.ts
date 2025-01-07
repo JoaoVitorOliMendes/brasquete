@@ -4,7 +4,7 @@ import axios from 'axios'
 export const mapsApi = axios.create({
     baseURL: "https://maps.googleapis.com/maps/api/",
     params: {
-        key: process.env.MAPS_API_KEY_DEV
+        key: process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV
     },
 })
 

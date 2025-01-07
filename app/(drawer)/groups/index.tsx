@@ -14,20 +14,20 @@ const Groups = () => {
 
   const data: Group[] = [
     {
-      id: 0,
-      name: "string",
-      level: "string",
+      id: 1,
+      isPublic: true,
+      level: 3,
       location: {
-        id: 0,
-        latitude: 0,
-        longitude: 0
+        city: 'Belo Horizonte',
+        country: 'BR',
+        latitude: -19.93634456787944,
+        longitude: -43.96623943001032,
+        neighborhood: 'Grajaú',
+        state: 'Minas Gerais',
+        street: 'Rua Santa Cruz',
+        streetNumber: '560'
       },
-      events: [
-        {
-          id: 0,
-          date: "2025-01-04T20:20:27.029Z",
-        }
-      ]
+      name: 'Grupo 1'
     }
   ]
   return (

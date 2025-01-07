@@ -21,4 +21,5 @@ export interface Location {
   neighborhood?: string;
   city?: string;
   country?: string;
+  state?: string;
 }

@@ -16,7 +16,7 @@ export interface Group {
   createdDate?: string;
   id?: number;
   isPublic?: boolean;
-  level?: string | null;
+  level?: number;
   locationId?: number;
   name?: string | null;
   updatedBy?: string;

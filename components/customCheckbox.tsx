@@ -24,13 +24,11 @@ const CustomCheckbox = <FormType extends FieldValues,>({ formProps, color, class
                                 onPress={() => {
                                     field.onChange(!field.value)
                                 }}
-                                className='border-solid border-2 rounded mr-5'
+                                className='border-solid border-2 rounded mr-5 flex justify-center align-center'
+                                style={{ width: size + 5, height: size + 5 }}
                             >
                                 {
-                                    field.value ?
-                                        <Ionicons name='checkmark' className='p-0' size={size} />
-                                        :
-                                        <View style={{ width: size, height: size }} />
+                                    field.value && <Ionicons name='checkmark' className='p-0 text-center' size={size} />
                                 }
                             </TouchableOpacity>
                             <Text>

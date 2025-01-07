@@ -26,7 +26,8 @@ const DrawerLayout = () => {
             <Drawer
                 screenOptions={{
                     header: () => null,
-                    headerShown: false
+                    headerShown: false,
+                    swipeEdgeWidth: 0
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
