@@ -7,13 +7,14 @@ import DrawerContent from '@/components/drawerContent'
 import { Redirect, useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import LoadingIndicator from '@/components/loadingIndicator'
 
 const DrawerLayout = () => {
     const router = useRouter()
     const { authState, isLoading } = useAuth()
 
     if (isLoading) {
-        return <Text>Loading...</Text>;
+        return <LoadingIndicator />;
     }
 
     if (!isLoading && !authState?.authenticated) {

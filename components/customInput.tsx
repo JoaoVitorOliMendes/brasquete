@@ -16,11 +16,14 @@ interface CustomInputProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,
     inputProps: TextInputProps,
     errorMsg?: string,
+    multiline?: boolean,
+    numberOfLines?: number,
+    disabled?: boolean,
     inputRef: RefObject<TextInput>
     //WOW it just works :p
 }
 
-const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, leftIcon, className, formProps, inputProps, inputRef }: CustomInputProps<FormType>) => {
+const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, leftIcon, className, formProps, inputProps, inputRef, multiline = false, numberOfLines, disabled = false }: CustomInputProps<FormType>) => {
     const inuptColor: ClassTypeColor = {
         outline: {
             primary: 'border-b-2 bg-primary-25 border-primary',
@@ -115,6 +118,10 @@ const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, le
                                     className='caret-black pl-0 z-10'
                                     onChangeText={field.onChange}
                                     value={field.value || ''}
+                                    multiline
+                                    numberOfLines={numberOfLines}
+                                    editable={disabled} selectTextOnFocus={disabled}
+                                    style={{ minHeight: (numberOfLines * 24), textAlignVertical: 'top' }}
                                 >
                                 </TextInput>
                             </View>

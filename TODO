@@ -1,0 +1,7 @@
+☐ Change map in group/[id] to static maps
+☐ Is the db wrong? shouldn't scores have a separate table like scoretype, where it's saved 3points/2points etc
+☐ Should reports be the same thing?
+i think it should
+
+☐ Refactor code
+☐ Refactor types

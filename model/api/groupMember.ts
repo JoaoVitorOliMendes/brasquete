@@ -10,7 +10,7 @@ import { User } from "./user";
 
 export interface GroupMember {
   /** @nullable */
-  confirmed?: string | null;
+  confirmed?: 'confirmed' | 'deciding' | 'absent' | null;
   createdBy?: string;
   createdDate?: string;
   groupId?: number;
