@@ -52,6 +52,7 @@ const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
 
   const handleReport = (data: any) => {
     console.log(data)
+    dismiss()
   }
 
   useEffect(() => {

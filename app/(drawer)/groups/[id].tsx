@@ -87,6 +87,10 @@ const GroupsDetails = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
 
+    const groupMemberListMemo = useMemo(() => {
+        return <GroupMemberList members={group.groupMembers} />
+    }, [group])
+
     if (!group) {
         router.back()
     }
@@ -130,7 +134,7 @@ const GroupsDetails = () => {
                 </View>
             </SafeAreaView>
             <ScrollView endFillColor={colors.secondary} overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
-                <GroupMemberList members={group.groupMembers} />
+                {groupMemberListMemo}
             </ScrollView>
         </>
     )

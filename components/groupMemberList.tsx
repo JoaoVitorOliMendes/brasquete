@@ -1,5 +1,5 @@
 import { View, Text, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { GroupMember } from '@/model/api'
 import { images } from '@/constants'
 import CustomTitle from './customTitle'
@@ -24,6 +24,10 @@ const GroupMemberList = ({ members, separator }: GroupMemberListProps) => {
         deciding: 'bg-amber-700',
         absent: 'bg-red-700'
     }
+
+    const reportMemberModalMemo = useMemo(() => {
+        return <ReportMemberModal visible={modalVisible} dismiss={() => setModalVisible(false)} />
+    }, [modalVisible])
 
     if (!members) {
         return (
@@ -68,7 +72,7 @@ const GroupMemberList = ({ members, separator }: GroupMemberListProps) => {
                     )
                 })
             }
-            <ReportMemberModal visible={modalVisible} dismiss={() => setModalVisible(false)} />
+            {reportMemberModalMemo}
         </View>
     )
 }
