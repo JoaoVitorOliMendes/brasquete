@@ -1,12 +1,13 @@
 import { View, Text, Modal } from 'react-native'
 import React, { RefObject, useEffect, useMemo, useState } from 'react'
-import { MapView, Marker, PROVIDER_GOOGLE } from '@/components/map/mymap'
 import * as Location from 'expo-location'
-import type { LatLng, Region } from 'react-native-maps'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet'
 import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import CustomButton from './customButton'
 import { reverseGeolocation } from '@/api/services/mapsApiManager'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import type { LatLng, Region } from 'react-native-maps'
+import LoadingIndicator from './loadingIndicator'
 
 interface MapPickerModalProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,
@@ -14,10 +15,11 @@ interface MapPickerModalProps<FormType extends FieldValues> {
     bottomSheetRef: RefObject<BottomSheetModal>,
     setValue: any,
     latitude?: number,
-    longitude?: number
+    longitude?: number,
+    onChange?: any
 }
 
-const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = '', bottomSheetRef, setValue, latitude, longitude }: MapPickerModalProps<FormType>) => {
+const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = '', bottomSheetRef, setValue, latitude, longitude, onChange }: MapPickerModalProps<FormType>) => {
     const snapPoints = useMemo(() => ['95%'], [])
 
     return (
@@ -28,7 +30,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
             enableContentPanningGesture={false}
             backdropComponent={(props) => {
                 return (
-                    <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />
+                    <BottomSheetBackdrop opacity={0.1} enableTouchThrough={false} appearsOnIndex={0} disappearsOnIndex={-1} {...props} />
                 )
             }}
         >
@@ -38,6 +40,8 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                     render={({ field, fieldState }) => {
                         const [selectedLocation, setSelectedLocation] = useState<Region | null>(null)
                         const [initialLocation, setInitialLocation] = useState<Region | null>(null)
+                        const [mapKey, setMapKey] = useState<number | null>(null)
+                        const [mapReady, setMapReady] = useState<boolean>(false)
                         const mapRef = React.useRef<MapView>(null)
 
                         useEffect(() => {
@@ -105,6 +109,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 const country = addressComponents.find((component: { types: string | string[] }) =>
                                     component.types.includes("country"))?.short_name || ''
 
+                                onChange()
                                 setValue('location.latitude', selectedLocation.latitude)
                                 setValue('location.longitude', selectedLocation.longitude)
                                 setValue('location.streetNumber', streetNumber)
@@ -113,7 +118,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 setValue('location.city', city)
                                 setValue('location.state', state)
                                 setValue('location.country', country)
-
+                                setValue('location.coordsMatch', true)
                             } catch (e) {
                                 console.log(e)
                             } finally {
@@ -122,35 +127,42 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                         }
 
                         return (
-                            <>
+                            <View className='w-full h-full'>
+                                <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} />
                                 {
-                                    (selectedLocation != undefined && selectedLocation != null && initialLocation != undefined && initialLocation != null) ? (
-                                        <View className='w-full h-full'>
-                                            <MapView
-                                                ref={mapRef}
-                                                style={{ width: '100%', height: '100%' }}
-                                                provider={PROVIDER_GOOGLE}
-                                                onPress={(e) => {
-                                                    console.log(e.nativeEvent.coordinate)
-                                                    setSelectedLocation({
-                                                        latitude: e.nativeEvent.coordinate.latitude,
-                                                        longitude: e.nativeEvent.coordinate.longitude,
-                                                        longitudeDelta: 0.005,
-                                                        latitudeDelta: 0.005
-                                                    })
-                                                }}
-                                                initialRegion={initialLocation}
-                                                >
-                                                <Marker
-                                                    coordinate={selectedLocation}
-                                                />
-                                            </MapView>
-                                            <CustomButton className='absolute bottom-4 right-0 left-0 m-4' label='Escolher Localização' onPress={handleLocationPicked} />
-                                        </View>
-                                    )
-                                        : <Text>Loading</Text>
+                                    (!!selectedLocation && !!initialLocation) &&
+                                    <>
+                                        <MapView
+                                            key={mapKey}
+                                            ref={mapRef}
+                                            style={{ flex: 1 }}
+                                            provider={PROVIDER_GOOGLE}
+                                            googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
+                                            onPress={(e) => {
+                                                setSelectedLocation({
+                                                    latitude: e.nativeEvent.coordinate.latitude,
+                                                    longitude: e.nativeEvent.coordinate.longitude,
+                                                    longitudeDelta: 0.005,
+                                                    latitudeDelta: 0.005
+                                                })
+                                            }}
+                                            onRegionChange={() => {
+                                                // What a shit component google
+                                                if (!mapRef.current?.state.isReady)
+                                                    setMapKey(Date.now())
+                                                else
+                                                    setMapReady(true)
+                                            }}
+                                            region={initialLocation}
+                                        >
+                                            <Marker
+                                                coordinate={selectedLocation}
+                                            />
+                                        </MapView>
+                                        <CustomButton className='absolute bottom-4 right-0 left-0 m-4' label='Escolher Localização' onPress={handleLocationPicked} />
+                                    </>
                                 }
-                            </>
+                            </View>
                         )
                     }}
                 />

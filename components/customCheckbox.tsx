@@ -1,50 +1,44 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Controller, FieldValues, UseControllerProps } from 'react-hook-form';
-import { ClassColor } from '@/model/ClassTypeColor';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { ClassColor } from '@/model/ClassTypeColor'
+import { Ionicons } from '@expo/vector-icons'
 
-interface CustomCheckboxProps<FormType extends FieldValues> {
-    formProps: UseControllerProps<FormType>,
-    color?: keyof ClassColor,
+interface CustomCheckboxProps {
     className?: string,
+    value?: boolean,
+    color?: keyof ClassColor,
     label: string,
-    size?: number
+    size?: number,
+    setValue?: () => void
 }
 
-const CustomCheckbox = <FormType extends FieldValues,>({ formProps, color, className = '', label, size = 24 }: CustomCheckboxProps<FormType>) => {
+const CustomCheckbox = ({ className, value, setValue, color = 'black', label, size = 24 }: CustomCheckboxProps) => {
+    const borderColor: ClassColor = {
+        white: 'border-white',
+        black: 'border-black'
+    }
+
+    const textColor: ClassColor = {
+        white: 'text-white',
+        black: 'text-black'
+    }
     return (
-        <Controller
-            {...formProps}
-            render={({ field, fieldState }) => {
-                return (
-                    <View className={className}>
-                        <View className='flex flex-row items-center'>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    field.onChange(!field.value)
-                                }}
-                                className='border-solid border-2 rounded mr-5 flex justify-center align-center'
-                                style={{ width: size + 5, height: size + 5 }}
-                            >
-                                {
-                                    field.value && <Ionicons name='checkmark' className='p-0 text-center' size={size} />
-                                }
-                            </TouchableOpacity>
-                            <Text>
-                                {label}
-                            </Text>
-                        </View>
-                        {
-                            fieldState.error?.message &&
-                            <Text className='mt-1 text-red-700'>
-                                {fieldState.error?.message}
-                            </Text>
-                        }
-                    </View>
-                )
-            }}
-        />
+        <View className={className}>
+            <View className='flex flex-row items-center'>
+                <TouchableOpacity
+                    onPress={setValue}
+                    className={`border-solid border-2 rounded mr-5 flex justify-center align-center ${borderColor[color]}`}
+                    style={{ width: size + 5, height: size + 5 }}
+                >
+                    {
+                        value && <Ionicons name='checkmark' className='p-0 text-center' size={size} color={color} />
+                    }
+                </TouchableOpacity>
+                <Text className={textColor[color]}>
+                    {label}
+                </Text>
+            </View>
+        </View>
     )
 }
 

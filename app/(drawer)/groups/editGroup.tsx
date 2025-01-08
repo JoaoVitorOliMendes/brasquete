@@ -7,19 +7,29 @@ import CustomTitle from '@/components/customTitle'
 import CustomInput from '@/components/customInput'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm } from 'react-hook-form'
-import { Group } from '@/model/api'
-import CustomCheckbox from '@/components/customCheckbox'
+import { Group, Location } from '@/model/api'
 import CustomButton from '@/components/customButton'
 import CustomDropdown from '@/components/customDropdown'
 import MapPickerModal from '@/components/mapPickerModal'
 import BottomSheet, { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import CustomStarRating from '@/components/customStarRating'
+import CustomControlCheckbox from '@/components/customControlCheckbox'
 
 const EditGroup = () => {
+    const [coordsMatch, setCoordsMatch] = useState(false)
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
 
-    const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm<Group>()
+    const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<Group>()
+
+    const watchLocationCity = watch('location.city')
+    const watchLocationCountry = watch('location.country')
+    const watchLocationNeighborhood = watch('location.neighborhood')
+    const watchLocationStreet = watch('location.street')
+    const watchLocationStreetNumber = watch('location.streetNumber')
+    const watchLocationState = watch('location.state')
+
+
     const nameRef = useRef<TextInput>(null)
     const locationCityRef = useRef<TextInput>(null)
     const locationCountryRef = useRef<TextInput>(null)
@@ -39,16 +49,24 @@ const EditGroup = () => {
             setValue('location.neighborhood', '')
             setValue('location.street', '')
             setValue('location.streetNumber', '')
+            setValue('location.coordsMatch', false)
         }
     }, [])
+
+    useEffect(() => {
+        if (coordsMatch)
+            setCoordsMatch(false)
+        else
+            setValue('location.coordsMatch', false)
+    }, [watchLocationCity, watchLocationCountry, watchLocationNeighborhood, watchLocationStreet, watchLocationStreetNumber, watchLocationState])
 
     const handleRegister = (data: Group) => {
         console.log(data)
     }
 
     return (
-        <SafeAreaView className='h-full'>
-            <BottomSheetModalProvider>
+        <BottomSheetModalProvider>
+            <SafeAreaView className='h-full'>
                 {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
                 <ScrollView nestedScrollEnabled={true}>
                     <View className='p-5'>
@@ -71,7 +89,7 @@ const EditGroup = () => {
                                 }}
                                 className='basis-full mb-4'
                             />
-                            <CustomCheckbox
+                            <CustomControlCheckbox
                                 formProps={{
                                     control,
                                     name: 'isPublic'
@@ -102,7 +120,7 @@ const EditGroup = () => {
                                 inputProps={{
                                     placeholder: 'Número',
                                     onSubmitEditing: () => locationStreetRef.current?.focus(),
-                                    returnKeyType: 'next'
+                                    returnKeyType: 'next',
                                 }}
                                 className='basis-1/2 mb-4 pr-1'
                             />
@@ -187,15 +205,16 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
-                                latitude={getValues().location?.latitude}
-                                longitude={getValues().location?.longitude}
+                                latitude={getValues().location?.coordsMatch && getValues().location?.latitude}
+                                longitude={getValues().location?.coordsMatch && getValues().location?.longitude}
+                                onChange={() => setCoordsMatch(true)}
                             />
                             <CustomButton label='Criar Novo Grupo' onPress={handleSubmit(handleRegister)} className='basis-full' />
                         </View>
                     </View>
                 </ScrollView>
-            </BottomSheetModalProvider>
-        </SafeAreaView>
+            </SafeAreaView>
+        </BottomSheetModalProvider>
     )
 }
 

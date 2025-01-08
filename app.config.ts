@@ -32,7 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
         config: {
             googleMaps: {
-                apiKey: process.env.MAPS_API_KEY
+                apiKey: process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV
             }
         },
         package: "com.brasquete"

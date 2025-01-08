@@ -36,7 +36,7 @@ const CustomButton = ({ label, type='filled', color='primary', className, onPres
         filled: {
             primary: 'text-white',
             secondary: 'text-white',
-            white: 'text-white'
+            white: 'text-black'
         }
     }
 
