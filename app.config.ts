@@ -13,7 +13,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: "./assets/images/logo.png",
     scheme: "brasquete",
     userInterfaceStyle: "automatic",
-    newArchEnabled: true,
+    newArchEnabled: false,
     ios: {
         supportsTablet: true,
         config: {

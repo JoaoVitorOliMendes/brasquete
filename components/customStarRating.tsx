@@ -18,7 +18,7 @@ const CustomStarRating = <FormType extends FieldValues,>({ formProps, starProps 
             {...formProps}
             render={({ field, fieldState }) => {
                 return (
-                    <Stars {...starProps} onRatingChange={field.onChange} />
+                    <Stars {...starProps} setRating={field.onChange} onRatingChange={field.onChange} />
                 )
             }}
         />

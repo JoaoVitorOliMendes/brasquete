@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground } from 'react-native'
+import { View, Text, ImageBackground, TextInput } from 'react-native'
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'

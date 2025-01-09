@@ -2,7 +2,7 @@ import { colors } from "@/constants";
 import { ClassColor } from "@/model/ClassTypeColor";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, FieldValues, UseControllerProps } from "react-hook-form";
 import { TouchableOpacity, View, Text } from "react-native";
 
@@ -10,6 +10,7 @@ export interface StarProps {
     className?: string,
     maxStars?: number,
     rating?: number,
+    setRating?: (rating: number) => void,
     label?: string,
     disabled?: boolean,
     onRatingChange?: (rating: number) => void,
@@ -18,14 +19,17 @@ export interface StarProps {
 }
 
 
-const Stars = ({ className = '', maxStars = 5, rating = 0, label, disabled = false, onRatingChange, size = 24, textClassName = ''}: StarProps) => {
-    const [currentRating, setCurrentRating] = useState(rating)
-
+const Stars = ({ className = '', maxStars = 5, rating = 0, setRating, label, disabled = false, onRatingChange, size = 24, textClassName = ''}: StarProps) => {
     const handlePress = (newRating: number) => {
-        setCurrentRating(newRating)
+        if (setRating)
+            setRating(newRating)
         if (onRatingChange)
             onRatingChange(newRating)
     }
+
+    useEffect(() => {
+        console.log(rating)
+    }, [rating])
 
     // Render the stars
     const renderStars = () => {
@@ -34,10 +38,10 @@ const Stars = ({ className = '', maxStars = 5, rating = 0, label, disabled = fal
             stars.push(
                 <TouchableOpacity key={i} onPress={() => handlePress(i)} disabled={disabled}>
                     <MaterialIcons
-                        name={i <= currentRating ? 'star' : 'star-border'}
+                        name={i <= rating ? 'star' : 'star-border'}
                         size={size}
                         color={
-                            i <= currentRating ? (disabled ? colors.darkGray + '50' : colors.yellow) : colors.gray
+                            i <= rating ? (disabled ? colors.darkGray + '50' : colors.yellow) : colors.gray
                         }
                     />
                 </TouchableOpacity>

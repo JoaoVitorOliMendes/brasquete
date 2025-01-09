@@ -15,6 +15,7 @@ const Groups = () => {
   const data: Group[] = [
     {
       id: 1,
+      description: 'Grupo do cotemig, faça parte e tals asdjahsd asdihaskjd asdjkhasdkjh askjdhaa aksja ksj askajks ',
       isPublic: true,
       level: 3,
       location: {
@@ -25,7 +26,8 @@ const Groups = () => {
         neighborhood: 'Grajaú',
         state: 'Minas Gerais',
         street: 'Rua Santa Cruz',
-        streetNumber: '560'
+        streetNumber: '560',
+        coordsMatch: true
       },
       name: 'Grupo 1'
     }

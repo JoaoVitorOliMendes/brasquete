@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TextInputProps, NativeSyntheticEvent, TextInputFocusEventData } from 'react-native'
+import { View, Text, TextInput, TextInputProps } from 'react-native'
 import React, { forwardRef, RefObject, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
@@ -6,6 +6,7 @@ import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import { CustomPressIconProps } from '@/components/customPressIcon'
 import CustomPressIcon from '@/components/customPressIcon'
+import { colors } from '@/constants'
 
 interface CustomInputProps<FormType extends FieldValues> {
     type: keyof ClassTypeColor,
@@ -74,28 +75,46 @@ const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, le
                 }, [field.value])
 
                 return (
-                    <View className={`
-                    ${className ? className : null}
-                `}>
+                    <View className={className}>
                         <View className={`
-                        rounded-t-lg
-                        pt-3
-                        mb-1
-                        px-2
-                        flex
-                        flex-row
-                        min-h-16
-                        gap-3
-                        items-center
-                        ${inuptColor[type]?.[color] ?? inuptColor.filled?.primary}
-                    `}>
+                            rounded-t-lg
+                            pt-3
+                            mb-1
+                            px-2
+                            flex
+                            flex-row
+                            min-h-16
+                            gap-3
+                            items-center
+                            ${inuptColor[type]?.[color] ?? inuptColor.filled?.primary}
+                        `}>
                             {leftIcon && <CustomPressIcon {...leftIcon} />}
                             <View className={`
-                            flex-auto
-                            relative
-                            ${!leftIcon && 'ml-4'}
-                        `}>
-                                <View className='absolute w-full top-0 bottom-0 flex justify-center z-0'>
+                                flex-auto
+                                relative
+                                ${!leftIcon && 'ml-4'}
+                            `}>
+                                <TextInput
+                                    {...inputProps}
+                                    caretHidden={false}
+                                    ref={inputRef}
+                                    onFocus={handleLabel}
+                                    onEndEditing={handleLabel}
+                                    placeholder=''
+                                    className='caret-black pl-0'
+                                    onChangeText={field.onChange}
+                                    value={field.value || ''}
+                                    multiline={multiline}
+                                    numberOfLines={numberOfLines}
+                                    editable={!disabled}
+                                    style={{
+                                        minHeight: (numberOfLines * 24) || 0,
+                                        textAlignVertical: 'top',
+                                        elevation: 3,
+                                        zIndex: 3,
+                                    }}
+                                />
+                                <View className='absolute w-full top-0 bottom-0 flex justify-center'>
                                     <Animated.Text className='opacity-50' style={[animationStyle]}>
                                         <Text>
                                             {inputProps.placeholder}
@@ -108,22 +127,6 @@ const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, le
                                         }
                                     </Animated.Text>
                                 </View>
-                                <TextInput
-                                    {...inputProps}
-                                    caretHidden={false}
-                                    ref={inputRef}
-                                    onFocus={handleLabel}
-                                    onEndEditing={handleLabel}
-                                    placeholder=''
-                                    className='caret-black pl-0 z-10'
-                                    onChangeText={field.onChange}
-                                    value={field.value || ''}
-                                    multiline
-                                    numberOfLines={numberOfLines}
-                                    editable={disabled} selectTextOnFocus={disabled}
-                                    style={{ minHeight: (numberOfLines * 24), textAlignVertical: 'top' }}
-                                >
-                                </TextInput>
                             </View>
                             {rightIcon && <CustomPressIcon {...rightIcon} />}
                         </View>
