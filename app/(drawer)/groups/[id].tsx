@@ -11,10 +11,12 @@ import type { Region } from 'react-native-maps'
 import LoadingIndicator from '@/components/loadingIndicator';
 import GroupMemberList from '@/components/groupMemberList';
 import { colors } from '@/constants';
+import CustomPressIcon from '@/components/customPressIcon';
 
 const GroupsDetails = () => {
     const group: Group = {
         id: 1,
+        description: 'Grupo do cotemig, faça parte e tals asdjahsd asdihaskjd asdjkhasdkjh askjdhaa aksja ksj askajks ',
         isPublic: true,
         level: 3,
         location: {
@@ -72,10 +74,6 @@ const GroupsDetails = () => {
         ],
     }
 
-    // Key to force re-render of MapView
-    // Props to WoodyLinwc/Random-Generator-React-Native
-    const [mapKey, setMapKey] = useState<number | null>(null)
-    const [mapReady, setMapReady] = useState<boolean>(false)
     const [region, setRegion] = useState<Region | null>({
         latitude: group.location?.latitude || 0,
         longitude: group.location?.longitude || 0,
@@ -98,25 +96,17 @@ const GroupsDetails = () => {
     return (
         <>
             {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
+            <CustomPressIcon icon='edit' size={36} onPress={() => router.push({ pathname: '/groups/editGroup', params: { id } })} className='absolute bottom-12 right-4 w-20 h-20 bg-emerald-700' />
             <SafeAreaView className='p-4'>
                 <View className='w-full h-[33vh]'>
-                    <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} />
                     {
                         !!region &&
                         <MapView
-                            onRegionChange={() => {
-                                // What a shit component google
-                                console.log('useEffect', Date.now(), mapKey, mapRef.current?.state.isReady)
-                                if (!mapRef.current?.state.isReady)
-                                    setMapKey(Date.now())
-                                else
-                                    setMapReady(true)
-                            }}
-                            key={mapKey}
                             ref={mapRef}
                             style={{ flex: 1 }}
                             provider={PROVIDER_GOOGLE}
                             region={region}
+                            loadingEnabled={true}
                             googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
                         >
                             <Marker
@@ -129,13 +119,14 @@ const GroupsDetails = () => {
                     }
                 </View>
                 <View className='flex flex-row flex-wrap'>
-                    <CustomTitle title={group.name || ''} sizeClass='text-4xl' className='mb-4 basis-full' />
-                    <Stars textClassName='text-2xl' label='Nível: ' rating={group.level} size={32} className='mb-4' disabled />
+                    <CustomTitle title={group.name || ''} sizeClass='text-4xl' className='mb-2 basis-full' />
+                    <Text className='mb-4 basis-full'>
+                        {group.description}
+                    </Text>
+                    <Stars textClassName='text-2xl' label='Nível: ' rating={group.level} size={32} className='my-4' disabled />
                 </View>
             </SafeAreaView>
-            <ScrollView endFillColor={colors.secondary} overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
-                {groupMemberListMemo}
-            </ScrollView>
+            {groupMemberListMemo}
         </>
     )
 }

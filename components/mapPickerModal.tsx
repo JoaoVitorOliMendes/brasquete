@@ -40,8 +40,6 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                     render={({ field, fieldState }) => {
                         const [selectedLocation, setSelectedLocation] = useState<Region | null>(null)
                         const [initialLocation, setInitialLocation] = useState<Region | null>(null)
-                        const [mapKey, setMapKey] = useState<number | null>(null)
-                        const [mapReady, setMapReady] = useState<boolean>(false)
                         const mapRef = React.useRef<MapView>(null)
 
                         useEffect(() => {
@@ -128,16 +126,16 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
 
                         return (
                             <View className='w-full h-full'>
-                                <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} />
+                                {/* <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} /> */}
                                 {
                                     (!!selectedLocation && !!initialLocation) &&
                                     <>
                                         <MapView
-                                            key={mapKey}
                                             ref={mapRef}
                                             style={{ flex: 1 }}
                                             provider={PROVIDER_GOOGLE}
                                             googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
+                                            loadingEnabled={true}
                                             onPress={(e) => {
                                                 setSelectedLocation({
                                                     latitude: e.nativeEvent.coordinate.latitude,
@@ -145,13 +143,6 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                                     longitudeDelta: 0.005,
                                                     latitudeDelta: 0.005
                                                 })
-                                            }}
-                                            onRegionChange={() => {
-                                                // What a shit component google
-                                                if (!mapRef.current?.state.isReady)
-                                                    setMapKey(Date.now())
-                                                else
-                                                    setMapReady(true)
                                             }}
                                             region={initialLocation}
                                         >

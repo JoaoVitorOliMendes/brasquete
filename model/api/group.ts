@@ -11,6 +11,7 @@ import { Location } from "./location";
 import { User } from "./user";
 
 export interface Group {
+  description?: string;
   adminId?: number;
   createdBy?: string;
   createdDate?: string;

@@ -11,11 +11,11 @@ import { Team } from "./team";
 export interface Event {
   createdBy?: string;
   createdDate?: string;
-  date?: string;
+  date?: Date;
   groupId?: number;
   id?: number;
   updatedBy?: string;
-  updatedDate?: string;
+  updatedDate?: Date;
   teams?: Team[];
   group?: Group
 }

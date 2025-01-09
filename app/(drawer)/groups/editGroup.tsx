@@ -28,6 +28,7 @@ const EditGroup = () => {
     const watchLocationStreet = watch('location.street')
     const watchLocationStreetNumber = watch('location.streetNumber')
     const watchLocationState = watch('location.state')
+    const levelState = watch('level')
 
 
     const nameRef = useRef<TextInput>(null)
@@ -37,18 +38,21 @@ const EditGroup = () => {
     const locationStreetRef = useRef<TextInput>(null)
     const locationStreetNumberRef = useRef<TextInput>(null)
     const locationStateRef = useRef<TextInput>(null)
+    const descriptionRef = useRef<TextInput>(null)
     const bottomSheetRef = useRef<BottomSheetModal>(null)
 
     useEffect(() => {
         if (id) {
             setValue('id', Number.parseInt(id))
-            setValue('isPublic', false)
-            setValue('name', '')
-            setValue('location.city', '')
-            setValue('location.country', '')
-            setValue('location.neighborhood', '')
-            setValue('location.street', '')
-            setValue('location.streetNumber', '')
+            setValue('isPublic', true)
+            setValue('level', 3)
+            setValue('name', 'TEST')
+            setValue('location.city', 'TEST')
+            setValue('location.country', 'TEST')
+            setValue('location.neighborhood', 'TEST')
+            setValue('location.street', 'TEST')
+            setValue('location.state', 'TEST')
+            setValue('location.streetNumber', 'TEST')
             setValue('location.coordsMatch', false)
         }
     }, [])
@@ -85,9 +89,26 @@ const EditGroup = () => {
                                 }}
                                 inputProps={{
                                     placeholder: 'Nome',
+                                    onSubmitEditing: () => descriptionRef.current?.focus(),
                                     returnKeyType: 'next'
                                 }}
                                 className='basis-full mb-4'
+                            />
+                            <CustomInput
+                                color='black'
+                                type='outline'
+                                inputRef={descriptionRef}
+                                formProps={{
+                                    control,
+                                    name: 'description'
+                                }}
+                                inputProps={{
+                                    placeholder: 'Descrição',
+                                    returnKeyType: 'none'
+                                }}
+                                className='basis-full mb-4'
+                                multiline
+                                numberOfLines={5}
                             />
                             <CustomControlCheckbox
                                 formProps={{
@@ -105,7 +126,8 @@ const EditGroup = () => {
                                 starProps={{
                                     label: 'Nível do grupo',
                                     className: 'basis-full mb-4',
-                                    size: 32
+                                    size: 32,
+                                    rating: levelState
                                 }}
                             />
                             <CustomButton label='Selecionar Localização' color='primary' type='outline' className='basis-full mb-4' onPress={() => bottomSheetRef.current?.present()} />
@@ -205,8 +227,8 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
-                                latitude={getValues().location?.coordsMatch && getValues().location?.latitude}
-                                longitude={getValues().location?.coordsMatch && getValues().location?.longitude}
+                                latitude={getValues().location?.coordsMatch ? getValues().location?.latitude : undefined}
+                                longitude={getValues().location?.coordsMatch ? getValues().location?.longitude : undefined}
                                 onChange={() => setCoordsMatch(true)}
                             />
                             <CustomButton label='Criar Novo Grupo' onPress={handleSubmit(handleRegister)} className='basis-full' />
