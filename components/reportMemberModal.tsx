@@ -65,6 +65,9 @@ const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
         <Pressable
           onPressOut={dismiss}
           className='absolute h-full w-full bg-black opacity-25'
+          style={{
+            elevation: 3
+          }}
         >
         </Pressable>
         <View className='rounded-lg w-5/6 bg-primary p-10'>
@@ -76,7 +79,6 @@ const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
             <View className='flex flex-column'>
               {
                 fields.map((item, idx) => {
-                  console.log(item)
                   return (
                     <CustomControlCheckbox
                       key={item.id}
@@ -93,12 +95,12 @@ const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
               }
               <CustomCheckbox label='Outro:' value={otherFlag} setValue={() => setOtherFlag(!otherFlag)} color='white' className='mt-5 mb-2' />
               <CustomInput
+                type='filled'
                 color='white'
                 formProps={{
                   control,
                   name: 'otherMotive',
                 }}
-                type={'filled'}
                 inputProps={{
                   placeholder: '',
                   onSubmitEditing: () => handleSubmit(handleReport)

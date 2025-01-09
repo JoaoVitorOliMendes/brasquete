@@ -31,7 +31,7 @@ const CardGroup = ({ group }: CardGroupProps) => {
             </View>
             <View className='my-2'>
                 <Text className='text-white'>
-                    {(group.events && group.events[0].date) || 'Sem eventos definidos'}
+                    {(group.events && group.events[0]) ? group.events[0].date?.toLocaleString() : 'Sem eventos definidos'}
                 </Text>
             </View>
             <View className='my-2'>
