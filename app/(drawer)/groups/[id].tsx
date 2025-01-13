@@ -95,38 +95,39 @@ const GroupsDetails = () => {
 
     return (
         <>
-            {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
+            {router.canGoBack() && <NavHeader title={group.name} iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
             <CustomPressIcon icon='edit' size={36} onPress={() => router.push({ pathname: '/groups/editGroup', params: { id } })} className='absolute bottom-12 right-4 w-20 h-20 bg-emerald-700' />
-            <SafeAreaView className='p-4'>
-                <View className='w-full h-[33vh]'>
-                    {
-                        !!region &&
-                        <MapView
-                            ref={mapRef}
-                            style={{ flex: 1 }}
-                            provider={PROVIDER_GOOGLE}
-                            region={region}
-                            loadingEnabled={true}
-                            googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
-                        >
-                            <Marker
-                                coordinate={{
-                                    latitude: region.latitude,
-                                    longitude: region.longitude
-                                }}
-                            />
-                        </MapView>
-                    }
-                </View>
-                <View className='flex flex-row flex-wrap'>
-                    <CustomTitle title={group.name || ''} sizeClass='text-4xl' className='mb-2 basis-full' />
-                    <Text className='mb-4 basis-full'>
-                        {group.description}
-                    </Text>
-                    <Stars textClassName='text-2xl' label='Nível: ' rating={group.level} size={32} className='my-4' disabled />
-                </View>
-            </SafeAreaView>
-            {groupMemberListMemo}
+            <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
+                <SafeAreaView className='p-4'>
+                    <View className='w-full h-[33vh]'>
+                        {
+                            !!region &&
+                            <MapView
+                                ref={mapRef}
+                                style={{ flex: 1 }}
+                                provider={PROVIDER_GOOGLE}
+                                region={region}
+                                loadingEnabled={true}
+                                googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
+                            >
+                                <Marker
+                                    coordinate={{
+                                        latitude: region.latitude,
+                                        longitude: region.longitude
+                                    }}
+                                />
+                            </MapView>
+                        }
+                    </View>
+                    <View className='flex flex-row flex-wrap'>
+                        <Text className='my-4 basis-full'>
+                            {group.description}
+                        </Text>
+                        <Stars textClassName='text-2xl' label='Nível: ' rating={group.level} size={32} className='my-4' disabled />
+                    </View>
+                </SafeAreaView >
+                {groupMemberListMemo}
+            </ScrollView>
         </>
     )
 }

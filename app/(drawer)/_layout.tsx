@@ -18,7 +18,7 @@ const DrawerLayout = () => {
     }
 
     if (!isLoading && !authState?.authenticated) {
-        return <Redirect href='/home' />
+        return <Redirect href='/splash' />
     }
 
     return (
@@ -42,11 +42,11 @@ const DrawerLayout = () => {
                         />
                     )
                 }} />
-                <Drawer.Screen name='events' options={{
-                    title: 'Eventos',
+                <Drawer.Screen name='searchGroup' options={{
+                    title: 'Pesquisar Grupos',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
-                            name='calendar'
+                            name='search'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />

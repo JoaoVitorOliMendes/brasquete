@@ -80,10 +80,9 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
     }, [modalVisible])
 
     return (
-        <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
-            <View className='flex flex-row flex-wrap bg-white p-4'>
-                {
-                    separator ?
+        <View className='flex flex-row flex-wrap bg-white p-4'>
+            {
+                separator ?
                     Object.keys(groupedArray).map((item, idx) => {
                         return (
                             <View key={idx}>
@@ -96,10 +95,9 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
                     })
                     :
                     mapGroups()
-                }
-                {reportMemberModalMemo}
-            </View>
-        </ScrollView>
+            }
+            {reportMemberModalMemo}
+        </View>
     )
 }
 

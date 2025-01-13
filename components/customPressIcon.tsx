@@ -13,7 +13,7 @@ export interface CustomPressIconProps {
 
 const CustomPressIcon = ({ className, icon, onPress, color = 'black', size = 24 }: CustomPressIconProps) => {
   return (
-    <TouchableOpacity className={`rounded-full p-1 flex justify-center align-center z-10 ${className}`} activeOpacity={0.50} onPress={onPress}>
+    <TouchableOpacity className={`rounded-full p-1 flex justify-center align-center ${className}`} activeOpacity={0.50} onPress={onPress}>
       {
         (icon in Ionicons.glyphMap) ?
         <Ionicons name={icon} size={size} color={colors[color]} className='text-center' />

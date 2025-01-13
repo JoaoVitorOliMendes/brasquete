@@ -97,7 +97,7 @@ const Register = () => {
               }}
               className='mb-4'
             />
-            <CustomInput
+            {/* <CustomInput
               color='black'
               type='outline'
               inputRef={heightRef}
@@ -137,7 +137,7 @@ const Register = () => {
                 onSubmitEditing: () => passwordRef.current?.focus(),
               }}
               className='mb-4'
-            />
+            /> */}
             <CustomInput
               rightIcon={{ icon: 'eye', onPress: (e) => setShowPass(!showPass)}}
               color='black'

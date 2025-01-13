@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomDrawerHeader from '@/components/customDrawerHeader'
 import CustomTitle from '@/components/customTitle'
 import { Event } from '@/model/api'
+import CardEvent from '@/components/cardEvent'
 
 const Events = () => {
-
     const data: Event[] = [
         {
             id: 1,
@@ -79,8 +79,15 @@ const Events = () => {
     return (
         <SafeAreaView className='flex-1'>
             <ScrollView>
-                <CustomDrawerHeader />
-                <CustomTitle title='Eventos' sizeClass='text-4xl' className='m-4' />
+                <CustomDrawerHeader title='Próximos Eventos' />
+                {/* <CustomTitle title='Eventos' sizeClass='text-4xl' className='m-4' /> */}
+                <View className='p-4'>
+                    {
+                        data.map((item) => {
+                            return <CardEvent event={item} key={item.id} />
+                        })
+                    }
+                </View>
             </ScrollView>
         </SafeAreaView>
     )

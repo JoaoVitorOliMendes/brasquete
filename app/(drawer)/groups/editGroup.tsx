@@ -71,10 +71,9 @@ const EditGroup = () => {
     return (
         <BottomSheetModalProvider>
             <SafeAreaView className='h-full'>
-                {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
+                {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} title={id ? 'Editar Grupo' : 'Novo Grupo'} className={'bg-secondary py-2'} />}
                 <ScrollView nestedScrollEnabled={true}>
                     <View className='p-5'>
-                        <CustomTitle color='black' title='Novo Grupo' />
                         <View className='mt-10 flex flex-row flex-wrap justify-center items-center'>
                             <CustomInput
                                 color='black'
