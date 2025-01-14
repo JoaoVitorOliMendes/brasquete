@@ -27,10 +27,6 @@ const Stars = ({ className = '', maxStars = 5, rating = 0, setRating, label, dis
             onRatingChange(newRating)
     }
 
-    useEffect(() => {
-        console.log(rating)
-    }, [rating])
-
     // Render the stars
     const renderStars = () => {
         let stars = []

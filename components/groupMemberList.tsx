@@ -3,9 +3,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { GroupMember } from '@/model/api'
 import { colors, images } from '@/constants'
 import CustomTitle from './customTitle'
-import CustomPressIcon from './customPressIcon'
-import ReportMemberModal from './reportMemberModal'
-import CustomButton from './customButton'
+import CustomPressIcon from './buttons/customPressIcon'
+import ReportMemberModal from './modals/reportMemberModal'
+import CustomButton from './buttons/customButton'
 
 interface GroupMemberListProps {
     members: GroupMember[],
@@ -44,7 +44,6 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
 
     const mapGroups = (separator?: any | undefined) => {
         const arr = !!separator ? groupedArray[separator] : [].concat.apply([], Object.values(groupedArray))
-        console.log(arr)
         return arr.map((item) => {
             return (
                 <View className='flex flex-row' key={item.id}>

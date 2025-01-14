@@ -3,7 +3,7 @@ import React from 'react'
 import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
-import DrawerContent from '@/components/drawerContent'
+import DrawerContent from '@/components/drawer/drawerContent'
 import { Redirect, useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -32,7 +32,7 @@ const DrawerLayout = () => {
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
-                <Drawer.Screen name='index' options={{
+                <Drawer.Screen name='event' options={{
                     title: 'Home',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons

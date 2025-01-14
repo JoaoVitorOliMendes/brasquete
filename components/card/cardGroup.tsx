@@ -1,9 +1,9 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
-import CustomButton from './customButton'
+import CustomButton from '../buttons/customButton'
 import { useRouter } from 'expo-router'
 import { Group } from '@/model/api'
-import Stars from './stars'
+import Stars from '../stars'
 import MapView from 'react-native-maps'
 import { images } from '@/constants'
 import DropShadow from "react-native-drop-shadow";
@@ -14,13 +14,6 @@ interface CardGroupProps {
 
 const CardGroup = ({ group }: CardGroupProps) => {
     const router = useRouter()
-
-    const concatLocation = () => {
-        if (group.location) {
-            return `${group.location.streetNumber} ${group.location.street}, ${group.location.neighborhood}\n${group.location.city}, ${group.location.state} ${group.location.country}`
-        }
-        return "Endereço não definido"
-    }
 
     return (
         <DropShadow

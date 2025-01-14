@@ -1,4 +1,4 @@
-import { View, Text, Platform, ScrollView } from 'react-native'
+import { View, Text, Platform, ScrollView, Image } from 'react-native'
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import CustomTitle from '@/components/customTitle';
@@ -10,8 +10,9 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import type { Region } from 'react-native-maps'
 import LoadingIndicator from '@/components/loadingIndicator';
 import GroupMemberList from '@/components/groupMemberList';
-import { colors } from '@/constants';
-import CustomPressIcon from '@/components/customPressIcon';
+import { colors, images } from '@/constants';
+import CustomPressIcon from '@/components/buttons/customPressIcon';
+import ExpandableIcon from '@/components/buttons/expandableIcon';
 
 const GroupsDetails = () => {
     const group: Group = {
@@ -74,13 +75,6 @@ const GroupsDetails = () => {
         ],
     }
 
-    const [region, setRegion] = useState<Region | null>({
-        latitude: group.location?.latitude || 0,
-        longitude: group.location?.longitude || 0,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005
-    })
-
     const mapRef = React.useRef<MapView>(null)
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
@@ -95,29 +89,11 @@ const GroupsDetails = () => {
 
     return (
         <>
-            {router.canGoBack() && <NavHeader title={group.name} iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
-            <CustomPressIcon icon='edit' size={36} onPress={() => router.push({ pathname: '/groups/editGroup', params: { id } })} className='absolute bottom-12 right-4 w-20 h-20 bg-emerald-700' />
+            <NavHeader title={group.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} className={'bg-secondary'} />
             <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
                 <SafeAreaView className='p-4'>
                     <View className='w-full h-[33vh]'>
-                        {
-                            !!region &&
-                            <MapView
-                                ref={mapRef}
-                                style={{ flex: 1 }}
-                                provider={PROVIDER_GOOGLE}
-                                region={region}
-                                loadingEnabled={true}
-                                googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
-                            >
-                                <Marker
-                                    coordinate={{
-                                        latitude: region.latitude,
-                                        longitude: region.longitude
-                                    }}
-                                />
-                            </MapView>
-                        }
+                        <Image source={images.staticMapExample} className='w-full h-full object-cover' />
                     </View>
                     <View className='flex flex-row flex-wrap'>
                         <Text className='my-4 basis-full'>
@@ -128,6 +104,15 @@ const GroupsDetails = () => {
                 </SafeAreaView >
                 {groupMemberListMemo}
             </ScrollView>
+            <ExpandableIcon menuItems={[
+                {
+                    icon: 'pencil',
+                    label: 'Editar Grupo',
+                    onPress: () => {
+                        router.push('/groups/editGroup')
+                    }
+                }
+            ]} />
         </>
     )
 }

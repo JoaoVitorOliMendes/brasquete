@@ -4,6 +4,7 @@ import CustomPressIcon, { CustomPressIconProps } from './customPressIcon'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
+import IconConcat from '../iconConcat'
 
 export interface MenuItem {
     label: string,
@@ -71,13 +72,13 @@ const ExpandableIcon = ({ menuItems }: ExpandableIconProps) => {
                                 <Text className='absolute right-full mr-1 bg-gray-300 p-2 px-3 rounded-lg'>
                                     {item.label}
                                 </Text>
-                                <Ionicons name={item.icon} size={24} color={colors.black} className='rounded-full flex justify-center align-center p-3 bg-gray-300' />
+                                <IconConcat icon={item.icon} size={24} color='black' className='rounded-full flex justify-center align-center p-3 bg-gray-300' />
                             </TouchableOpacity>
                         )
                     })
                 }
             </Animated.View>
-            <CustomPressIcon icon={isOpen ? 'close' : 'add'} size={36} onPress={() => setIsOpen(!isOpen)} className='w-20 h-20 mt-3 bg-emerald-700' />
+            <CustomPressIcon iconProps={{ icon: isOpen ? 'close' : 'add', size: 36 }} onPress={() => setIsOpen(!isOpen)} className='w-20 h-20 mt-3 bg-emerald-700' />
         </View>
     )
 }

@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
 import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { CustomPressIconProps } from '@/components/customPressIcon'
-import CustomPressIcon from '@/components/customPressIcon'
+import { CustomPressIconProps } from '@/components/buttons/customPressIcon'
+import CustomPressIcon from '@/components/buttons/customPressIcon'
 import { colors } from '@/constants'
 
 interface CustomInputProps<FormType extends FieldValues> {

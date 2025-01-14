@@ -1,30 +1,30 @@
 import { View, Text, FlatList } from 'react-native'
 import React from 'react'
-import CustomDrawerHeader from '@/components/customDrawerHeader'
+import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomTitle from '@/components/customTitle'
-import CardMatch from '@/components/cardMatch'
+import CardMatch from '@/components/card/cardMatch'
 import { Group } from '@/model/api'
-import CardGroup from '@/components/cardGroup'
+import CardGroup from '@/components/card/cardGroup'
 
 const Matches = () => {
   const data: Group[] = [
     {
       id: 1,
       name: 'Grupo 1',
-      level: 'Intermediário',
+      level: 1,
     }, {
       id: 2,
       name: 'Grupo 1',
-      level: 'Intermediário',
+      level: 2,
     }, {
       id: 3,
       name: 'Grupo 1',
-      level: 'Intermediário'
+      level: 3
     }, {
       id: 4,
       name: 'Grupo 1',
-      level: 'Intermediário'
+      level: 4
     },
   ]
   return (

@@ -1,10 +1,10 @@
 import { View, Text, FlatList, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomDrawerHeader from '@/components/customDrawerHeader'
+import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import CustomTitle from '@/components/customTitle'
 import { Event } from '@/model/api'
-import CardEvent from '@/components/cardEvent'
+import CardEvent from '@/components/card/cardEvent'
 
 const Events = () => {
     const data: Event[] = [

@@ -3,11 +3,11 @@ import React, { RefObject, useEffect, useMemo, useState } from 'react'
 import * as Location from 'expo-location'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet'
 import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
-import CustomButton from './customButton'
+import CustomButton from '../buttons/customButton'
 import { reverseGeolocation } from '@/api/services/mapsApiManager'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
-import LoadingIndicator from './loadingIndicator'
+import LoadingIndicator from '../loadingIndicator'
 
 interface MapPickerModalProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,

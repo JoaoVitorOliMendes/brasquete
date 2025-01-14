@@ -4,7 +4,7 @@ import { styles } from "@gorhom/bottom-sheet/lib/typescript/components/bottomShe
 import React, { useState } from "react";
 import { Controller, FieldValues, UseControllerProps } from "react-hook-form";
 import { TouchableOpacity, View, Text } from "react-native";
-import Stars, { StarProps } from "./stars";
+import Stars, { StarProps } from "../stars";
 
 interface CustomStarRatingProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,

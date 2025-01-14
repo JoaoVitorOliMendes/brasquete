@@ -1,10 +1,10 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router'
-import CustomButton from './customButton'
+import CustomButton from '../buttons/customButton'
 import { Event as GroupEvent } from '@/model/api/event'
 import DropShadow from 'react-native-drop-shadow'
-import CustomTitle from './customTitle'
+import CustomTitle from '../customTitle'
 import { days, images } from '@/constants'
 
 interface CardEventProps {
@@ -26,7 +26,11 @@ const CardEvent = ({ event }: CardEventProps) => {
                 shadowRadius: 3,
             }}
         >
-            <View className='bg-primary rounded-lg flex flex-column p-5'>
+            <TouchableOpacity
+                onPress={() => router.push(`/event/${event.id}`)}
+                activeOpacity={0.5}
+                className='bg-primary rounded-lg flex flex-column p-5'
+            >
                 <View className='flex flex-row flex-wrap justify-between items-center'>
                     <View className='basis-3/12 flex flex-row flex-wrap pr-4 border-solid border-white border-r-2'>
                         <CustomTitle title={event.date?.getUTCDate().toString() || ''} color='white' sizeClass='text-4xl' className='basis-full text-center' />
@@ -58,7 +62,7 @@ const CardEvent = ({ event }: CardEventProps) => {
                         />
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         </DropShadow>
     )
 }

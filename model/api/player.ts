@@ -10,15 +10,13 @@ import { Score } from "./score";
 import { Team } from "./team";
 
 export interface Player {
-  createdBy?: string;
-  createdDate?: string;
-  groupMemberId?: number;
   id?: number;
   position?: string | null;
-  teamId?: number;
-  updatedBy?: string;
-  updatedDate?: string;
+  groupMemberId?: number;
   groupMember?: GroupMember;
+  teamId?: number;
   team?: Team;
+  eventId?: number;
+  event?: Event;
   scores?: Score[];
 }

@@ -1,11 +1,11 @@
 import { View, Text, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
-import CustomPressIcon from '@/components/customPressIcon'
-import CustomDrawerHeader from '@/components/customDrawerHeader'
+import CustomPressIcon from '@/components/buttons/customPressIcon'
+import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import CustomTitle from '@/components/customTitle'
-import CardGroup from '@/components/cardGroup'
+import CardGroup from '@/components/card/cardGroup'
 import { Group } from '@/model/api'
-import ExpandableIcon from '@/components/expandableIcon'
+import ExpandableIcon from '@/components/buttons/expandableIcon'
 
 const SearchGroup = () => {
     const data: Group[] = [
