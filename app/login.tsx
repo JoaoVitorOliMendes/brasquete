@@ -22,7 +22,9 @@ const Login = () => {
   const handleLogin = (data: LoginModel) => {
     if (onLogin) {
       onLogin(data)
-      router.replace('/(drawer)')
+      .then(() => {
+        router.replace('/(drawer)')
+      })
     }
   }
 
