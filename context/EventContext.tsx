@@ -70,7 +70,7 @@ export const EventProvider = ({ children }: PropsWithChildren) => {
                         },
                         {
                             id: 2,
-                            confirmed: 'absent',
+                            confirmed: 'confirmed',
                             position: 'Armador',
                             userId: 0,
                             user: {
@@ -80,7 +80,7 @@ export const EventProvider = ({ children }: PropsWithChildren) => {
                         },
                         {
                             id: 3,
-                            confirmed: 'deciding',
+                            confirmed: 'confirmed',
                             position: 'Ala',
                             userId: 0,
                             user: {
