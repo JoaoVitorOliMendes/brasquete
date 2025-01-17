@@ -1,23 +1,35 @@
 import { View, Text, StatusBar } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
 import DrawerContent from '@/components/drawer/drawerContent'
 import { Redirect, useRouter } from 'expo-router'
-import { useAuth } from '@/context/AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LoadingIndicator from '@/components/loadingIndicator'
+import { Session } from '@supabase/supabase-js'
+import { supabase } from '@/api/supabase'
 
 const DrawerLayout = () => {
-    const router = useRouter()
-    const { authState, isLoading } = useAuth()
+    const [session, setSession] = useState<Session | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    
+    
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
+        
+        supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+    }, [])
 
     if (isLoading) {
         return <LoadingIndicator />;
     }
 
-    if (!isLoading && !authState?.authenticated) {
+    if (!isLoading && session && session.user) {
         return <Redirect href='/splash' />
     }
 

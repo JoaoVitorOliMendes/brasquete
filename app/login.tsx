@@ -8,24 +8,27 @@ import CustomInput from '@/components/forms/customInput'
 import { useForm } from 'react-hook-form'
 import CustomButton from '@/components/buttons/customButton'
 import CustomTitle from '@/components/customTitle'
-import { Login as LoginModel } from '@/model/Login'
-import { useAuth } from '@/context/AuthContext'
+import { LoginForm } from '@/model/LoginForm'
 import { StatusBar } from 'expo-status-bar'
+import Toast from 'react-native-toast-message'
+import { supabase } from '@/api/supabase'
 
 const Login = () => {
-  const { onLogin } = useAuth()
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginModel>()
+  const { control, handleSubmit, formState: { errors } } = useForm<LoginForm>()
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
 
-  const handleLogin = (data: LoginModel) => {
-    if (onLogin) {
-      onLogin(data)
-      .then(() => {
-        router.replace('/(drawer)')
-      })
-    }
+  const signIn = async (data: LoginForm) => {
+    // setIsLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
+
+    if (error)
+      Toast.show({ type: 'error', text1: 'Erro', text2: error.message })
+    // setIsLoading(false)
   }
 
   return (
@@ -74,11 +77,11 @@ const Login = () => {
                 inputProps={{
                   secureTextEntry: true,
                   placeholder: 'Senha',
-                  onSubmitEditing: handleSubmit(handleLogin)
+                  onSubmitEditing: handleSubmit(signIn)
                 }}
                 className='mb-4'
               />
-              <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(handleLogin)} />
+              <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(signIn)} />
               <Link href={'/forgotPass'} className='color-white underline'>Esqueci minha senha</Link>
             </View>
           </View>

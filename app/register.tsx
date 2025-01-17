@@ -10,6 +10,9 @@ import CustomButton from '@/components/buttons/customButton'
 import CustomDropdown from '@/components/forms/customDropdown'
 import { User } from '@/model/api'
 import { StatusBar } from 'expo-status-bar'
+import { supabase } from '@/api/supabase'
+import { RegisterForm } from '@/model/RegisterForm'
+import Toast from 'react-native-toast-message'
 
 
 const Register = () => {
@@ -26,14 +29,26 @@ const Register = () => {
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
 
-  const handleRegister = (data: User) => {
-    console.log(data)
+  const handleRegister = async (data: RegisterForm) => {
+    // setIsLoading(true)
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+    })
+    if (error)
+      Toast.show({ type: 'error', text1: 'Erro', text2: error.message })
+    if (!session)
+      Toast.show({ type: 'error', text1: 'Erro', text2: 'Por favor verifique seu email!' })
+    // setIsLoading(false)
   }
 
   return (
     <SafeAreaView className='h-full'>
       <StatusBar translucent backgroundColor='transparent' />
-      {router.canGoBack() && <NavHeader iconProps={{ icon: 'arrow-back', onPress: () => router.back()}} />}
+      {router.canGoBack() && <NavHeader iconProps={{ icon: 'arrow-back', onPress: () => router.back() }} />}
       <ScrollView nestedScrollEnabled={true}>
         <View className='p-5'>
           <CustomTitle color='black' title='Crie sua conta' />
@@ -97,7 +112,7 @@ const Register = () => {
               }}
               className='mb-4'
             />
-            {/* <CustomInput
+            <CustomInput
               color='black'
               type='outline'
               inputRef={heightRef}
@@ -118,10 +133,10 @@ const Register = () => {
                 {
                   label: 'Armador',
                   value: 'armador'
-                },{
+                }, {
                   label: 'Pivô',
                   value: 'pivo'
-                },{
+                }, {
                   label: 'Ala',
                   value: 'ala'
                 }
@@ -137,9 +152,9 @@ const Register = () => {
                 onSubmitEditing: () => passwordRef.current?.focus(),
               }}
               className='mb-4'
-            /> */}
+            />
             <CustomInput
-              rightIcon={{ icon: 'eye', onPress: (e) => setShowPass(!showPass)}}
+              rightIcon={{ icon: 'eye', onPress: (e) => setShowPass(!showPass) }}
               color='black'
               type='outline'
               inputRef={passwordRef}
@@ -159,7 +174,7 @@ const Register = () => {
               className='mb-4'
             />
             <CustomInput
-              rightIcon={{ icon: 'eye', onPress: (e) => setShowConfirmPass(!showConfirmPass)}}
+              rightIcon={{ icon: 'eye', onPress: (e) => setShowConfirmPass(!showConfirmPass) }}
               color='black'
               type='outline'
               inputRef={confirmPassRef}
