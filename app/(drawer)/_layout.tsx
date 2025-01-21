@@ -11,27 +11,7 @@ import { Session } from '@supabase/supabase-js'
 import { supabase } from '@/api/supabase'
 
 const DrawerLayout = () => {
-    const [session, setSession] = useState<Session | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
     
-    
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-        })
-        
-        supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-    }, [])
-
-    if (isLoading) {
-        return <LoadingIndicator />;
-    }
-
-    if (!isLoading && session && session.user) {
-        return <Redirect href='/splash' />
-    }
 
     return (
         <SafeAreaView className='flex-1 flex flex-row justify-start items-start'>

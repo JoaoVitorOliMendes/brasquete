@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import React from 'react';
 import "../global.css";
 import { setCustomText } from 'react-native-global-props';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
@@ -34,11 +33,9 @@ export default function RootLayout() {
   setCustomText(customTextGlobalProps)
 
   return (
-    <AuthProvider>
-      <GestureHandlerRootView>
-        <Slot />
-        <Toast />
-      </GestureHandlerRootView>
-    </AuthProvider>
+    <GestureHandlerRootView>
+      <Slot />
+      <Toast />
+    </GestureHandlerRootView>
   )
 }

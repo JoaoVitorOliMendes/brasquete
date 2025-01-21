@@ -1,5 +1,5 @@
 import { View, Text, ImageBackground, ScrollView, TextInput } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { images } from '@/constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import NavHeader from '@/components/navHeader'
@@ -18,6 +18,7 @@ const Login = () => {
   const { control, handleSubmit, formState: { errors } } = useForm<LoginForm>()
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
+  const [showPass, setShowPass] = useState(true)
 
   const signIn = async (data: LoginForm) => {
     // setIsLoading(true)
@@ -35,7 +36,7 @@ const Login = () => {
     <ImageBackground source={images.chalkboard}>
       <StatusBar translucent backgroundColor='transparent' />
       <SafeAreaView className='h-full'>
-        {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} />}
+        {router.canGoBack() && <NavHeader iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.back() }} />}
         <ScrollView>
           <View className='p-5'>
             <CustomTitle color='white' title='Login' />
@@ -64,6 +65,7 @@ const Login = () => {
                 className='mb-4'
               />
               <CustomInput
+                rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowPass(!showPass) }}
                 color='white'
                 type='filled'
                 inputRef={passwordRef}
@@ -77,7 +79,8 @@ const Login = () => {
                 inputProps={{
                   secureTextEntry: true,
                   placeholder: 'Senha',
-                  onSubmitEditing: handleSubmit(signIn)
+                  onSubmitEditing: handleSubmit(signIn),
+                  secureTextEntry: showPass
                 }}
                 className='mb-4'
               />
