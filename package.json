@@ -24,6 +24,7 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",
+    "@reduxjs/toolkit": "^2.5.1",
     "@rneui/themed": "^4.0.0-rc.8",
     "@supabase/supabase-js": "^2.47.15",
     "@teovilla/react-native-web-maps": "^0.9.5",
@@ -64,6 +65,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
+    "react-query": "^3.39.3",
+    "react-redux": "^9.2.0",
     "save-dev": "^0.0.1-security",
     "tailwindcss": "^3.4.17"
   },

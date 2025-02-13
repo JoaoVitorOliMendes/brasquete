@@ -8,6 +8,8 @@ import { setCustomText } from 'react-native-global-props';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
 
 SplashScreen.preventAutoHideAsync()
 
@@ -34,8 +36,10 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <Slot />
-      <Toast />
+      <Provider store={store}>
+        <Slot />
+        <Toast />
+      </Provider>
     </GestureHandlerRootView>
   )
 }

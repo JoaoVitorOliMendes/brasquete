@@ -8,6 +8,7 @@ import { reverseGeolocation } from '@/api/services/mapsApiManager'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
 import LoadingIndicator from '../loadingIndicator'
+import { envVars } from '@/constants'
 
 interface MapPickerModalProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,
@@ -134,7 +135,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                             ref={mapRef}
                                             style={{ flex: 1 }}
                                             provider={PROVIDER_GOOGLE}
-                                            googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
+                                            googleMapsApiKey={envVars.MAPS_API_KEY}
                                             loadingEnabled={true}
                                             onPress={(e) => {
                                                 setSelectedLocation({

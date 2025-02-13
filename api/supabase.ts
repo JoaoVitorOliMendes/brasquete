@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store'
 import * as aesjs from 'aes-js'
 import 'react-native-get-random-values'
 import { Database } from '@/model/supabaseTypes'
+import { envVars } from '@/constants'
 
 // As Expo's SecureStore does not support values larger than 2048
 // bytes, an AES-256 key is generated and stored in SecureStore, while
@@ -58,8 +59,8 @@ class LargeSecureStore {
   }
 }
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '  '
+const supabaseUrl = envVars.SUPABASE_URL || ''
+const supabaseAnonKey = envVars.SUPABASE_ANON_KEY || '  '
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
