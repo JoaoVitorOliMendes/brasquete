@@ -2,31 +2,31 @@ import { View, Text, Modal, Image, Pressable, TextInput, TouchableOpacity } from
 import React, { useMemo, useRef } from 'react'
 import CustomPressIcon from '../buttons/customPressIcon'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet'
-import { useEvent } from '@/context/EventContext'
 import { colors, images } from '@/constants'
 import CustomButton from '../buttons/customButton'
 import CustomInput from '../forms/customInput'
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Team } from '@/model/api'
 import PlayerCard from '../card/playerCard'
 import IconConcat from '../iconConcat'
 import CustomTitle from '../customTitle'
 import { FullWindowOverlay } from 'react-native-screens'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
+import useGetEventsForUser from '@/api/eventsApi'
+import { Player, Team } from '@/model/models'
+import useGetGroupMemberForUser from '@/api/groupMemberApi'
 
 interface TeamPickerModalProps {
     visible?: boolean,
-    dismiss?: () => void
+    dismiss: () => void
 }
 
-const TeamPickerModal = ({ visible, dismiss }: TeamPickerModalProps) => {
+const TeamPickerModal = ({ visible, dismiss = () => {} }: TeamPickerModalProps) => {
     const bottomSheetRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['50%'], [])
-    const { eventState, getEvent, isLoading } = useEvent()
-    const { control, handleSubmit, formState: { errors } } = useForm<Team>()
+    const { control, handleSubmit, formState: { errors } } = useForm<Team & {player: Player[]}>()
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'players',
+        name: 'player',
     });
 
     const teamNameRef = useRef<TextInput>(null)
@@ -58,8 +58,8 @@ const TeamPickerModal = ({ visible, dismiss }: TeamPickerModalProps) => {
                             }}
                         >
                             <ScrollView className='bg-gray-300'>
-                                {
-                                    eventState?.group?.groupMembers?.filter((item) => item.confirmed === 'confirmed').map((item, idx) => {
+                                {/* {
+                                    eventsData?.groups?.groupMembers?.filter((item) => item.confirmed === 'confirmed').map((item, idx) => {
                                         return (
                                             <TouchableOpacity activeOpacity={0.5} key={idx} onPress={() => {
                                                 console.log(item)
@@ -70,7 +70,7 @@ const TeamPickerModal = ({ visible, dismiss }: TeamPickerModalProps) => {
                                             </TouchableOpacity>
                                         )
                                     })
-                                }
+                                } */}
                             </ScrollView>
                         </BottomSheetModal>
                         <View className='relative h-full w-full flex justify-center items-center'>
@@ -89,7 +89,7 @@ const TeamPickerModal = ({ visible, dismiss }: TeamPickerModalProps) => {
                                     <CustomInput
                                         formProps={{
                                             control,
-                                            name: 'teamName',
+                                            name: 'name',
                                             rules: {
                                                 required: 'Nome é obrigatório',
                                             }

@@ -1,19 +1,29 @@
 import { Slot, SplashScreen, Stack } from 'expo-router';
 import 'react-native-reanimated';
 import { useFonts } from 'expo-font'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import "../global.css";
 import { setCustomText } from 'react-native-global-props';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
-import { Provider } from 'react-redux';
-import { store } from '@/store';
+import { QueryClient, QueryClientProvider } from 'react-query'
+import LoadingIndicator from '@/components/loadingIndicator';
 
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000,
+          },
+        },
+      })
+  )
+
   const [fontsLoaded, error] = useFonts({
     'Roboto': require('../assets/fonts/Roboto-Medium.ttf'),
     'Anton': require('../assets/fonts/Anton-Regular.ttf')
@@ -36,10 +46,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
         <Slot />
         <Toast />
-      </Provider>
+        <LoadingIndicator />
+      </QueryClientProvider>
     </GestureHandlerRootView>
   )
 }

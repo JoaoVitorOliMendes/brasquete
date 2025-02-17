@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import CustomPressIcon, { CustomPressIconProps } from './customPressIcon'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { colors } from '@/constants'
 import IconConcat from '../iconConcat'
 
 export interface MenuItem {

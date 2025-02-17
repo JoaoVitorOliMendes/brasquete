@@ -1,33 +1,24 @@
-import { View, Text, ScrollView } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { View, ScrollView } from 'react-native'
+import React, { useEffect, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import NavHeader from '@/components/navHeader'
-import CustomTitle from '@/components/customTitle'
 import CustomInput from '@/components/forms/customInput'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm } from 'react-hook-form'
-import { Group, Location } from '@/model/api'
 import CustomButton from '@/components/buttons/customButton'
-import CustomDropdown from '@/components/forms/customDropdown'
 import MapPickerModal from '@/components/forms/mapPickerModal'
-import BottomSheet, { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import CustomStarRating from '@/components/forms/customStarRating'
 import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
+import { Group } from '@/model/models'
 
 const EditGroup = () => {
-    const [coordsMatch, setCoordsMatch] = useState(false)
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
 
     const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<Group>()
 
-    const watchLocationCity = watch('location.city')
-    const watchLocationCountry = watch('location.country')
-    const watchLocationNeighborhood = watch('location.neighborhood')
-    const watchLocationStreet = watch('location.street')
-    const watchLocationStreetNumber = watch('location.streetNumber')
-    const watchLocationState = watch('location.state')
     const levelState = watch('level')
 
 
@@ -43,26 +34,18 @@ const EditGroup = () => {
 
     useEffect(() => {
         if (id) {
-            setValue('id', Number.parseInt(id))
-            setValue('isPublic', true)
+            setValue('id', id)
+            setValue('private', false)
             setValue('level', 3)
             setValue('name', 'TEST')
-            setValue('location.city', 'TEST')
-            setValue('location.country', 'TEST')
-            setValue('location.neighborhood', 'TEST')
-            setValue('location.street', 'TEST')
-            setValue('location.state', 'TEST')
-            setValue('location.streetNumber', 'TEST')
-            setValue('location.coordsMatch', false)
+            setValue('location.add_city', 'TEST')
+            setValue('location.add_country', 'TEST')
+            setValue('location.add_neighborhood', 'TEST')
+            setValue('location.add_number', 'TEST')
+            setValue('location.add_state', 'TEST')
+            setValue('location.add_street', 'TEST')
         }
     }, [])
-
-    useEffect(() => {
-        if (coordsMatch)
-            setCoordsMatch(false)
-        else
-            setValue('location.coordsMatch', false)
-    }, [watchLocationCity, watchLocationCountry, watchLocationNeighborhood, watchLocationStreet, watchLocationStreetNumber, watchLocationState])
 
     const handleRegister = (data: Group) => {
         console.log(data)
@@ -93,26 +76,10 @@ const EditGroup = () => {
                                 }}
                                 className='basis-full mb-4'
                             />
-                            <CustomInput
-                                color='black'
-                                type='outline'
-                                inputRef={descriptionRef}
-                                formProps={{
-                                    control,
-                                    name: 'description'
-                                }}
-                                inputProps={{
-                                    placeholder: 'Descrição',
-                                    returnKeyType: 'none'
-                                }}
-                                className='basis-full mb-4'
-                                multiline
-                                numberOfLines={5}
-                            />
                             <CustomControlCheckbox
                                 formProps={{
                                     control,
-                                    name: 'isPublic'
+                                    name: 'private'
                                 }}
                                 label='Público?'
                                 className='basis-full mb-4'
@@ -136,7 +103,7 @@ const EditGroup = () => {
                                 inputRef={locationStreetNumberRef}
                                 formProps={{
                                     control,
-                                    name: 'location.streetNumber'
+                                    name: 'location.add_number'
                                 }}
                                 inputProps={{
                                     placeholder: 'Número',
@@ -151,7 +118,7 @@ const EditGroup = () => {
                                 inputRef={locationStreetRef}
                                 formProps={{
                                     control,
-                                    name: 'location.street'
+                                    name: 'location.add_street'
                                 }}
                                 inputProps={{
                                     placeholder: 'Rua',
@@ -166,7 +133,7 @@ const EditGroup = () => {
                                 inputRef={locationNeighborhoodRef}
                                 formProps={{
                                     control,
-                                    name: 'location.neighborhood',
+                                    name: 'location.add_neighborhood',
                                 }}
                                 inputProps={{
                                     placeholder: 'Bairro',
@@ -181,7 +148,7 @@ const EditGroup = () => {
                                 inputRef={locationCityRef}
                                 formProps={{
                                     control,
-                                    name: 'location.city'
+                                    name: 'location.add_city'
                                 }}
                                 inputProps={{
                                     placeholder: 'Cidade',
@@ -196,7 +163,7 @@ const EditGroup = () => {
                                 inputRef={locationStateRef}
                                 formProps={{
                                     control,
-                                    name: 'location.state'
+                                    name: 'location.add_state'
                                 }}
                                 inputProps={{
                                     placeholder: 'Estado',
@@ -211,7 +178,7 @@ const EditGroup = () => {
                                 inputRef={locationCountryRef}
                                 formProps={{
                                     control,
-                                    name: 'location.country'
+                                    name: 'location.add_country'
                                 }}
                                 inputProps={{
                                     placeholder: 'País',
@@ -226,9 +193,8 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
-                                latitude={getValues().location?.coordsMatch ? getValues().location?.latitude : undefined}
-                                longitude={getValues().location?.coordsMatch ? getValues().location?.longitude : undefined}
-                                onChange={() => setCoordsMatch(true)}
+                                latitude={getValues().location?.latitude ? getValues().location?.latitude : undefined}
+                                longitude={getValues().location?.longitude ? getValues().location?.longitude : undefined}
                             />
                             <CustomButton label='Criar Novo Grupo' onPress={handleSubmit(handleRegister)} className='basis-full' />
                         </View>

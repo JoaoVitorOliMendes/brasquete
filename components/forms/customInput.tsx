@@ -108,7 +108,7 @@ const CustomInput = <FormType extends FieldValues,>({ type, color, rightIcon, le
                                     numberOfLines={numberOfLines}
                                     editable={!disabled}
                                     style={{
-                                        minHeight: (numberOfLines * 24) || 0,
+                                        minHeight: ((numberOfLines || 0) * 24),
                                         textAlignVertical: 'top',
                                         elevation: 3,
                                         zIndex: 3,

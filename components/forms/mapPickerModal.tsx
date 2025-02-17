@@ -7,7 +7,6 @@ import CustomButton from '../buttons/customButton'
 import { reverseGeolocation } from '@/api/services/mapsApiManager'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
-import LoadingIndicator from '../loadingIndicator'
 import { envVars } from '@/constants'
 
 interface MapPickerModalProps<FormType extends FieldValues> {
@@ -127,7 +126,6 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
 
                         return (
                             <View className='w-full h-full'>
-                                {/* <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} /> */}
                                 {
                                     (!!selectedLocation && !!initialLocation) &&
                                     <>

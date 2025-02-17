@@ -12,10 +12,10 @@ import { TextInput } from 'react-native-gesture-handler'
 
 interface ReportMemberModalProps {
   visible?: boolean,
-  dismiss?: () => void
+  dismiss: () => void
 }
 
-const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
+const ReportMemberModal = ({ visible, dismiss = () => {} }: ReportMemberModalProps) => {
   const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm<Report>()
   const { fields, append, remove } = useFieldArray({
     control,

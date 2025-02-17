@@ -12,6 +12,7 @@ import { LoginForm } from '@/model/LoginForm'
 import { StatusBar } from 'expo-status-bar'
 import Toast from 'react-native-toast-message'
 import { supabase } from '@/api/supabase'
+import { useLogin } from '@/api/authApi'
 
 const Login = () => {
   const router = useRouter()
@@ -21,15 +22,7 @@ const Login = () => {
   const [showPass, setShowPass] = useState(true)
 
   const signIn = async (data: LoginForm) => {
-    // setIsLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    })
-
-    if (error)
-      Toast.show({ type: 'error', text1: 'Erro', text2: error.message })
-    // setIsLoading(false)
+    useLogin(data)
   }
 
   return (
@@ -77,7 +70,6 @@ const Login = () => {
                   }
                 }}
                 inputProps={{
-                  secureTextEntry: true,
                   placeholder: 'Senha',
                   onSubmitEditing: handleSubmit(signIn),
                   secureTextEntry: showPass

@@ -2,11 +2,11 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import CustomButton from '../buttons/customButton'
 import { useRouter } from 'expo-router'
-import { Group } from '@/model/api'
 import Stars from '../stars'
 import MapView from 'react-native-maps'
 import { images } from '@/constants'
 import DropShadow from "react-native-drop-shadow";
+import { Group } from '@/model/models'
 
 interface CardGroupProps {
     group: Group,
@@ -39,9 +39,9 @@ const CardGroup = ({ group }: CardGroupProps) => {
                     <Text className='text-white my-2'>
                         <Stars label='Nível: ' rating={group.level} textClassName='font-bold text-white' disabled />
                     </Text>
-                    <Text className='text-white my-2'>
+                    {/* <Text className='text-white my-2'>
                         {(group.events && group.events[0]) ? group.events[0].date?.toLocaleString() : 'Sem eventos definidos'}
-                    </Text>
+                    </Text> */}
                 </View>
                 <View className='basis-5/12 p-2'>
                     <Image

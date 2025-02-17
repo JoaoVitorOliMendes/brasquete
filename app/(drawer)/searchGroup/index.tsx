@@ -6,28 +6,14 @@ import CustomTitle from '@/components/customTitle'
 import CardGroup from '@/components/card/cardGroup'
 import { Group } from '@/model/api'
 import ExpandableIcon from '@/components/buttons/expandableIcon'
+import { useRouter } from 'expo-router'
 
 const SearchGroup = () => {
-    const data: Group[] = [
-        {
-            id: 1,
-            description: 'Grupo do cotemig, faça parte e tals asdjahsd asdihaskjd asdjkhasdkjh askjdhaa aksja ksj askajks ',
-            isPublic: true,
-            level: 3,
-            location: {
-                city: 'Belo Horizonte',
-                country: 'BR',
-                latitude: -19.93634456787944,
-                longitude: -43.96623943001032,
-                neighborhood: 'Grajaú',
-                state: 'Minas Gerais',
-                street: 'Rua Santa Cruz',
-                streetNumber: '560',
-                coordsMatch: true
-            },
-            name: 'Grupo 1'
-        }
-    ]
+    const router = useRouter()
+    const data = null
+
+    if (!data)
+        router.back()
 
     return (
         <SafeAreaView className='flex-1'>
