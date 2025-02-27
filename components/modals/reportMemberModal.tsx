@@ -1,13 +1,13 @@
 import { View, Text, Modal, Pressable } from 'react-native'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import CustomTitle from './customTitle'
+import CustomTitle from '../customTitle'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { Report } from '@/model/api/report'
 import { ReportMotives } from '@/model/api/reportMotives'
-import CustomButton from './customButton'
-import CustomControlCheckbox from '@/components/customControlCheckbox'
-import CustomCheckbox from './customCheckbox'
-import CustomInput from './customInput'
+import CustomButton from '../buttons/customButton'
+import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
+import CustomCheckbox from '../forms/customCheckbox'
+import CustomInput from '../forms/customInput'
 import { TextInput } from 'react-native-gesture-handler'
 
 interface ReportMemberModalProps {
@@ -68,8 +68,7 @@ const ReportMemberModal = ({ visible, dismiss }: ReportMemberModalProps) => {
           style={{
             elevation: 3
           }}
-        >
-        </Pressable>
+        />
         <View className='rounded-lg w-5/6 bg-primary p-10'>
           <CustomTitle title='Denunciar Jogador' color='white' sizeClass='text-2xl' className='mb-10' />
           <View>

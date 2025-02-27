@@ -4,16 +4,16 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import NavHeader from '@/components/navHeader'
 import CustomTitle from '@/components/customTitle'
-import CustomInput from '@/components/customInput'
+import CustomInput from '@/components/forms/customInput'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm } from 'react-hook-form'
 import { Group, Location } from '@/model/api'
-import CustomButton from '@/components/customButton'
-import CustomDropdown from '@/components/customDropdown'
-import MapPickerModal from '@/components/mapPickerModal'
+import CustomButton from '@/components/buttons/customButton'
+import CustomDropdown from '@/components/forms/customDropdown'
+import MapPickerModal from '@/components/forms/mapPickerModal'
 import BottomSheet, { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
-import CustomStarRating from '@/components/customStarRating'
-import CustomControlCheckbox from '@/components/customControlCheckbox'
+import CustomStarRating from '@/components/forms/customStarRating'
+import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
 
 const EditGroup = () => {
     const [coordsMatch, setCoordsMatch] = useState(false)
@@ -71,10 +71,9 @@ const EditGroup = () => {
     return (
         <BottomSheetModalProvider>
             <SafeAreaView className='h-full'>
-                {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} className={'bg-secondary py-2'} />}
+                <NavHeader iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} title={id ? 'Editar Grupo' : 'Novo Grupo'} className={'bg-secondary'} />
                 <ScrollView nestedScrollEnabled={true}>
                     <View className='p-5'>
-                        <CustomTitle color='black' title='Novo Grupo' />
                         <View className='mt-10 flex flex-row flex-wrap justify-center items-center'>
                             <CustomInput
                                 color='black'

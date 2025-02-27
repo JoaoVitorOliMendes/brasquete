@@ -9,8 +9,7 @@ import { Group } from "./group";
 import { User } from "./user";
 
 export interface GroupMember {
-  /** @nullable */
-  confirmed?: 'confirmed' | 'deciding' | 'absent' | null;
+  confirmed: number;
   createdBy?: string;
   createdDate?: string;
   groupId?: number;
@@ -22,3 +21,7 @@ export interface GroupMember {
   user?: User;
   group?: Group;
 }
+
+// 'deciding' -> 0
+// 'absent' -> 1
+// 'confirmed' -> 2

@@ -12,7 +12,6 @@ export interface User {
   createdBy?: string;
   createdDate?: string;
   email?: string;
-  emailConfirmed?: boolean;
   height?: number;
   id?: number;
   name?: string;

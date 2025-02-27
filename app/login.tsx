@@ -1,36 +1,42 @@
 import { View, Text, ImageBackground, ScrollView, TextInput } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { images } from '@/constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import NavHeader from '@/components/navHeader'
 import { Link, useRouter } from 'expo-router'
-import CustomInput from '@/components/customInput'
+import CustomInput from '@/components/forms/customInput'
 import { useForm } from 'react-hook-form'
-import CustomButton from '@/components/customButton'
+import CustomButton from '@/components/buttons/customButton'
 import CustomTitle from '@/components/customTitle'
-import { Login as LoginModel } from '@/model/Login'
-import { useAuth } from '@/context/AuthContext'
+import { LoginForm } from '@/model/LoginForm'
 import { StatusBar } from 'expo-status-bar'
+import Toast from 'react-native-toast-message'
+import { supabase } from '@/api/supabase'
 
 const Login = () => {
-  const { onLogin } = useAuth()
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginModel>()
+  const { control, handleSubmit, formState: { errors } } = useForm<LoginForm>()
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
+  const [showPass, setShowPass] = useState(true)
 
-  const handleLogin = (data: LoginModel) => {
-    if (onLogin) {
-      onLogin(data)
-      router.replace('/(drawer)')
-    }
+  const signIn = async (data: LoginForm) => {
+    // setIsLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
+
+    if (error)
+      Toast.show({ type: 'error', text1: 'Erro', text2: error.message })
+    // setIsLoading(false)
   }
 
   return (
     <ImageBackground source={images.chalkboard}>
       <StatusBar translucent backgroundColor='transparent' />
       <SafeAreaView className='h-full'>
-        {router.canGoBack() && <NavHeader iconProps={{ color: 'white', icon: 'arrow-back', onPress: () => router.back() }} />}
+        {router.canGoBack() && <NavHeader iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.back() }} />}
         <ScrollView>
           <View className='p-5'>
             <CustomTitle color='white' title='Login' />
@@ -59,6 +65,7 @@ const Login = () => {
                 className='mb-4'
               />
               <CustomInput
+                rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowPass(!showPass) }}
                 color='white'
                 type='filled'
                 inputRef={passwordRef}
@@ -72,11 +79,12 @@ const Login = () => {
                 inputProps={{
                   secureTextEntry: true,
                   placeholder: 'Senha',
-                  onSubmitEditing: handleSubmit(handleLogin)
+                  onSubmitEditing: handleSubmit(signIn),
+                  secureTextEntry: showPass
                 }}
                 className='mb-4'
               />
-              <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(handleLogin)} />
+              <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(signIn)} />
               <Link href={'/forgotPass'} className='color-white underline'>Esqueci minha senha</Link>
             </View>
           </View>

@@ -4,12 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import NavHeader from '@/components/navHeader'
 import CustomTitle from '@/components/customTitle'
-import CustomInput from '@/components/customInput'
+import CustomInput from '@/components/forms/customInput'
 import { useForm } from 'react-hook-form'
-import CustomButton from '@/components/customButton'
-import CustomDropdown from '@/components/customDropdown'
+import CustomButton from '@/components/buttons/customButton'
+import CustomDropdown from '@/components/forms/customDropdown'
 import { User } from '@/model/api'
 import { StatusBar } from 'expo-status-bar'
+import { supabase } from '@/api/supabase'
+import { RegisterForm } from '@/model/RegisterForm'
+import Toast from 'react-native-toast-message'
 
 
 const Register = () => {
@@ -17,23 +20,43 @@ const Register = () => {
   const [showPass, setShowPass] = useState(true)
 
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>()
+  const { control, handleSubmit, formState: { errors }, getValues } = useForm<RegisterForm>()
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const emailRef = useRef<TextInput>(null)
-  const heightRef = useRef<TextInput>(null)
-  const positionRef = useRef<TextInput>(null)
+  // const heightRef = useRef<TextInput>(null)
+  // const positionRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
 
-  const handleRegister = (data: User) => {
-    console.log(data)
+  const handleRegister = async (data: RegisterForm) => {
+    // setIsLoading(true)
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          first_name: data.name,
+          last_name: data.surname
+        }
+      }
+    })
+    if (error)
+      Toast.show({ type: 'error', text1: 'Erro', text2: error.message, position: 'bottom' })
+    else {
+      if (!session)
+        Toast.show({ type: 'info', text1: 'Aviso', text2: 'Por favor verifique seu email', position: 'bottom' })
+      router.dismissTo('/splash')
+    }
   }
 
   return (
     <SafeAreaView className='h-full'>
       <StatusBar translucent backgroundColor='transparent' />
-      {router.canGoBack() && <NavHeader iconProps={{ icon: 'arrow-back', onPress: () => router.back()}} />}
+      {router.canGoBack() && <NavHeader iconProps={{ iconProps: { color: 'black', icon: 'arrow-back' }, onPress: () => router.back() }} />}
       <ScrollView nestedScrollEnabled={true}>
         <View className='p-5'>
           <CustomTitle color='black' title='Crie sua conta' />
@@ -91,13 +114,14 @@ const Register = () => {
               }}
               inputProps={{
                 placeholder: 'Email',
-                onSubmitEditing: () => heightRef.current?.focus(),
+                onSubmitEditing: () => passwordRef.current?.focus(),
                 returnKeyType: 'next',
                 keyboardType: 'email-address'
               }}
               className='mb-4'
             />
-            <CustomInput
+            {/* Only show required attributes */}
+            {/* <CustomInput
               color='black'
               type='outline'
               inputRef={heightRef}
@@ -118,10 +142,10 @@ const Register = () => {
                 {
                   label: 'Armador',
                   value: 'armador'
-                },{
+                }, {
                   label: 'Pivô',
                   value: 'pivo'
-                },{
+                }, {
                   label: 'Ala',
                   value: 'ala'
                 }
@@ -137,9 +161,9 @@ const Register = () => {
                 onSubmitEditing: () => passwordRef.current?.focus(),
               }}
               className='mb-4'
-            />
+            /> */}
             <CustomInput
-              rightIcon={{ icon: 'eye', onPress: (e) => setShowPass(!showPass)}}
+              rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowPass(!showPass) }}
               color='black'
               type='outline'
               inputRef={passwordRef}
@@ -159,7 +183,7 @@ const Register = () => {
               className='mb-4'
             />
             <CustomInput
-              rightIcon={{ icon: 'eye', onPress: (e) => setShowConfirmPass(!showConfirmPass)}}
+              rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowConfirmPass(!showConfirmPass) }}
               color='black'
               type='outline'
               inputRef={confirmPassRef}
