@@ -1,25 +1,17 @@
 import { View, Text, StatusBar } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
-import DrawerContent from '@/components/drawerContent'
+import DrawerContent from '@/components/drawer/drawerContent'
 import { Redirect, useRouter } from 'expo-router'
-import { useAuth } from '@/context/AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LoadingIndicator from '@/components/loadingIndicator'
+import { Session } from '@supabase/supabase-js'
+import { supabase } from '@/api/supabase'
 
 const DrawerLayout = () => {
-    const router = useRouter()
-    const { authState, isLoading } = useAuth()
-
-    if (isLoading) {
-        return <LoadingIndicator />;
-    }
-
-    if (!isLoading && !authState?.authenticated) {
-        return <Redirect href='/home' />
-    }
+    
 
     return (
         <SafeAreaView className='flex-1 flex flex-row justify-start items-start'>
@@ -32,7 +24,7 @@ const DrawerLayout = () => {
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
-                <Drawer.Screen name='index' options={{
+                <Drawer.Screen name='event' options={{
                     title: 'Home',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
@@ -42,11 +34,11 @@ const DrawerLayout = () => {
                         />
                     )
                 }} />
-                <Drawer.Screen name='events' options={{
-                    title: 'Eventos',
+                <Drawer.Screen name='searchGroup' options={{
+                    title: 'Pesquisar Grupos',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
-                            name='calendar'
+                            name='search'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />

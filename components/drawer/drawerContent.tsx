@@ -6,10 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import DrawerLink from './drawerLink'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
-import { useAuth } from '@/context/AuthContext'
+import { supabase } from '@/api/supabase'
 
 const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponentProps) => {
-  const { onLogout } = useAuth()
   const router = useRouter()
 
   return (
@@ -52,7 +51,7 @@ const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponen
               )
             }}
             focused={false}
-            onPress={async () => onLogout && await onLogout()}
+            onPress={async () => await supabase.auth.signOut()}
           />
         </ScrollView>
       </SafeAreaView>

@@ -10,15 +10,9 @@ import { Match } from "./match";
 import { Player } from "./player";
 
 export interface Team {
-  createdBy?: string;
-  createdDate?: string;
-  eventId?: number;
   id?: number;
   teamName?: string | null;
-  updatedBy?: string;
-  updatedDate?: string;
+  eventId?: number;
   event?: Event;
   players?: Player[];
-  matchesOne?: Match[];
-  matchesTwo?: Match[];
 }

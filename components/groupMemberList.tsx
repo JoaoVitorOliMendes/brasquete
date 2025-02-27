@@ -3,9 +3,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { GroupMember } from '@/model/api'
 import { colors, images } from '@/constants'
 import CustomTitle from './customTitle'
-import CustomPressIcon from './customPressIcon'
-import ReportMemberModal from './reportMemberModal'
-import CustomButton from './customButton'
+import CustomPressIcon from './buttons/customPressIcon'
+import ReportMemberModal from './modals/reportMemberModal'
+import CustomButton from './buttons/customButton'
 
 interface GroupMemberListProps {
     members: GroupMember[],
@@ -44,7 +44,6 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
 
     const mapGroups = (separator?: any | undefined) => {
         const arr = !!separator ? groupedArray[separator] : [].concat.apply([], Object.values(groupedArray))
-        console.log(arr)
         return arr.map((item) => {
             return (
                 <View className='flex flex-row' key={item.id}>
@@ -80,10 +79,9 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
     }, [modalVisible])
 
     return (
-        <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
-            <View className='flex flex-row flex-wrap bg-white p-4'>
-                {
-                    separator ?
+        <View className='flex flex-row flex-wrap bg-white p-4'>
+            {
+                separator ?
                     Object.keys(groupedArray).map((item, idx) => {
                         return (
                             <View key={idx}>
@@ -96,10 +94,9 @@ const GroupMemberList = ({ members, separator = false }: GroupMemberListProps) =
                     })
                     :
                     mapGroups()
-                }
-                {reportMemberModalMemo}
-            </View>
-        </ScrollView>
+            }
+            {reportMemberModalMemo}
+        </View>
     )
 }
 

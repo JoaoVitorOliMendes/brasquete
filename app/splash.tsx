@@ -3,7 +3,7 @@ import React from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LogoText from '@/components/logoText'
-import CustomButton from '@/components/customButton'
+import CustomButton from '@/components/buttons/customButton'
 import { images } from '@/constants'
 import { useRouter } from 'expo-router'
 

@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/logo.png",
-    scheme: "brasquete",
+    scheme: "com.brasquete",
     userInterfaceStyle: "automatic",
     newArchEnabled: false,
     ios: {
