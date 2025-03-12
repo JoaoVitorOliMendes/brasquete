@@ -11,7 +11,8 @@ import { StatusBar } from 'expo-status-bar'
 import { supabase } from '@/api/supabase'
 import { RegisterForm } from '@/model/RegisterForm'
 import Toast from 'react-native-toast-message'
-import { useRegister } from '@/api/authApi'
+import { register } from '@/api/authApi'
+import { useMutation } from '@tanstack/react-query'
 
 
 const Register = () => {
@@ -27,15 +28,16 @@ const Register = () => {
   // const positionRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
+  const registerMutation = useMutation(register);
 
   const handleRegister = async (data: RegisterForm) => {
-    const { data: registerData, isSuccess } = useRegister(data)
-    if (isSuccess)
-      if (!registerData.session)
+    const { session, user } = await registerMutation.mutateAsync(data)
+    if (registerMutation.isSuccess)
+      if (!session)
         Toast.show({ type: 'info', text1: 'Aviso', text2: 'Por favor verifique seu email', position: 'bottom' })
     router.dismissTo('/splash')
   }
-  
+
   return (
     <SafeAreaView className='h-full'>
       <StatusBar translucent backgroundColor='transparent' />

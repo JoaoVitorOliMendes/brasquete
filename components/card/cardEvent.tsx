@@ -2,16 +2,16 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router'
 import CustomButton from '../buttons/customButton'
-import { EventModel } from '@/model/models'
+import { GroupEventModel } from '@/model/models'
 import DropShadow from 'react-native-drop-shadow'
 import CustomTitle from '../customTitle'
 import { days, images } from '@/constants'
 
-interface CardEventProps {
-    event: EventModel
+interface CardGroupEventProps {
+    event: GroupEventModel
 }
 
-const CardEvent = ({ event }: CardEventProps) => {
+const CardGroupEvent = ({ event }: CardGroupEventProps) => {
     const router = useRouter()
 
     return (
@@ -27,7 +27,7 @@ const CardEvent = ({ event }: CardEventProps) => {
             }}
         >
             <TouchableOpacity
-                onPress={() => router.push(`/event/${event.id}`)}
+                onPress={() => router.push(`/GroupEvent/${event.id}`)}
                 activeOpacity={0.5}
                 className='bg-primary rounded-lg flex flex-column p-5'
             >
@@ -67,4 +67,4 @@ const CardEvent = ({ event }: CardEventProps) => {
     )
 }
 
-export default CardEvent
+export default CardGroupEvent

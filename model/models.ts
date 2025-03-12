@@ -4,54 +4,88 @@ import { Database, Tables } from '@/model/supabaseTypes';
 export type Modify<T, R> = Omit<T, keyof R> & R & Omit<T, 'created_at' | 'updated_at'> & { created_at: Date; updated_at: Date };
 
 export type Score = Tables<'score'>
-export type Motives = Tables<'motives'>
-export type Location = Tables<'location'>
-export type Profiles = Tables<'profiles'>
-export type Group = Tables<'groups'> & {
-    profiles: Profiles,
-    location: Location
-}
+export type ScoreModel = Modify<Score, {}>
 
-export type Event = Tables<'event'> & {
-    groups: Group
+export type Motives = Tables<'motives'>
+export type MotivesModel = Modify<Motives, {}>
+
+export type Location = Tables<'location'>
+export type LocationModel = Modify<Location, {}>
+
+export type Profiles = Tables<'profiles'>
+export type ProfilesModel = Modify<Profiles, {
+    birth_date: Date
+}>
+
+export type Groups = Tables<'groups'> & {
+    admin?: Profiles,
+    location?: Location,
+    group_member?: GroupMember[]
 }
-export type EventModel = Modify<Event, {
+export type GroupsModel = Modify<Groups, {}>
+
+export type GroupEvent = Tables<'event'> & {
+    groups?: Groups
+}
+export type GroupEventModel = Modify<GroupEvent, {
     date: Date
 }>
 
 export type Team = Tables<'team'> & {
-    event: Event
+    event?: GroupEvent
 }
+export type TeamModel = Modify<Team, {}>
+
 export type GroupMember = Tables<'group_member'> & {
-    groups: Group,
-    profiles: Profiles
+    groups?: Groups,
+    profiles?: Profiles
 }
+export type GroupMemberModel = Modify<GroupMember, {}>
+
 export type Match = Tables<'match'> & {
-    event: Event
+    event: GroupEvent
 }
+export type MatchModel = Modify<Match, {
+    time_end: Date,
+    time_pause: Date,
+    time_start: Date
+}>
+
 export type Player = Tables<'player'> & {
-    team: Team,
-    event: Event,
-    group_member: GroupMember
+    team?: Team,
+    event?: GroupEvent,
+    group_member?: GroupMember
 }
+export type PlayerModel = Modify<Player, {}>
+
 export type PlayerScore = Tables<'player_score'> & {
-    score: Score,
-    profiles: Profiles,
-    match: Match
+    score?: Score,
+    profiles?: Profiles,
+    match?: Match
 }
-export type Report = Tables<'report'>
+export type PlayerScoreModel = Modify<PlayerScore, {}>
+
+export type Report = Tables<'report'> & {
+    created_byReg?: Profiles,
+    targetReg?: Profiles
+}
+export type ReportModel = Modify<Report, {}>
+
 export type ReportMotive = Tables<'report_motive'> & {
-    report: Report,
-    motive: Motives
+    report?: Report,
+    motive?: Motives
 }
+export type ReportMotiveModel = Modify<ReportMotive, {}>
+
+
 
 export type Views<T extends keyof Database['public']['Views']> =
-  Database['public']['Views'][T]['Row']
+    Database['public']['Views'][T]['Row']
 export type Enums<T extends keyof Database['public']['Enums']> =
-  Database['public']['Enums'][T]
+    Database['public']['Enums'][T]
 
 export type Insert<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert']
+    Database['public']['Tables'][T]['Insert']
 
 export type Functions = Database['public']['Functions']
 

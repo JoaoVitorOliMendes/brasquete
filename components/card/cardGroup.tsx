@@ -6,10 +6,10 @@ import Stars from '../stars'
 import MapView from 'react-native-maps'
 import { images } from '@/constants'
 import DropShadow from "react-native-drop-shadow";
-import { Group } from '@/model/models'
+import { Groups } from '@/model/models'
 
 interface CardGroupProps {
-    group: Group,
+    group: Groups,
 }
 
 const CardGroup = ({ group }: CardGroupProps) => {
@@ -30,7 +30,7 @@ const CardGroup = ({ group }: CardGroupProps) => {
             <TouchableOpacity
                 onPress={() => router.push(`/groups/${group.id}`)}
                 activeOpacity={0.5}
-                className='bg-primary rounded-lg flex flex-row flex-wrap p-5'
+                className='bg-primary rounded-lg flex flex-row flex-wrap p-5 mb-10'
             >
                 <View className='basis-7/12 p-5'>
                     <Text className='text-white text-3xl mb-2'>

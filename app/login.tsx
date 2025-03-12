@@ -8,11 +8,12 @@ import CustomInput from '@/components/forms/customInput'
 import { useForm } from 'react-hook-form'
 import CustomButton from '@/components/buttons/customButton'
 import CustomTitle from '@/components/customTitle'
-import { LoginForm } from '@/model/LoginForm'
+import { LoginForm } from '@/model/formModels'
 import { StatusBar } from 'expo-status-bar'
 import Toast from 'react-native-toast-message'
 import { supabase } from '@/api/supabase'
-import { useLogin } from '@/api/authApi'
+import { useMutation } from '@tanstack/react-query'
+import { login } from '@/api/authApi'
 
 const Login = () => {
   const router = useRouter()
@@ -20,9 +21,10 @@ const Login = () => {
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
   const [showPass, setShowPass] = useState(true)
+  const loginMutation = useMutation(login)
 
   const signIn = async (data: LoginForm) => {
-    useLogin(data)
+    const { session } = await loginMutation.mutateAsync(data)
   }
 
   return (

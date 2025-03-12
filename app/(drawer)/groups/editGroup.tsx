@@ -11,13 +11,47 @@ import MapPickerModal from '@/components/forms/mapPickerModal'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import CustomStarRating from '@/components/forms/customStarRating'
 import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
-import { Group } from '@/model/models'
+import { Groups } from '@/model/models'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getGroupsById, insertGroup, updateGroup } from '@/api/groupsApi'
+import { fetchUser } from '@/api/authApi'
+import { insertLocation, updateLocation } from '@/api/locationApi'
 
 const EditGroup = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
+    const updateGroupMutation = useMutation(updateGroup)
+    const insertGroupMutation = useMutation(insertGroup)
+    const updateLocationMutation = useMutation(updateLocation)
+    const insertLocationMutation = useMutation(insertLocation)
+    
+    const { data: user, isLoading: userIsLoading } = useQuery(['user'], fetchUser)
 
-    const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<Group>()
+    if (id) {
+        useQuery(['groups', id], () => getGroupsById(id), {
+            onSuccess(data) {
+                if (data) {
+                    setValue('id', data[0].id)
+                    setValue('private', data[0].private)
+                    setValue('level', data[0].level)
+                    setValue('name', data[0].name)
+                    setValue('location_id', data[0].location_id)
+                    if (data[0].location) {
+                        setValue('location.add_city', data[0].location.add_city)
+                        setValue('location.add_country', data[0].location.add_country)
+                        setValue('location.add_neighborhood', data[0].location.add_neighborhood)
+                        setValue('location.add_number', data[0].location.add_number)
+                        setValue('location.add_state', data[0].location.add_state)
+                        setValue('location.add_street', data[0].location.add_street)
+                        setValue('location.longitude', data[0].location.longitude)
+                        setValue('location.latitude', data[0].location.latitude)
+                        setValue('location.id', data[0].location.id)
+                    }
+                }
+            },
+        })
+    }
+    const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<Groups>()
 
     const levelState = watch('level')
 
@@ -32,23 +66,38 @@ const EditGroup = () => {
     const descriptionRef = useRef<TextInput>(null)
     const bottomSheetRef = useRef<BottomSheetModal>(null)
 
-    useEffect(() => {
-        if (id) {
-            setValue('id', id)
-            setValue('private', false)
-            setValue('level', 3)
-            setValue('name', 'TEST')
-            setValue('location.add_city', 'TEST')
-            setValue('location.add_country', 'TEST')
-            setValue('location.add_neighborhood', 'TEST')
-            setValue('location.add_number', 'TEST')
-            setValue('location.add_state', 'TEST')
-            setValue('location.add_street', 'TEST')
-        }
-    }, [])
-
-    const handleRegister = (data: Group) => {
+    const handleRegister = async (data: Groups) => {
+        const locationObj = data.location
+        delete data.location
         console.log(data)
+        if (locationObj &&
+            locationObj.add_city &&
+            locationObj.add_country &&
+            locationObj.add_neighborhood &&
+            locationObj.add_number &&
+            locationObj.add_state &&
+            locationObj.add_street
+        ) {
+            if (data.location_id) {
+                locationObj.id = data.location_id
+                console.log(locationObj)
+                await updateLocationMutation.mutateAsync(locationObj)
+            } else {
+                console.log(locationObj)
+                await insertLocationMutation.mutateAsync(locationObj).then((val) => {
+                    if (val) {
+                        data.location_id=val[0].id
+                    }
+                })
+            }
+        }
+        if (id)
+            await updateGroupMutation.mutateAsync(data)
+        else {
+            data.admin_id = user!.id
+            await insertGroupMutation.mutateAsync(data)
+        }
+        router.dismissTo('/groups')
     }
 
     return (
@@ -81,7 +130,7 @@ const EditGroup = () => {
                                     control,
                                     name: 'private'
                                 }}
-                                label='Público?'
+                                label='Privado?'
                                 className='basis-full mb-4'
                             />
                             <CustomStarRating
@@ -193,6 +242,7 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
+                                onChange={() => console.log('Change')}
                                 latitude={getValues().location?.latitude ? getValues().location?.latitude : undefined}
                                 longitude={getValues().location?.longitude ? getValues().location?.longitude : undefined}
                             />

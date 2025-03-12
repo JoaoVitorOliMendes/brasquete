@@ -4,11 +4,10 @@ import CustomPressIcon from '@/components/buttons/customPressIcon'
 import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import CustomTitle from '@/components/customTitle'
 import CardGroup from '@/components/card/cardGroup'
-import { Group } from '@/model/api'
 import ExpandableIcon from '@/components/buttons/expandableIcon'
 import { useRouter } from 'expo-router'
 
-const SearchGroup = () => {
+const SearchGroupIndex = () => {
     const router = useRouter()
     const data = null
 
@@ -47,4 +46,4 @@ const SearchGroup = () => {
     )
 }
 
-export default SearchGroup
+export default SearchGroupIndex

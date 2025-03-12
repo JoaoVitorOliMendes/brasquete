@@ -1,21 +1,16 @@
 import { View, Text, FlatList, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import CustomTitle from '@/components/customTitle'
 import CardEvent from '@/components/card/cardEvent'
 import { supabase } from '@/api/supabase'
-import useGetEventsForGroups from '@/api/eventsApi'
-import { useAuthUser } from '@/api/authApi'
-import useGetGroupMemberForUser from '@/api/groupMemberApi'
+import { useQuery } from '@tanstack/react-query'
+import { getEventsForGroups } from '@/api/eventsApi'
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
-import transformClass from '@/util/transformDate'
-import { Event as GroupEvent, EventModel } from '@/model/models'
 
-const Events = () => {    
-    const { data: eventsData, refetch } = useGetEventsForGroups()
-
-    console.log('eventsData', eventsData)
+const EventsIndex = () => {
+    const { data: eventsData, refetch } = useQuery(['events'], getEventsForGroups)
 
     useRefreshOnFocus(refetch)
 
@@ -28,7 +23,7 @@ const Events = () => {
                     {
                         eventsData &&
                         eventsData.map((item) => {
-                            return <CardEvent event={transformClass<GroupEvent, EventModel>(item)} key={item.id} />
+                            return <CardEvent event={item} key={item.id} />
                         })
                     }
                 </View>
@@ -37,4 +32,4 @@ const Events = () => {
     )
 }
 
-export default Events
+export default EventsIndex

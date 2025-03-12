@@ -8,7 +8,7 @@ import CustomButton from './buttons/customButton'
 import { GroupMember } from '@/model/models'
 
 interface GroupMemberListProps {
-    members: GroupMember[],
+    members?: GroupMember[],
     separator?: boolean
 }
 

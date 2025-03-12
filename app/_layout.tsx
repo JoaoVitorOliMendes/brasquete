@@ -7,22 +7,24 @@ import "../global.css";
 import { setCustomText } from 'react-native-global-props';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { QueryClient, QueryClientProvider } from 'react-query'
 import LoadingIndicator from '@/components/loadingIndicator';
+import { useOnlineManager } from '@/hooks/useOnlineManager';
+import { useAppState } from '@/hooks/useAppState';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 SplashScreen.preventAutoHideAsync()
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2
+    }
+  }
+});
 export default function RootLayout() {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000,
-          },
-        },
-      })
-  )
+
+  useOnlineManager()
+  useAppState()
 
   const [fontsLoaded, error] = useFonts({
     'Roboto': require('../assets/fonts/Roboto-Medium.ttf'),
@@ -44,12 +46,15 @@ export default function RootLayout() {
 
   setCustomText(customTextGlobalProps)
 
+  // createGroupEventMetadata()
+
   return (
     <GestureHandlerRootView>
       <QueryClientProvider client={queryClient}>
         <Slot />
         <Toast />
         <LoadingIndicator />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </GestureHandlerRootView>
   )

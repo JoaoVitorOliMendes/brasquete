@@ -1,12 +1,13 @@
-import { useMutation, useQuery } from "react-query"
 import { supabase } from "./supabase";
-import { Group } from "@/model/models";
-import { User } from "@supabase/supabase-js";
+import { GroupEventModel } from "@/model/models";
 import Toast from "react-native-toast-message";
+import { GroupEvent } from '@/model/models'
+import { mapper } from "@/model/mappings/mapper";
 
-const getEventsForGroups = async () => {
+export const getEventsForGroups = async () => {
   console.log('Query start getEventsForGroups')
-  const { data, error } = await supabase.from('event')
+  const { data, error } = await supabase
+  .from('event')
     .select(`
     *,
     groups(*)
@@ -14,12 +15,23 @@ const getEventsForGroups = async () => {
 
   if (error)
     Toast.show({ type: 'error', text1: 'Error', text2: error.message })
-  return data
+
+  console.log('Query finish getEventsForGroups', data)
+  if (data && data.length)
+    return mapper.mapArray(data as GroupEvent[], 'GroupEvent', 'GroupEventModel') as GroupEventModel[]
 }
 
-export default function useGetEventsForGroups() {
-  return useQuery({
-    queryKey: ['events'],
-    queryFn: () => getEventsForGroups()
-  })
+export const insertEvent = async (event: GroupEvent) => {
+  console.log('Query start createEvent')
+  const { data, error } = await supabase
+  .from('event')
+  .insert(event)
+  .select()
+
+  if (error)
+    Toast.show({ type: 'error', text1: 'Error', text2: error.message })
+
+  console.log('Query finish createEvent', data)
+  if (data && data.length)
+    return mapper.mapArray(data as GroupEvent[], 'GroupEvent', 'GroupEventModel') as GroupEventModel[]
 }

@@ -107,16 +107,16 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 const country = addressComponents.find((component: { types: string | string[] }) =>
                                     component.types.includes("country"))?.short_name || ''
 
-                                onChange()
+                                if (onChange)
+                                    onChange()
                                 setValue('location.latitude', selectedLocation.latitude)
                                 setValue('location.longitude', selectedLocation.longitude)
-                                setValue('location.streetNumber', streetNumber)
-                                setValue('location.street', street)
-                                setValue('location.neighborhood', neighborhood)
-                                setValue('location.city', city)
-                                setValue('location.state', state)
-                                setValue('location.country', country)
-                                setValue('location.coordsMatch', true)
+                                setValue('location.add_city', city)
+                                setValue('location.add_country', country)
+                                setValue('location.add_neighborhood', neighborhood)
+                                setValue('location.add_number', streetNumber)
+                                setValue('location.add_state', state)
+                                setValue('location.add_street', street)
                             } catch (e) {
                                 console.log(e)
                             } finally {

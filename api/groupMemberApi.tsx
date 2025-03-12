@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "./supabase";
 
 // RLS policy controls so user can only see own records

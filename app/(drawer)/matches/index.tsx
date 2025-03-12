@@ -5,10 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomTitle from '@/components/customTitle'
 import CardMatch from '@/components/card/cardMatch'
 import CardGroup from '@/components/card/cardGroup'
-import { Group } from '@/model/models'
 import { useRouter } from 'expo-router'
 
-const Matches = () => {
+const MatchesIndex = () => {
   const router = useRouter()
   const data = null
 
@@ -28,4 +27,4 @@ const Matches = () => {
   )
 }
 
-export default Matches
+export default MatchesIndex

@@ -1,55 +1,42 @@
-import { useMutation, useQuery, useQueryClient } from "react-query"
 import { supabase } from "./supabase";
-import { LoginForm } from "@/model/LoginForm";
+import { LoginForm } from "@/model/formModels";
 import { RegisterForm } from "@/model/RegisterForm";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-const register = async (registerForm: RegisterForm) => {
-    const { data, error: signUpError } = await supabase.auth.signUp({
-        email: registerForm.email,
-        password: registerForm.password,
-        options: {
-          data: {
-            first_name: registerForm.name,
-            last_name: registerForm.surname
-          }
-        }
-      })
-
-    if (signUpError) {
-        throw signUpError
+export const register = async (registerForm: RegisterForm) => {
+  const { data, error: signUpError } = await supabase.auth.signUp({
+    email: registerForm.email,
+    password: registerForm.password,
+    options: {
+      data: {
+        first_name: registerForm.name,
+        last_name: registerForm.surname
+      }
     }
+  })
 
-    return data
+  if (signUpError) {
+    throw signUpError
+  }
+
+  return data
 }
 
-const login = async (loginForm: LoginForm) => {
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email: loginForm.email,
-        password: loginForm.password
-    })
+export const login = async (loginForm: LoginForm) => {
+  console.log("mutationFn")
+  const { data, error: signInError } = await supabase.auth.signInWithPassword({
+    email: loginForm.email,
+    password: loginForm.password
+  })
 
-    if (signInError) {
-        throw signInError
-    }
+  if (signInError) {
+    throw signInError
+  }
 
-    return data
+  return data
 }
 
-const fetchUser = async () => {
+export const fetchUser = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   return session ? session.user : null
 };
-
-export const useAuthUser = () => {
-  return useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUser
-  });
-};
-
-export function useRegister(registerForm: RegisterForm) {
-    return useMutation(() => register(registerForm))
-}
-export function useLogin(loginForm: LoginForm) {
-    return useMutation(() => login(loginForm))
-}

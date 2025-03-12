@@ -1,21 +1,29 @@
-import { View, Text, FlatList, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import { router, Slot } from 'expo-router'
-import CustomTitle from '@/components/customTitle'
+import { View, ScrollView } from 'react-native'
+import React from 'react'
+import { router, useRouter } from 'expo-router'
 import CardGroup from '@/components/card/cardGroup'
 import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
-import CustomButton from '@/components/buttons/customButton'
-import CustomPressIcon from '@/components/buttons/customPressIcon'
 import ExpandableIcon from '@/components/buttons/expandableIcon'
-import { Group } from '@/model/models'
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
+import { useQuery } from '@tanstack/react-query'
+import { getGroupsForUser } from '@/api/groupsApi'
+import { fetchUser } from '@/api/authApi'
+import Toast from 'react-native-toast-message'
 
-const Groups = () => {
-  const data = null
+const GroupsIndex = () => {
+  const router = useRouter()
 
-  if (!data)
-    router.back()
+  const { data: user, isLoading } = useQuery(['user'], fetchUser)
+
+  if (!isLoading && !user)
+    Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
+
+  const { data: groupsData, refetch } = useQuery(['groups'], () => getGroupsForUser(user!.id), {
+    enabled: !!user
+  })
+
+  useRefreshOnFocus(refetch)
 
   return (
     <SafeAreaView className='flex-1 relative'>
@@ -24,7 +32,8 @@ const Groups = () => {
         <View className='p-4'>
           {/* <CustomTitle title='Meus Grupos' sizeClass='text-4xl' className='mb-4' /> */}
           {
-            data.map((item) => {
+            groupsData &&
+            groupsData.map((item) => {
               return <CardGroup group={item} key={item.id} />
             })
           }
@@ -43,4 +52,4 @@ const Groups = () => {
   )
 }
 
-export default Groups
+export default GroupsIndex
