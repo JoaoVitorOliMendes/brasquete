@@ -7,7 +7,7 @@ import CustomButton from '../buttons/customButton'
 import { reverseGeolocation } from '@/api/services/mapsApiManager'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
-import LoadingIndicator from '../loadingIndicator'
+import { envVars } from '@/constants'
 
 interface MapPickerModalProps<FormType extends FieldValues> {
     formProps: UseControllerProps<FormType>,
@@ -107,16 +107,16 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 const country = addressComponents.find((component: { types: string | string[] }) =>
                                     component.types.includes("country"))?.short_name || ''
 
-                                onChange()
+                                if (onChange)
+                                    onChange()
                                 setValue('location.latitude', selectedLocation.latitude)
                                 setValue('location.longitude', selectedLocation.longitude)
-                                setValue('location.streetNumber', streetNumber)
-                                setValue('location.street', street)
-                                setValue('location.neighborhood', neighborhood)
-                                setValue('location.city', city)
-                                setValue('location.state', state)
-                                setValue('location.country', country)
-                                setValue('location.coordsMatch', true)
+                                setValue('location.add_city', city)
+                                setValue('location.add_country', country)
+                                setValue('location.add_neighborhood', neighborhood)
+                                setValue('location.add_number', streetNumber)
+                                setValue('location.add_state', state)
+                                setValue('location.add_street', street)
                             } catch (e) {
                                 console.log(e)
                             } finally {
@@ -126,7 +126,6 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
 
                         return (
                             <View className='w-full h-full'>
-                                {/* <LoadingIndicator className={`bg-white absolute z-10 ${mapReady && 'hidden'}`} /> */}
                                 {
                                     (!!selectedLocation && !!initialLocation) &&
                                     <>
@@ -134,7 +133,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                             ref={mapRef}
                                             style={{ flex: 1 }}
                                             provider={PROVIDER_GOOGLE}
-                                            googleMapsApiKey={process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV}
+                                            googleMapsApiKey={envVars.MAPS_API_KEY}
                                             loadingEnabled={true}
                                             onPress={(e) => {
                                                 setSelectedLocation({
