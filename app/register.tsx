@@ -1,18 +1,18 @@
 import { View, Text, ScrollView, TextInput } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRouter } from 'expo-router'
+import { router, useRouter } from 'expo-router'
 import NavHeader from '@/components/navHeader'
 import CustomTitle from '@/components/customTitle'
 import CustomInput from '@/components/forms/customInput'
 import { useForm } from 'react-hook-form'
 import CustomButton from '@/components/buttons/customButton'
-import CustomDropdown from '@/components/forms/customDropdown'
-import { User } from '@/model/api'
 import { StatusBar } from 'expo-status-bar'
 import { supabase } from '@/api/supabase'
 import { RegisterForm } from '@/model/RegisterForm'
 import Toast from 'react-native-toast-message'
+import { register } from '@/api/authApi'
+import { useMutation } from '@tanstack/react-query'
 
 
 const Register = () => {
@@ -28,29 +28,14 @@ const Register = () => {
   // const positionRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
+  const registerMutation = useMutation(register);
 
   const handleRegister = async (data: RegisterForm) => {
-    // setIsLoading(true)
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          first_name: data.name,
-          last_name: data.surname
-        }
-      }
-    })
-    if (error)
-      Toast.show({ type: 'error', text1: 'Erro', text2: error.message, position: 'bottom' })
-    else {
+    const { session, user } = await registerMutation.mutateAsync(data)
+    if (registerMutation.isSuccess)
       if (!session)
         Toast.show({ type: 'info', text1: 'Aviso', text2: 'Por favor verifique seu email', position: 'bottom' })
-      router.dismissTo('/splash')
-    }
+    router.dismissTo('/splash')
   }
 
   return (

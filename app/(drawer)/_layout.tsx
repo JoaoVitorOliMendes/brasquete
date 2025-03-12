@@ -4,15 +4,9 @@ import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
 import DrawerContent from '@/components/drawer/drawerContent'
-import { Redirect, useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import LoadingIndicator from '@/components/loadingIndicator'
-import { Session } from '@supabase/supabase-js'
-import { supabase } from '@/api/supabase'
 
 const DrawerLayout = () => {
-    
-
     return (
         <SafeAreaView className='flex-1 flex flex-row justify-start items-start'>
             <StatusBar backgroundColor={colors.secondary} />

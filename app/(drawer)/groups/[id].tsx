@@ -1,118 +1,98 @@
-import { View, Text, Platform, ScrollView, Image } from 'react-native'
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import CustomTitle from '@/components/customTitle';
+import { View, ScrollView, Image } from 'react-native'
+import React, { useMemo, useState } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import NavHeader from '@/components/navHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Group } from '@/model/api';
 import Stars from '@/components/stars';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
-import type { Region } from 'react-native-maps'
-import LoadingIndicator from '@/components/loadingIndicator';
 import GroupMemberList from '@/components/groupMemberList';
-import { colors, images } from '@/constants';
-import CustomPressIcon from '@/components/buttons/customPressIcon';
+import { images } from '@/constants';
 import ExpandableIcon from '@/components/buttons/expandableIcon';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteGroup, getGroupsById } from '@/api/groupsApi';
+import { fetchUser } from '@/api/authApi';
+import CreateEventModal from '@/components/modals/createEventModal';
+import ConfirmModal from '@/components/modals/confirmationModal';
+import { Groups } from '@/model/models';
 
 const GroupsDetails = () => {
-    const group: Group = {
-        id: 1,
-        description: 'Grupo do cotemig, faça parte e tals asdjahsd asdihaskjd asdjkhasdkjh askjdhaa aksja ksj askajks ',
-        isPublic: true,
-        level: 3,
-        location: {
-            city: 'Belo Horizonte',
-            country: 'BR',
-            latitude: -19.93634456787944,
-            longitude: -43.96623943001032,
-            neighborhood: 'Grajaú',
-            state: 'Minas Gerais',
-            street: 'Rua Santa Cruz',
-            streetNumber: '560'
-        },
-        name: 'Grupo 1',
-        groupMembers: [
-            {
-                id: 0,
-                confirmed: 'confirmed',
-                position: 'Ala',
-                userId: 0,
-                user: {
-                    id: 0,
-                    name: 'João'
-                }
-            },
-            {
-                id: 1,
-                confirmed: 'confirmed',
-                position: 'Pivo',
-                userId: 0,
-                user: {
-                    id: 1,
-                    name: 'Jamir'
-                }
-            },
-            {
-                id: 2,
-                confirmed: 'absent',
-                position: 'Armador',
-                userId: 0,
-                user: {
-                    id: 2,
-                    name: 'Diego'
-                }
-            },
-            {
-                id: 3,
-                confirmed: 'deciding',
-                position: 'Ala',
-                userId: 0,
-                user: {
-                    id: 3,
-                    name: 'Alberto'
-                }
-            }
-        ],
-    }
-
-    const mapRef = React.useRef<MapView>(null)
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
 
-    const groupMemberListMemo = useMemo(() => {
-        return <GroupMemberList members={group.groupMembers} />
-    }, [group])
+    const [modalVisible, setModalVisible] = useState(false)
+    const [confirmModalVisible, setConfirmModalVisible] = useState(false)
 
-    if (!group) {
-        router.back()
-    }
+    const deleteGroupMutation = useMutation(deleteGroup)
+
+    const createEventModalMemo = useMemo(() => {
+        return <CreateEventModal groupId={id} visible={modalVisible} dismiss={() => setModalVisible(false)} />
+    }, [modalVisible])
+    const confirmModalMemo = useMemo(() => {
+        return <ConfirmModal message='Você tem certeza que deseja deletar o grupo?' title='Deletar o Grupo' onConfirm={() => {
+            deleteGroupMutation.mutateAsync({id: id} as Groups).then((val) => {
+                if (val)
+                    router.dismissTo('/groups')
+            })
+        }} visible={confirmModalVisible} dismiss={() => setConfirmModalVisible(false)} />
+    }, [confirmModalVisible])
+    
+    const { data: user, isLoading: userIsLoading } = useQuery(['user'], fetchUser)
+    const { data: groupById, isLoading: groupsIsLoading } = useQuery(['groups', id], () => getGroupsById(id), {
+        enabled: !!user
+    })
+
+    if (userIsLoading || groupsIsLoading || !groupById)
+        return <></>
 
     return (
         <>
-            <NavHeader title={group.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} className={'bg-secondary'} />
+            <NavHeader title={groupById[0].name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} className={'bg-secondary'} />
             <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
                 <SafeAreaView className='p-4'>
                     <View className='w-full h-[33vh]'>
                         <Image source={images.staticMapExample} className='w-full h-full object-cover' />
                     </View>
                     <View className='flex flex-row flex-wrap'>
-                        <Text className='my-4 basis-full'>
-                            {group.description}
-                        </Text>
-                        <Stars textClassName='text-2xl' label='Nível: ' rating={group.level} size={32} className='my-4' disabled />
+                        {/* <Text className='my-4 basis-full'>
+                            {groupById[0].description}
+                        </Text> */}
+                        <Stars textClassName='text-2xl' label='Nível: ' rating={groupById[0].level} size={32} className='my-4' disabled />
                     </View>
                 </SafeAreaView >
-                {groupMemberListMemo}
+                <GroupMemberList members={groupById[0].group_member} />
             </ScrollView>
-            <ExpandableIcon menuItems={[
-                {
-                    icon: 'pencil',
-                    label: 'Editar Grupo',
-                    onPress: () => {
-                        router.push('/groups/editGroup')
+            {createEventModalMemo}
+            {confirmModalMemo}
+            {
+                (user?.id == groupById[0].admin_id) &&
+                <ExpandableIcon menuItems={[
+                    {
+                        icon: 'pencil',
+                        label: 'Editar Grupo',
+                        onPress: () => {
+                            router.push({
+                                pathname: '/groups/editGroup',
+                                params: {
+                                    id: id
+                                }
+                            })
+                        }
+                    },
+                    {
+                        icon: 'alarm-outline',
+                        label: 'Agendar Evento',
+                        onPress: () => {
+                            setModalVisible(true)
+                        }
+                    },
+                    {
+                        icon: 'trash-bin',
+                        label: 'Excluir Grupo',
+                        onPress: () => {
+                            setConfirmModalVisible(true)
+                        }
                     }
-                }
-            ]} />
+                ]} />
+            }
         </>
     )
 }
