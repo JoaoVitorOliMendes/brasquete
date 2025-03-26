@@ -29,7 +29,7 @@ const CardGroupEvent = ({ event }: CardGroupEventProps) => {
             <TouchableOpacity
                 onPress={() => router.push(`/GroupEvent/${event.id}`)}
                 activeOpacity={0.5}
-                className='bg-primary rounded-lg flex flex-column p-5'
+                className='bg-primary rounded-lg flex flex-column p-5 mb-10'
             >
                 <View className='flex flex-row flex-wrap justify-between items-center'>
                     <View className='basis-3/12 flex flex-row flex-wrap pr-4 border-solid border-white border-r-2'>

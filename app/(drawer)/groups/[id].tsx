@@ -58,7 +58,7 @@ const GroupsDetails = () => {
                         <Stars textClassName='text-2xl' label='Nível: ' rating={groupById[0].level} size={32} className='my-4' disabled />
                     </View>
                 </SafeAreaView >
-                <GroupMemberList members={groupById[0].group_member} />
+                <GroupMemberList members={groupById[0]} admin={user?.id == groupById[0].admin_id} />
             </ScrollView>
             {createEventModalMemo}
             {confirmModalMemo}
