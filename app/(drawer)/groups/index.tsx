@@ -16,14 +16,19 @@ const GroupsIndex = () => {
 
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  if (!isLoading && !user)
-    Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
-
   const { data: groupsData, refetch } = useQuery(['groups'], () => getGroupsForUser(user!.id), {
     enabled: !!user
   })
 
   useRefreshOnFocus(refetch)
+  
+  if (isLoading)
+    return <></>
+  
+  if (!isLoading && !user) {
+    Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
+    router.dismissTo('/event')
+  }
 
   return (
     <SafeAreaView className='flex-1 relative'>

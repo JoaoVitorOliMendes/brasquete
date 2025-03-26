@@ -8,21 +8,36 @@ import GroupMemberList from '@/components/groupMemberList'
 import { images } from '@/constants'
 import ExpandableIcon from '@/components/buttons/expandableIcon'
 import Toast from 'react-native-toast-message';
-import useGetEventsForUser from '@/api/eventsApi'
+import { useQuery } from '@tanstack/react-query'
+import { getEventByid } from '@/api/eventsApi'
+import { GroupEvent, Groups } from '@/model/models'
+import { getGroupsById } from '@/api/groupsApi'
+import { fetchUser } from '@/api/authApi'
 
 const EventsDetail = () => {
-  const { data: eventsData, isLoading } = useGetEventsForUser()
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const mapRef = React.useRef<MapView>(null)
 
+  const { data: user } = useQuery(['user'], fetchUser)
+  const { data: eventsData, isLoading: eventsLoading } = useQuery(['events'], () => getEventByid(id))
+
   const groupMemberListMemo = useMemo(() => {
-    return <GroupMemberList members={eventsData?.group?.groupMembers} separator />
+    if (eventsData)
+      return <GroupMemberList members={eventsData[0].groups} separator admin={!!(eventsData[0].groups && (user?.id == eventsData[0].groups.admin_id))} />
+    return <></>
   }, [eventsData])
 
+  if (eventsLoading)
+    return <></>
+
+  if (!eventsLoading && !(eventsData && eventsData[0] && eventsData[0].groups)) {
+    Toast.show({ type: 'error', text1: 'Error', text2: 'No Event Found' })
+    router.dismissTo('/event')
+  }
   return (
     <>
-      <NavHeader title={eventsData?.group?.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/event') }} className={'bg-secondary'} />
+      <NavHeader title={eventsData![0].groups!.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/event') }} className={'bg-secondary'} />
       <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
         <SafeAreaView className='p-4'>
           <View className='w-full h-[33vh]'>

@@ -6,13 +6,21 @@ import CustomTitle from '@/components/customTitle'
 import CardGroup from '@/components/card/cardGroup'
 import ExpandableIcon from '@/components/buttons/expandableIcon'
 import { useRouter } from 'expo-router'
+import { useQuery } from '@tanstack/react-query'
+import { fetchUser } from '@/api/authApi'
+import { getAvailableGroups } from '@/api/groupsApi'
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
 
 const SearchGroupIndex = () => {
     const router = useRouter()
-    const data = null
 
-    if (!data)
-        router.back()
+    const { data: user, isLoading } = useQuery(['user'], fetchUser)
+
+    const { data: groupsData, refetch } = useQuery(['groups'], () => getAvailableGroups(user!.id), {
+        enabled: !!user
+    })
+
+    useRefreshOnFocus(refetch)
 
     return (
         <SafeAreaView className='flex-1'>
@@ -20,7 +28,8 @@ const SearchGroupIndex = () => {
             <ScrollView>
                 <View className='p-4'>
                     {
-                        data.map((item) => {
+                        groupsData &&
+                        groupsData.map((item) => {
                             return <CardGroup group={item} key={item.id} />
                         })
                     }

@@ -11,6 +11,10 @@ import { supabase } from '@/api/supabase'
 const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponentProps) => {
   const router = useRouter()
 
+  const logout = async () => {
+    console.log('logout')
+    await supabase.auth.signOut()
+  }
   return (
     <View className='flex-1 bg-primary'>
       <SafeAreaView className='p-5'>
@@ -51,7 +55,7 @@ const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponen
               )
             }}
             focused={false}
-            onPress={async () => await supabase.auth.signOut()}
+            onPress={logout}
           />
         </ScrollView>
       </SafeAreaView>

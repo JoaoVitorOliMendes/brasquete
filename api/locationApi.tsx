@@ -13,7 +13,8 @@ export const updateLocation = async (location: Location) => {
     throw error
 
   if (data && data.length)
-    return mapper.mapArray(data as Location[], 'Location', 'LocationModel') as LocationModel[] 
+    return mapper.mapArray(data as Location[], 'Location', 'LocationModel') as LocationModel[]
+  return []
 }
 
 export const insertLocation = async (location: Location) => {
@@ -27,4 +28,5 @@ export const insertLocation = async (location: Location) => {
 
   if (data && data.length)
     return mapper.mapArray(data as Location[], 'Location', 'LocationModel') as LocationModel[]
+  return []
 }

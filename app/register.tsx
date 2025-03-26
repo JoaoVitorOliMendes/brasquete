@@ -31,6 +31,7 @@ const Register = () => {
   const registerMutation = useMutation(register);
 
   const handleRegister = async (data: RegisterForm) => {
+    console.log('handleRegister')
     const { session, user } = await registerMutation.mutateAsync(data)
     if (registerMutation.isSuccess)
       if (!session)
@@ -156,7 +157,11 @@ const Register = () => {
                 control,
                 name: 'password',
                 rules: {
-                  required: 'Senha é obrigatório'
+                  required: 'Senha é obrigatório',
+                  minLength: {
+                    value: 8,
+                    message: 'A senha deve ter no mínimo 8 caracteres'
+                  }
                 }
               }}
               inputProps={{
@@ -179,6 +184,10 @@ const Register = () => {
                   required: 'Por favor, confirme sua senha',
                   validate: (val) => {
                     return val === getValues().password || 'As senhas devem ser iguais'
+                  },
+                  minLength: {
+                    value: 8,
+                    message: 'A senha deve ter no mínimo 8 caracteres'
                   }
                 }
               }}

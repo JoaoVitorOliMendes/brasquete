@@ -15,6 +15,7 @@ const Index = () => {
             router.replace("/(drawer)/event/");
 
         supabase.auth.onAuthStateChange((_event, session) => {
+            console.log(_event)
             if (session) {
                 router.replace("/(drawer)/event/");
             } else {
