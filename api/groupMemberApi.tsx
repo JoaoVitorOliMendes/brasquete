@@ -1,22 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "./supabase";
+import { GroupMember, GroupMemberModel } from "@/model/models";
+import { mapper } from "@/model/mappings/mapper";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUser } from "./authApi";
 
-// RLS policy controls so user can only see own records
-const getGroupMemberForUser = async () => {
-  const { data, error } = await supabase
-  .from('group_member')
-  .select(`
-    *
-  `)
+export const insertGroupMember = async (groupMember: GroupMember) => {
+  const { error, data } = await supabase
+    .from('group_member')
+    .insert(groupMember)
+    .select()
 
   if (error)
     throw error
-  return data
+
+  if (data && data.length)
+    return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
+  return []
 }
 
-export default function useGetGroupMemberForUser() {
-  return useQuery({
-    queryKey: ['groupMember'],
-    queryFn: () => getGroupMemberForUser()
-  })
+export const deleteGroupMember = async (groupMember: GroupMember) => {
+  console.log('Query start deleteGroupMember')
+  const { error, data } = await supabase
+    .from('group_member')
+    .delete()
+    .eq('id', groupMember.id)
+
+  if (error)
+    throw error
+  else
+    return true
 }

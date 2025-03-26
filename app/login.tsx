@@ -68,7 +68,11 @@ const Login = () => {
                   control,
                   name: 'password',
                   rules: {
-                    required: 'Senha é obrigatório'
+                    required: 'Senha é obrigatório',
+                    minLength: {
+                      value: 8,
+                      message: 'A senha deve ter no mínimo 8 caracteres'
+                    }
                   }
                 }}
                 inputProps={{

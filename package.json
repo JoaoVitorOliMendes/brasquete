@@ -74,7 +74,8 @@
     "react-redux": "^9.2.0",
     "save-dev": "^0.0.1-security",
     "tailwindcss": "^3.4.17",
-    "@react-native-community/datetimepicker": "8.2.0"
+    "@react-native-community/datetimepicker": "8.2.0",
+    "expo-sharing": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
