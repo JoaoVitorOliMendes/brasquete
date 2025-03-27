@@ -31,21 +31,21 @@ const EditGroup = () => {
         useQuery(['groups', id], () => getGroupsById(id), {
             onSuccess(data) {
                 if (data) {
-                    setValue('id', data[0].id)
-                    setValue('private', data[0].private)
-                    setValue('level', data[0].level)
-                    setValue('name', data[0].name)
-                    setValue('location_id', data[0].location_id)
-                    if (data[0].location) {
-                        setValue('location.add_city', data[0].location.add_city)
-                        setValue('location.add_country', data[0].location.add_country)
-                        setValue('location.add_neighborhood', data[0].location.add_neighborhood)
-                        setValue('location.add_number', data[0].location.add_number)
-                        setValue('location.add_state', data[0].location.add_state)
-                        setValue('location.add_street', data[0].location.add_street)
-                        setValue('location.longitude', data[0].location.longitude)
-                        setValue('location.latitude', data[0].location.latitude)
-                        setValue('location.id', data[0].location.id)
+                    setValue('id', data.id)
+                    setValue('private', data.private)
+                    setValue('level', data.level)
+                    setValue('name', data.name)
+                    setValue('location_id', data.location_id)
+                    if (data.location) {
+                        setValue('location.add_city', data.location.add_city)
+                        setValue('location.add_country', data.location.add_country)
+                        setValue('location.add_neighborhood', data.location.add_neighborhood)
+                        setValue('location.add_number', data.location.add_number)
+                        setValue('location.add_state', data.location.add_state)
+                        setValue('location.add_street', data.location.add_street)
+                        setValue('location.longitude', data.location.longitude)
+                        setValue('location.latitude', data.location.latitude)
+                        setValue('location.id', data.location.id)
                     }
                 }
             },

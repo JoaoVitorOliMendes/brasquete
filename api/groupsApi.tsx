@@ -19,8 +19,12 @@ export const getAvailableGroups = async (userId: string) => {
   if (error)
     throw error
 
-  if (data && data.length)
-    return mapper.mapArray(data as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
+  if (data && data.length) {
+    const validatedData = data.filter((item) => {
+      return (item.admin_id!=userId && item.group_member.find((item) => item.user_id!=userId))
+    })
+    return mapper.mapArray(validatedData as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
+  }
   return []
 }
 
@@ -37,10 +41,10 @@ export const getGroupsForUser = async (userId: string) => {
     throw error
 
   if (data && data.length) {
-    data.map((item) => {
+    const validatedData = data.filter((item) => {
       return (item.admin_id==userId || item.group_member.find((item) => item.user_id==userId))
     })
-    return mapper.mapArray(data as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
+    return mapper.mapArray(validatedData as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
   }
   return []
 }
@@ -63,7 +67,7 @@ export const getGroupsById = async (id: string) => {
 
   if (data)
     return mapper.map(data as Groups, 'Groups', 'GroupsModel') as GroupsModel
-  return []
+  return null
 }
 
 export const updateGroup = async (group: Groups) => {

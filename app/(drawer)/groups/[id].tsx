@@ -45,7 +45,7 @@ const GroupsDetails = () => {
 
     return (
         <>
-            <NavHeader title={groupById[0].name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} className={'bg-secondary'} />
+            <NavHeader title={groupById.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/groups') }} className={'bg-secondary'} />
             <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
                 <SafeAreaView className='p-4'>
                     <View className='w-full h-[33vh]'>
@@ -55,15 +55,15 @@ const GroupsDetails = () => {
                         {/* <Text className='my-4 basis-full'>
                             {groupById[0].description}
                         </Text> */}
-                        <Stars textClassName='text-2xl' label='Nível: ' rating={groupById[0].level} size={32} className='my-4' disabled />
+                        <Stars textClassName='text-2xl' label='Nível: ' rating={groupById.level} size={32} className='my-4' disabled />
                     </View>
                 </SafeAreaView >
-                <GroupMemberList members={groupById[0]} admin={user?.id == groupById[0].admin_id} />
+                <GroupMemberList members={groupById} admin={user?.id == groupById.admin_id} />
             </ScrollView>
             {createEventModalMemo}
             {confirmModalMemo}
             {
-                (user?.id == groupById[0].admin_id) &&
+                (user?.id == groupById.admin_id) &&
                 <ExpandableIcon menuItems={[
                     {
                         icon: 'pencil',

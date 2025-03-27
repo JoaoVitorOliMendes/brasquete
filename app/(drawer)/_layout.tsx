@@ -1,10 +1,15 @@
 import { View, Text, StatusBar } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Drawer from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '@/constants'
 import DrawerContent from '@/components/drawer/drawerContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Platform } from 'react-native';
+import { fetchUser } from '@/api/authApi';
+import { upsertExpoToken } from '@/api/profileApi';
+import { Profiles } from '@/model/models';
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 const DrawerLayout = () => {
     return (

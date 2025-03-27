@@ -101,21 +101,21 @@ export type MetadataFieldMapping = {
     [k in keyof Functions]: string
 }
 
-export type RPC = {
-    [FunctionName in keyof MetadataFieldMapping]: {
-        Args: Functions[FunctionName]['Args']
-        Returns: Array<
-            Functions[FunctionName]['Returns'][number] & {
-                metadata: MetadataField[MetadataFieldMapping[FunctionName] extends keyof MetadataField
-                ? MetadataFieldMapping[FunctionName]
-                : 'defaultMetadata'] // Fallback to 'defaultMetadata' if the mapping does not exist
-            }
-        >
-    }
-}
+// export type RPC = {
+//     [FunctionName in keyof MetadataFieldMapping]: {
+//         Args: Functions[FunctionName]['Args']
+//         Returns: Array<
+//             Functions[FunctionName]['Returns'][number] & {
+//                 metadata: MetadataField[MetadataFieldMapping[FunctionName] extends keyof MetadataField
+//                 ? MetadataFieldMapping[FunctionName]
+//                 : 'defaultMetadata'] // Fallback to 'defaultMetadata' if the mapping does not exist
+//             }
+//         >
+//     }
+// }
 
-export async function supabaseRPC<
-    MethodName extends keyof MetadataFieldMapping
->(methodName: MethodName, args: RPC[MethodName]['Args']) {
-    return supabase.rpc<MethodName, RPC[MethodName]>(methodName, args)
-}
+// export async function supabaseRPC<
+//     MethodName extends keyof MetadataFieldMapping
+// >(methodName: MethodName, args: RPC[MethodName]['Args']) {
+//     return supabase.rpc<MethodName, RPC[MethodName]>(methodName, args)
+// }
