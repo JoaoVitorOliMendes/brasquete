@@ -26,7 +26,7 @@ jobs:
 
       - name: Build APK
         run: |
-          eas build --platform android --profile preview --local --non-interactive --output ${{ github.workspace }}/app-release.apk
+          eas build --platform android --profile development --local --non-interactive --output ${{ github.workspace }}/app-release.apk
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           EXPO_PUBLIC_MAPS_API_KEY_DEV: ${{ secrets.EXPO_PUBLIC_MAPS_API_KEY_DEV }}
