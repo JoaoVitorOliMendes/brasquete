@@ -117,9 +117,9 @@ const Index = () => {
                 registerForPushNotificationsAsync()
                     .then(token => {
                         setExpoPushToken(token ?? '')
-                        if (expoPushToken && user) {
-                            console.log('aaaaaaaaa', user?.id, expoPushToken)
-                            useUpsertExpoToken.mutateAsync({ id: user?.id, expo_push_token: expoPushToken } as Profiles)
+                        if (token && user) {
+                            console.log('aaaaaaaaa', user?.id, token)
+                            useUpsertExpoToken.mutateAsync({ id: user?.id, expo_push_token: token } as Profiles)
                         }
                     })
                     .catch((error: any) => setExpoPushToken(`${error}`));
