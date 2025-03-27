@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113343866491",
+    "project_id": "brasquete-c1d85",
+    "storage_bucket": "brasquete-c1d85.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113343866491:android:bbe738f2cb7913b09ba4de",
+        "android_client_info": {
+          "package_name": "com.brasquete"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYbfe4QggeWb5V7qt6G9jOvV0qqUmau_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
