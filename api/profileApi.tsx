@@ -19,10 +19,8 @@ export const upsertExpoToken = async (user: Profiles) => {
   console.log('mutate upsertExpoToken', user)
   const { error, data } = await supabase  
   .from('profiles')
-  .upsert({
-    id: user.id,
-    expo_push_token: user.expo_push_token
-  } as Profiles)
+  .update({ expo_push_token: user.expo_push_token })
+  .eq('id', user.id)
 
   if (error)
     throw error
