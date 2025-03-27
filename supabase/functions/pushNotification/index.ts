@@ -5,18 +5,20 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 console.log('Hello from Functions!')
 
-interface Notification {
-  id: string
-  user_id: string
-  body: string
+interface Event {
+  id: string,
+  date: string,
+  group_id: string,
+  created_at: string,
+  updated_at: string
 }
 
 interface WebhookPayload {
   type: 'INSERT' | 'UPDATE' | 'DELETE'
   table: string
-  record: Notification
+  record: Event
   schema: 'public'
-  old_record: null | Notification
+  old_record: null | Event
 }
 
 const supabase = createClient(
@@ -25,27 +27,48 @@ const supabase = createClient(
 )
 
 Deno.serve(async (req) => {
+  console.log(req)
   const payload: WebhookPayload = await req.json()
+  console.log(payload.record.group_id)
+  const { data: groupMemberData } = await supabase
+    .from('group_member')
+    .select('user_id')
+    .eq('group_id', payload.record.group_id)
+
+  console.log(groupMemberData)
+
+  const userArray = groupMemberData.map((item: { user_id: string }) => {
+    return item.user_id
+  })
+
+  console.log(userArray)
+
   const { data } = await supabase
     .from('profiles')
     .select('expo_push_token')
-    .eq('id', payload.record.user_id)
-    .single()
+    .in('id', userArray)
 
-  const res = await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
-    },
-    body: JSON.stringify({
-      to: data?.expo_push_token,
-      sound: 'default',
-      body: payload.record.body,
-    }),
-  }).then((res) => res.json())
+  console.log(data)
 
-  return new Response(JSON.stringify(res), {
+  if (data && data.length > 0) {
+    data.forEach(async (element: { expo_push_token: any }) => {
+      const res = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
+        },
+        body: JSON.stringify({
+          to: element.expo_push_token,
+          sound: 'default',
+          body: 'TEST',
+        }),
+      }).then((res) => res.json())
+      console.log(res)
+    });
+  }
+
+  return new Response(JSON.stringify(!!(data && data.length > 0)), {
     headers: { 'Content-Type': 'application/json' },
   })
 })
