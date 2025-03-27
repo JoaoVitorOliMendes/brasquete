@@ -38,7 +38,7 @@
     "axios": "^1.7.9",
     "expo": "~52.0.23",
     "expo-blur": "~14.0.1",
-    "expo-constants": "~17.0.3",
+    "expo-constants": "~17.0.8",
     "expo-dev-client": "~5.0.8",
     "expo-font": "~13.0.2",
     "expo-haptics": "~14.0.0",
@@ -75,7 +75,9 @@
     "save-dev": "^0.0.1-security",
     "tailwindcss": "^3.4.17",
     "@react-native-community/datetimepicker": "8.2.0",
-    "expo-sharing": "~13.0.1"
+    "expo-sharing": "~13.0.1",
+    "expo-notifications": "~0.29.14",
+    "expo-device": "~7.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
