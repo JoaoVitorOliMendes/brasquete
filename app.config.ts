@@ -35,7 +35,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                 apiKey: process.env.EXPO_PUBLIC_MAPS_API_KEY_DEV
             }
         },
-        package: "com.brasquete"
+        package: "com.brasquete",
+        googleServicesFile: "./google-services.json"
     },
     web: {
         bundler: "metro",
