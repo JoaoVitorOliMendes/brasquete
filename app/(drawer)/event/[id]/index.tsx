@@ -24,20 +24,20 @@ const EventsDetail = () => {
 
   const groupMemberListMemo = useMemo(() => {
     if (eventsData)
-      return <GroupMemberList members={eventsData[0].groups} separator admin={!!(eventsData[0].groups && (user?.id == eventsData[0].groups.admin_id))} />
+      return <GroupMemberList members={eventsData.groups} separator admin={!!(eventsData.groups && (user?.id == eventsData.groups.admin_id))} />
     return <></>
   }, [eventsData])
 
   if (eventsLoading)
     return <></>
 
-  if (!eventsLoading && !(eventsData && eventsData[0] && eventsData[0].groups)) {
+  if (!eventsLoading && !(eventsData && eventsData.groups)) {
     Toast.show({ type: 'error', text1: 'Error', text2: 'No Event Found' })
     router.dismissTo('/event')
   }
   return (
     <>
-      <NavHeader title={eventsData![0].groups!.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/event') }} className={'bg-secondary'} />
+      <NavHeader title={eventsData!.groups!.name} iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo('/event') }} className={'bg-secondary'} />
       <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
         <SafeAreaView className='p-4'>
           <View className='w-full h-[33vh]'>
