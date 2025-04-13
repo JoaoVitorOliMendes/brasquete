@@ -31,7 +31,7 @@ const Register = () => {
   const registerMutation = useMutation(register);
 
   const handleRegister = async (data: RegisterForm) => {
-    console.log('handleRegister')
+    
     const { session, user } = await registerMutation.mutateAsync(data)
     if (registerMutation.isSuccess)
       if (!session)

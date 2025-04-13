@@ -16,8 +16,10 @@ const GroupsIndex = () => {
 
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  const { data: groupsData, refetch } = useQuery(['groups'], () => getGroupsForUser(user!.id), {
-    enabled: !!user
+  const userId = user?.id
+
+  const { data: groupsData, refetch } = useQuery(['groups', userId], () => getGroupsForUser(userId), {
+    enabled: !!userId
   })
 
   useRefreshOnFocus(refetch)

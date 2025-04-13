@@ -11,17 +11,19 @@ import MapPickerModal from '@/components/forms/mapPickerModal'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import CustomStarRating from '@/components/forms/customStarRating'
 import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
-import { Groups } from '@/model/models'
+import { GroupMember, Groups } from '@/model/models'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getGroupsById, insertGroup, updateGroup } from '@/api/groupsApi'
 import { fetchUser } from '@/api/authApi'
 import { insertLocation, updateLocation } from '@/api/locationApi'
+import { insertGroupMember } from '@/api/groupMemberApi'
 
 const EditGroup = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
     const updateGroupMutation = useMutation(updateGroup)
     const insertGroupMutation = useMutation(insertGroup)
+    const insertGroupMemberMutation = useMutation(insertGroupMember)
     const updateLocationMutation = useMutation(updateLocation)
     const insertLocationMutation = useMutation(insertLocation)
     
@@ -69,7 +71,7 @@ const EditGroup = () => {
     const handleRegister = async (data: Groups) => {
         const locationObj = data.location
         delete data.location
-        console.log(data)
+        
         if (locationObj &&
             locationObj.add_city &&
             locationObj.add_country &&
@@ -80,10 +82,10 @@ const EditGroup = () => {
         ) {
             if (data.location_id) {
                 locationObj.id = data.location_id
-                console.log(locationObj)
+                
                 await updateLocationMutation.mutateAsync(locationObj)
             } else {
-                console.log(locationObj)
+                
                 await insertLocationMutation.mutateAsync(locationObj).then((val) => {
                     if (val) {
                         data.location_id=val[0].id
@@ -95,7 +97,14 @@ const EditGroup = () => {
             await updateGroupMutation.mutateAsync(data)
         else {
             data.admin_id = user!.id
-            await insertGroupMutation.mutateAsync(data)
+            const createdGroup = await insertGroupMutation.mutateAsync(data)
+            if (createdGroup && createdGroup.length == 0 && createdGroup[0]) {
+                await insertGroupMemberMutation.mutateAsync({
+                    group_id: createdGroup[0].id,
+                    user_id: user!.id,
+                    confirmed: 1
+                } as GroupMember)
+            }
         }
         router.dismissTo('/groups')
     }
@@ -242,7 +251,6 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
-                                onChange={() => console.log('Change')}
                                 latitude={getValues().location?.latitude ? getValues().location?.latitude : undefined}
                                 longitude={getValues().location?.longitude ? getValues().location?.longitude : undefined}
                             />

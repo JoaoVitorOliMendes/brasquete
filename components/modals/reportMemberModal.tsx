@@ -51,7 +51,7 @@ const ReportMemberModal = ({ visible, dismiss = () => {} }: ReportMemberModalPro
   ]
 
   const handleReport = (data: any) => {
-    console.log(data)
+    
     dismiss()
   }
 

@@ -12,7 +12,7 @@ const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponen
   const router = useRouter()
 
   const logout = async () => {
-    console.log('logout')
+    
     await supabase.auth.signOut()
   }
   return (

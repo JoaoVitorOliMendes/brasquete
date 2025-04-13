@@ -16,7 +16,7 @@ const SearchGroupIndex = () => {
 
     const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-    const { data: groupsData, refetch } = useQuery(['groups'], () => getAvailableGroups(user!.id), {
+    const { data: groupsData, refetch } = useQuery(['groups', 'available'], () => getAvailableGroups(user!.id), {
         enabled: !!user
     })
 
@@ -40,14 +40,14 @@ const SearchGroupIndex = () => {
                     icon: 'filter',
                     label: 'Filtros',
                     onPress: () => {
-                        console.log('Filtros')
+                        
                     }
                 },
                 {
                     icon: 'map',
                     label: 'Mapa',
                     onPress: () => {
-                        console.log('Mapa')
+                        
                     }
                 }
             ]} />
