@@ -16,7 +16,7 @@ import { Profiles } from "@/model/models"
 // }
 
 export const upsertExpoToken = async (user: Profiles) => {
-  console.log('mutate upsertExpoToken', user)
+  
   const { error, data } = await supabase  
   .from('profiles')
   .update({ expo_push_token: user.expo_push_token })

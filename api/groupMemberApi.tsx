@@ -5,24 +5,77 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "./authApi";
 
 export const insertGroupMember = async (groupMember: GroupMember) => {
+  const { error: groupMemberError, data: groupMemberData } = await supabase
+    .from('group_member')
+    .select('*')
+    .eq('user_id', groupMember.user_id)
+    .eq('group_id', groupMember.group_id)
+    .single()
+
+  if (groupMemberError)
+    throw groupMemberError
+
+  if (groupMemberData) {
+    const { error, data } = await supabase
+      .from('group_member')
+      .update({
+        status: 0
+      })
+      .eq('id', groupMemberData.id)
+      .select()
+
+    if (error)
+      throw error
+
+    if (data && data.length)
+      return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
+  } else {
+    const { error, data } = await supabase
+      .from('group_member')
+      .insert(groupMember)
+      .select()
+
+    if (error)
+      throw error
+
+    if (data && data.length)
+      return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
+  }
+
+  return []
+}
+
+export const changeStatusGroupMember = async (groupMember: GroupMember) => {
+  
+  
   const { error, data } = await supabase
     .from('group_member')
-    .insert(groupMember)
+    .update({
+      confirmed: groupMember.confirmed
+    })
+    .eq('id', groupMember.id)
     .select()
+
+  
 
   if (error)
     throw error
 
+  
+
   if (data && data.length)
     return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
+
   return []
 }
 
 export const deleteGroupMember = async (groupMember: GroupMember) => {
-  console.log('Query start deleteGroupMember')
+  
   const { error, data } = await supabase
     .from('group_member')
-    .delete()
+    .update({
+      status: 1
+    })
     .eq('id', groupMember.id)
 
   if (error)

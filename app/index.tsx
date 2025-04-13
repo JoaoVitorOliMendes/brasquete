@@ -76,7 +76,7 @@ async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log('pushTokenString', pushTokenString);
+            ;
             return pushTokenString;
         } catch (e: unknown) {
             handleRegistrationError(`${e}`);
@@ -101,26 +101,25 @@ const Index = () => {
     useEffect(() => {
         // if (!isLoading && user)
         //     router.replace("/(drawer)/event/");
-        console.log('USEEFFECT')
+        
 
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
+            ;
         });
 
         supabase.auth.onAuthStateChange(async (_event, session) => {
-            console.log(_event)
+            
             if (session) {
                 await registerForPushNotificationsAsync()
                     .then(token => {
                         setExpoPushToken(token ?? '')
-                        console.log('aaaaaaaaa', session.user.id, token)
+                        
                         if (token && session.user) {
-                            console.log('bbbbbbbbbbb', session.user.id, token)
-                            useUpsertExpoToken.mutateAsync({ id: session.user.id, expo_push_token: token } as Profiles).then((val) => console.log(val))
+                            useUpsertExpoToken.mutateAsync({ id: session.user.id, expo_push_token: token } as Profiles)
                         }
                     })
                     .catch((error: any) => setExpoPushToken(`${error}`));

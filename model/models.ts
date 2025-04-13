@@ -25,14 +25,16 @@ export type Groups = Tables<'groups'> & {
 export type GroupsModel = Modify<Groups, {}>
 
 export type GroupEvent = Tables<'event'> & {
-    groups?: Groups
+    groups?: Groups,
+    player?: Player[]
 }
 export type GroupEventModel = Modify<GroupEvent, {
     date: Date
 }>
 
 export type Team = Tables<'team'> & {
-    event?: GroupEvent
+    event?: GroupEvent,
+    player?: Player[]
 }
 export type TeamModel = Modify<Team, {}>
 
@@ -52,8 +54,6 @@ export type MatchModel = Modify<Match, {
 }>
 
 export type Player = Tables<'player'> & {
-    team?: Team,
-    event?: GroupEvent,
     group_member?: GroupMember
 }
 export type PlayerModel = Modify<Player, {}>

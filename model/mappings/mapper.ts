@@ -118,6 +118,7 @@ PojosMetadataMap.create<GroupEvent>('GroupEvent', {
     updated_at: String,
     date: String,
     group_id: String,
+    status: Number,
     groups: 'Groups'
 });
 PojosMetadataMap.create<GroupEventModel>('GroupEventModel', {
@@ -126,23 +127,28 @@ PojosMetadataMap.create<GroupEventModel>('GroupEventModel', {
     updated_at: Date,
     date: Date,
     group_id: String,
+    status: Number,
     groups: 'Groups'
 });
 
 PojosMetadataMap.create<Team>('Team', {
     id: String,
+    status: Number,
     created_at: String,
     updated_at: String,
     event_id: String,
     event: 'GroupEvent',
+    player: 'Player',
     name: String
 });
 PojosMetadataMap.create<TeamModel>('TeamModel', {
     id: String,
+    status: Number,
     created_at: Date,
     updated_at: Date,
     event_id: String,
     event: 'GroupEvent',
+    player: 'Player',
     name: String
 });
 
@@ -190,26 +196,24 @@ PojosMetadataMap.create<MatchModel>('MatchModel', {
 
 PojosMetadataMap.create<Player>('Player', {
     id: String,
+    status: Number,
     created_at: String,
     updated_at: String,
-    event: 'Event',
     event_id: String,
     group_member: 'GroupMember',
     group_member_id: String,
     position: String,
-    team: 'Team',
     team_id: String
 });
 PojosMetadataMap.create<PlayerModel>('PlayerModel', {
     id: String,
+    status: Number,
     created_at: Date,
     updated_at: Date,
-    event: 'Event',
     event_id: String,
     group_member: 'GroupMember',
     group_member_id: String,
     position: String,
-    team: 'Team',
     team_id: String
 });
 
@@ -357,6 +361,42 @@ createMap<GroupMember, GroupMemberModel>(
         (destination) => destination.groups,
         mapFrom(
             (source) => source.groups as unknown as Groups
+        )
+    )
+)
+
+createMap<Team, TeamModel>(
+    mapper,
+    'Team',
+    'TeamModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Player, PlayerModel>(
+    mapper,
+    'Player',
+    'PlayerModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
         )
     )
 )

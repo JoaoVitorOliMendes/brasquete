@@ -23,7 +23,7 @@ export const register = async (registerForm: RegisterForm) => {
 }
 
 export const login = async (loginForm: LoginForm) => {
-  console.log("mutationFn")
+  
   const { data, error: signInError } = await supabase.auth.signInWithPassword({
     email: loginForm.email,
     password: loginForm.password
