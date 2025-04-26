@@ -17,12 +17,14 @@ const CustomButton = ({ label, type='filled', color='primary', className, onPres
         outline: {
             primary: 'border-primary',
             secondary: 'border-secondary',
-            white: 'border-white'
+            white: 'border-white',
+            black: 'border-black'
         },
         filled: {
             primary: 'bg-primary border-primary',
             secondary: 'bg-secondary border-secondary',
-            white: 'bg-white border-white'
+            white: 'bg-white border-white',
+            black: 'bg-black border-black'
         }
     }
 
@@ -30,12 +32,14 @@ const CustomButton = ({ label, type='filled', color='primary', className, onPres
         outline: {
             primary: 'text-primary',
             secondary: 'text-secondary',
-            white: 'text-white'
+            white: 'text-white',
+            black: 'text-black'
         },
         filled: {
             primary: 'text-white',
             secondary: 'text-white',
-            white: 'text-black'
+            white: 'text-black',
+            black: 'text-white'
         }
     }
 

@@ -45,7 +45,9 @@ export type GroupMember = Tables<'group_member'> & {
 export type GroupMemberModel = Modify<GroupMember, {}>
 
 export type Match = Tables<'match'> & {
-    event: GroupEvent
+    event: GroupEvent,
+    team_a: Team,
+    team_b: Team
 }
 export type MatchModel = Modify<Match, {
     time_end: Date,

@@ -125,3 +125,24 @@ export const getTeamsForEvent = async (event: GroupEvent) => {
   }
   return null
 }
+
+export const getTeamById = async (team: Team) => {
+  console.log('getTeamByIdStart', team)
+  const { data, error } = await supabase
+    .from('team')
+    .select(`
+      *,
+      player(*)
+    `)
+    .eq('id', team.id)
+    .single()
+    console.log('getTeamById', data)
+
+  if (error)
+    throw error
+
+  if (data) {
+    return mapper.map(data as Team, 'Team', 'TeamModel') as TeamModel
+  }
+  return null
+}
