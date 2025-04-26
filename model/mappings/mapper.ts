@@ -181,7 +181,11 @@ PojosMetadataMap.create<Match>('Match', {
     event_id: String,
     time_end: String,
     time_pause: String,
-    time_start: String
+    time_start: String,
+    team_a: 'Team',
+    team_a_id: String,
+    team_b: 'Team',
+    team_b_id: String,
 });
 PojosMetadataMap.create<MatchModel>('MatchModel', {
     id: String,
@@ -191,7 +195,11 @@ PojosMetadataMap.create<MatchModel>('MatchModel', {
     event_id: String,
     time_end: Date,
     time_pause: Date,
-    time_start: Date
+    time_start: Date,
+    team_a: 'Team',
+    team_a_id: String,
+    team_b: 'Team',
+    team_b_id: String,
 });
 
 PojosMetadataMap.create<Player>('Player', {
@@ -228,7 +236,7 @@ PojosMetadataMap.create<PlayerScore>('PlayerScore', {
     profiles: 'Profiles',
     score: 'Score',
     score_id: String,
-    user_id: String
+    player_id: String,
 });
 PojosMetadataMap.create<PlayerScoreModel>('PlayerScoreModel', {
     id: String,
@@ -241,7 +249,7 @@ PojosMetadataMap.create<PlayerScoreModel>('PlayerScoreModel', {
     profiles: 'Profiles',
     score: 'Score',
     score_id: String,
-    user_id: String
+    player_id: String,
 });
 
 PojosMetadataMap.create<ReportMotive>('PlayerScore', {
@@ -261,6 +269,19 @@ PojosMetadataMap.create<ReportMotiveModel>('ReportMotiveModel', {
     motive_id: String,
     report: 'Report',
     report_id: String
+});
+
+PojosMetadataMap.create<Score>('Score', {
+    created_at: String,
+    id: String,
+    score: String,
+    updated_at: String,
+});
+PojosMetadataMap.create<ScoreModel>('ReportMotiveModel', {
+    created_at: Date,
+    id: String,
+    score: String,
+    updated_at: Date
 });
 
 createMap<Location, LocationModel>(
@@ -387,6 +408,42 @@ createMap<Player, PlayerModel>(
     mapper,
     'Player',
     'PlayerModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Score, ScoreModel>(
+    mapper,
+    'Score',
+    'ScoreModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Match, MatchModel>(
+    mapper,
+    'Match',
+    'MatchModel',
     forMember(
         (destination) => destination.created_at,
         mapFrom(

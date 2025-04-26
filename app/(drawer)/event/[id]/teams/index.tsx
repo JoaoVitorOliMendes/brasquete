@@ -1,78 +1,81 @@
-import { View, Text, ScrollView } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import NavHeader from '@/components/navHeader'
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import TeamPickerModal from '@/components/modals/teamPickerModal'
-import CustomButton from '@/components/buttons/customButton'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { fetchUser } from '@/api/authApi'
-import { getEventByid } from '@/api/eventsApi'
-import Toast from 'react-native-toast-message'
-import { getTeamsForEvent } from '@/api/teamApi'
-import CardTeam from '@/components/card/cardTeam'
-import { Team } from '@/model/models'
+import React, { useState } from 'react';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import NavHeader from '@/components/navHeader';
+import CustomButton from '@/components/buttons/customButton';
+import CardTeam from '@/components/card/cardTeam';
+import TeamPickerModal from '@/components/modals/teamPickerModal';
+import { getTeamsForEvent } from '@/api/teamApi';
+import { getEventByid } from '@/api/eventsApi';
+import { Team } from '@/model/models';
+import Toast from 'react-native-toast-message';
 
 const Teams = () => {
-    const { id } = useLocalSearchParams<{ id: string }>()
-    const router = useRouter()
-    const [modalVisible, setModalVisible] = useState(false)
-    const [focusTeam, setFocusTeam] = useState<Team>()
+  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
-    const { data: user } = useQuery(['user'], fetchUser)
-    const { data: eventsData, isLoading: eventsLoading, isRefetching: eventsIsRefetching } = useQuery(['events', id], () => getEventByid(id))
-    const { data: teamsData, isLoading: teamsLoading, isRefetching: teamsIsRefetching } = useQuery(['teams', id], () => getTeamsForEvent(eventsData!), {
-        enabled: !!eventsData
-    })
+  // Fetch event data
+  const { data: eventsData, isLoading: eventsLoading } = useQuery(['events', id], () => getEventByid(id));
 
-    const userMember = (eventsData?.groups?.group_member?.find((item) => item.user_id == user?.id))
+  // Fetch teams data
+  const { data: teamsData, isLoading: teamsLoading } = useQuery(['teams', id], () =>
+    eventsData ? getTeamsForEvent(eventsData) : Promise.resolve([])
+  );
 
-    useEffect(() => {
-        console.log(eventsData)
-        console.log(teamsData)
-        console.log(eventsLoading)
-        console.log(teamsLoading)
-        console.log(eventsIsRefetching)
-        console.log(teamsIsRefetching)
-    }, [eventsData])
+  const handleEditTeam = (team: Team) => {
+    setSelectedTeam(team);
+    setModalVisible(true);
+  };
 
-    if (eventsLoading)
-        return <></>
+  const handleCloseModal = () => {
+    setSelectedTeam(null);
+    setModalVisible(false);
+  };
 
-    if (!eventsLoading && !(eventsData && eventsData.groups)) {
-        Toast.show({ type: 'error', text1: 'Error', text2: 'No Event Found' })
-        router.dismissTo('/event')
-    }
+  if (eventsLoading || teamsLoading) return null;
 
-    return (
-        <>
-            <NavHeader title='Divisão de times' iconProps={{ iconProps: { color: 'white', icon: 'arrow-back' }, onPress: () => router.dismissTo(`/event/${id}`) }} className={'bg-secondary'} />
-            <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1 bg-secondary'>
-                <CustomButton label='Adicionar Time' onPress={() => {
-                    setFocusTeam(undefined)
-                    setModalVisible(true)
-                }} />
-                {
-                    (teamsData && teamsData.length) ?
-                    teamsData.map((team, idx) => {
-                        return (
-                            <View key={idx} className='my-3 p-3'>
-                                <CardTeam onClick={() => {
-                                    setFocusTeam(team)
-                                    setModalVisible(true)
-                                }} team={team} />
-                            </View>
-                        )
-                    })
-                    :
-                    <></>
-                }
-            </ScrollView>
-            <TeamPickerModal team={focusTeam} eventsData={eventsData!} visible={modalVisible} dismiss={() => {
-                setFocusTeam(undefined)
-                setModalVisible(false)
-            }} />
-        </>
-    )
-}
+  if (!eventsData) {
+    Toast.show({ type: 'error', text1: 'Error', text2: 'Event not found.' });
+    return null;
+  }
 
-export default Teams
+  return (
+    <>
+      <NavHeader
+        title="Teams"
+        iconProps={{
+          iconProps: { color: 'white', icon: 'arrow-back' },
+          onPress: () => router.dismissTo(`/event/${id}`),
+        }}
+        className="bg-secondary"
+      />
+      <ScrollView className="flex-1 bg-secondary">
+        <CustomButton
+          label="Criar Time"
+          onPress={() => handleEditTeam({ id: '', name: '', player: [] })}
+          className="m-4"
+        />
+        {teamsData?.map((team) => (
+          <TouchableOpacity key={team.id}>
+            <View className="my-3 p-3">
+              <CardTeam team={team} onClick={() => handleEditTeam(team)}/>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      {modalVisible && (
+        <TeamPickerModal
+          visible={modalVisible}
+          dismiss={handleCloseModal}
+          eventsData={eventsData}
+          team={selectedTeam}
+        />
+      )}
+    </>
+  );
+};
+
+export default Teams;
