@@ -63,11 +63,11 @@ const DrawerLayout = () => {
                         />
                     ),
                 }} />
-                <Drawer.Screen name='(profile)' options={{
-                    title: 'Perfil',
+                <Drawer.Screen name='statistics' options={{
+                    title: 'Desempenho',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
-                            name='person'
+                            name='bar-chart'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />
