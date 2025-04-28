@@ -3,22 +3,22 @@
 --> 4
 ☐ Editar perfil
 --> 2
-☐ Finalizar partida
+☐ Finalizar partida - Joao
 --> 3
     quando timer chegar a 0, botao de "finalizar partida, resetar timer (add +10 min), adicionar +30s ao timer"
-☐ Finalizar evento
+☐ Finalizar evento - Joao
 --> 1
-☐ Poder voltar a uma partida em execução
+☐ Poder voltar a uma partida em execução - Joao
 --> 3
-☐ Mapa de grupos
+☐ Mapa de grupos - Joao
 --> 4
 ☐ Filtros de pesquisa grupos
 --> 4
 ☐ Corrigir divisão de times
 --> 5???
-☐ Soretio de times
+☐ Sorteio de times
 --> 10
-☐ Denuncia de jogadores no banco
+☐ Denuncia de jogadores - Joao
 --> 3
 ☐ Falar com Dalton
 --> 100
@@ -26,12 +26,12 @@
 --> 2
 ☐ Nao permitir agendar evento pra ontem
 --> 1
-☐ Ver histórico de partidas
+☐ Ver histórico de partidas - Joao
 --> 5
     De cada jogador ver statisticas
     Duração da paritida
     Estatísticas gerais
-☐ Adicionar faltas na tela de partida
+☐ Adicionar faltas na tela de partida - Joao
 --> 2
 ☐ Definir tempo da partida ao criar
 --> 2
