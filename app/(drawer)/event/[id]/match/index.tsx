@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import CustomButton from '@/components/buttons/customButton';
 import { getMatchById, add30Seconds, pauseMatchTimer, startMatchTimer } from '@/api/matchApi';
-import { Match, Player, Team } from '@/model/models';
+import { Match, Player, PlayerScore, Score, Team } from '@/model/models';
 import Toast from 'react-native-toast-message';
 import { addPlayerScore, getTeamMatchScore } from '@/api/playerScoreApi';
 import { getScores } from '@/api/scoreApi';
@@ -22,6 +22,7 @@ const EventMatch = () => {
   const [points, setPoints] = useState({ teamA: 0, teamB: 0 });
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<'teamA' | 'teamB' | null>(null);
+  const [selectedScore, setSelectedScore] = useState<Score | null>(null)
 
   const [teamPlayerModalVisible, setTeamPlayerModalVisible] = useState(false);
 
@@ -99,18 +100,19 @@ const EventMatch = () => {
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const handleMarkPoints = (scoreId: string) => {
-    if (selectedPlayer && selectedTeam) {
+  const handleMarkPoints = (player: Player) => {
+    if (selectedScore) {
+      console.log('Selected Score:', selectedScore);
       addPlayerScoreMutation.mutate({
-        player_id: selectedPlayer.id,
+        player_id: player.id,
         match_id: matchId,
-        team_id: selectedTeam === 'teamA' ? matchData?.team_a_id : matchData?.team_b_id,
-        score_id: scoreId,
-        count: 1,
-      });
+        score_id: selectedScore.id
+      } as PlayerScore);
     } else {
       Toast.show({ type: 'info', text1: 'Select Team and Player', text2: 'Please select both.' });
     }
+    setSelectedScore(null)
+    setTeamPlayerModalVisible(false)
   };
 
   const handleAddTime = () => {
@@ -130,6 +132,7 @@ const EventMatch = () => {
       startTimerMutation.mutate(matchData);
     }
   }
+
 
   if (!matchData || !teamAData || !teamBData || !scores || !matchScoreData) {
     return (
@@ -164,17 +167,23 @@ const EventMatch = () => {
             </View>
           </View>
           <View className='flex-column justify-center items-center w-full px-5 mb-10'>
-            <CustomButton label="Start" onPress={handleStartTimer} className="mb-2 w-3/4" />
-            <CustomButton label="Pausar" onPress={handlePauseTimer} className="mb-2 w-3/4" />
+            {
+              isRunning ?
+                <CustomButton label="Pausar" onPress={handlePauseTimer} className="mb-2 w-3/4" />
+                :
+                <CustomButton label="Start" onPress={handleStartTimer} className="mb-2 w-3/4" />
+            }
             <CustomButton label="+30s" onPress={handleAddTime} className="mb-2 w-3/4" />
             {
               scores?.map((score) => {
-                console.log('score', score)
                 return (
                   <CustomButton
                     key={score.id}
                     label={score.score}
-                    onPress={() => setTeamPlayerModalVisible(true)}
+                    onPress={() => {
+                      setSelectedScore(score)
+                      setTeamPlayerModalVisible(true)
+                    }}
                     className="mb-2 w-3/4"
                   />
                 )
@@ -184,10 +193,13 @@ const EventMatch = () => {
         </View>
       </ScrollView>
       <TeamPlayerModal
-        onClose={() => setTeamPlayerModalVisible(false)}
-        onConfirm={console.log}
-        teamA={matchData.team_a_id}
-        teamB={matchData.team_b_id}
+        onClose={() => {
+          setSelectedScore(null)
+          setTeamPlayerModalVisible(false)
+        }}
+        onConfirm={handleMarkPoints}
+        teamA={teamAData}
+        teamB={teamBData}
         visible={teamPlayerModalVisible}
       />
     </>

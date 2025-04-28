@@ -25,32 +25,37 @@ const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlay
                     }}
                 />
                 <View className='rounded-lg w-5/6 bg-secondary p-10'>
-                    <View className='flex-row'>
-                        <CustomTitle title={teamA.name} className='text-white' />
-                        <View className='flex-1  justify-center items-center'>
+                    <View className='flex-column justify-center'>
+                        <CustomTitle title={teamA.name} className='text-white' sizeClass='text-3xl' />
+                        <View className='flex flex-row flex-wrap justify-center items-center'>
                             {
-                                teamA.player?.map((player, index) => (
-                                    <Pressable key={index} onPress={() => onConfirm(player)}>
-                                        <Image
-                                            style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                                            source={images.person}
-                                        />
-                                    </Pressable>
-                                ))
+                                teamA.player?.map((player, index) => {
+                                    return (
+                                        <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
+                                            <Image
+                                                className='rounded-lg'
+                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
+                                                source={images.person}
+                                            />
+                                        </Pressable>
+                                    )
+                                })
                             }
                         </View>
-                        <CustomTitle title={teamB.name} className='text-white' />
-                        <View className='flex-1  justify-center items-center'>
+                        <CustomTitle title={teamB.name} className='text-white' sizeClass='text-3xl' />
+                        <View className='flex flex-row flex-wrap justify-center items-center'>
                             {
-                                teamB.player?.map((player, index) => (
-
-                                    <Pressable key={index} onPress={() => onConfirm(player)}>
-                                        <Image
-                                            style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                                            source={images.person}
-                                        />
-                                    </Pressable>
-                                ))
+                                teamB.player?.map((player, index) => {
+                                    return (
+                                        <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
+                                            <Image
+                                                className='rounded-lg'
+                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
+                                                source={images.person}
+                                            />
+                                        </Pressable>
+                                    )
+                                })
                             }
                         </View>
                     </View>

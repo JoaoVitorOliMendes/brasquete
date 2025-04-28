@@ -25,7 +25,7 @@ export const getTeamMatchScore = async (match: Match) => {
             return acc + (item.count * multiplier);
         }
         return acc;
-    } , 0) || 0;
+    }, 0) || 0;
     const teamBPoints = data?.filter((item: any) => item.match_id == match.id && item.team_b.id != null).reduce((acc: number, item: any) => {
         if (['1 Ponto', '2 Pontos', '3 Pontos'].includes(item.score.score)) {
             let multiplier = 1;
@@ -34,7 +34,7 @@ export const getTeamMatchScore = async (match: Match) => {
             return acc + (item.count * multiplier);
         }
         return acc;
-    } , 0) || 0;
+    }, 0) || 0;
 
     if (error)
         throw error;
@@ -46,12 +46,49 @@ export const getTeamMatchScore = async (match: Match) => {
 };
 
 export const addPlayerScore = async (playerScore: PlayerScore) => {
-    const { data, error } = await supabase
+    const { error: playerScoreError, data: playerScoreData } = await supabase
         .from('player_score')
-        .insert(playerScore)
-        .select();
+        .select('*')
+        .eq('player_id', playerScore.player_id)
+        .eq('match_id', playerScore.match_id)
+        .eq('score_id', playerScore.score_id)
+
+    console.log('addPlayerScore', playerScoreData);
+    if (playerScoreError)
+        throw playerScoreError
+
+    if (playerScoreData && playerScoreData.length) {
+        const { data, error } = await supabase
+            .from('player_score')
+            .update({
+                count: playerScoreData[0].count + 1
+            })
+            .eq('id', playerScoreData[0].id)
+            .select();
+
+        if (error) throw error;
+        return mapper.mapArray(data as PlayerScore[], 'PlayerScore', 'PlayerScoreModel') as PlayerScore[]
+    } else {
+        const { data, error } = await supabase
+            .from('player_score')
+            .insert({
+                ...playerScore,
+                count: 1
+            })
+            .select();
+
+        if (error) throw error;
+        return mapper.mapArray(data as PlayerScore[], 'PlayerScore', 'PlayerScoreModel') as PlayerScore[]
+    }
+}
+
+export const getPlayerStatistics = async (userId: string) => {
+    const { data, error } = await supabase.rpc('userstatistics', { _user_id: userId });
+
+    console.log('getPlayerStatistics', data);
+    console.log('getPlayerStatistics', userId);
 
     if (error) throw error;
 
-    return mapper.mapArray(data as PlayerScore[], 'PlayerScore', 'PlayerScoreModel') as PlayerScore[]
+    return data;
 }

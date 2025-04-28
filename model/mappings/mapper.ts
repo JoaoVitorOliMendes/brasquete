@@ -457,3 +457,21 @@ createMap<Match, MatchModel>(
         )
     )
 )
+
+createMap<PlayerScore, PlayerScoreModel>(
+    mapper,
+    'PlayerScore',
+    'PlayerScoreModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)

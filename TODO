@@ -1,42 +1,57 @@
+@Must
 ☐ Change map in group/[id] to static maps
-☐ Test animations in TextArea
-☐ Make disabled color for text input
-☐ Is the db wrong? shouldn't scores have a separate table like scoretype, where it's saved 3points/2points etc
-☐ Should reports be the same thing?
-i think it should
+--> 4
+☐ Editar perfil
+--> 2
+☐ Finalizar partida
+--> 3
+    quando timer chegar a 0, botao de "finalizar partida, resetar timer (add +10 min), adicionar +30s ao timer"
+☐ Finalizar evento
+--> 1
+☐ Poder voltar a uma partida em execução
+--> 3
+☐ Mapa de grupos
+--> 4
+☐ Filtros de pesquisa grupos
+--> 4
+☐ Corrigir divisão de times
+--> 5???
+☐ Soretio de times
+--> 10
+☐ Denuncia de jogadores no banco
+--> 3
+☐ Falar com Dalton
+--> 100
+☐ Mudar UI de partida
+--> 2
+☐ Nao permitir agendar evento pra ontem
+--> 1
+☐ Ver histórico de partidas
+--> 5
+    De cada jogador ver statisticas
+    Duração da paritida
+    Estatísticas gerais
+☐ Adicionar faltas na tela de partida
+--> 2
+☐ Definir tempo da partida ao criar
+--> 2
+☐ Encerrar partida a qualquer momento
+--> 1
 
-☐ Refactor code
-☐ Refactor types
-☐ Refactor using useMemo
+@Should
+☐ Consertar compartilhamento de grupo
+--> 4
+☐ Foto de perfil
+--> 5
+☐ Reset de senha
+--> 3
 
+@Could
+☐ Definição de cargos (admin)
+☐ Numero de partidas jogadas
+☐ Timeout
+☐ Implementar quartos
+☐ Notificação para inicio de partida
 
-COMO FUNCIONAM PARTIDAS
-1. Ir para Eventos
-    1.1. Os eventos a serem mostrados serão
-        1.1.1. Eventos marcados por grupos que o jogador faz parte
-            1.1.1.1. Se o jogador faz parte de um grupo sem evento marcado, o grupo não aparecerá
-        1.1.2. Apenas eventos no futuro (agora < EVENTO.DATETIMEINICIO) (tolerancia de 30 minutos??)
-            1.1.2.1. O que acontece se um evento nunca for iniciado?
-        1.1.3. Eventos com partidas em execução (agora BETWEEN PARTIDA.DATETIMEINICIO and PARTIDA.DATETIMEFIM) (tolerancia de 30 minutos??)
-            1.1.3.1. A partida terminará automaticamente quando (agora > PARTIDA.DATETIMEFIM)
-            1.1.3.2. O botão de acrescentar segundos apenas acrescenta em PARTIDA.DATETIMEFIM
-            1.1.3.3. O botão de pausar limpa PARTIDA.DATETIMEFIM
-                1.1.3.3.1. E se o usuário pausar e nunca despausar, a partida dura para sempre?
-2. Clicou start
-3. Dividiu Times (2 times de 5 jogadores) (os times devem estar divididos para iniciar)
-    3.1 Apenas jogadores confirmados
-4. Clicou (Iniciar Partida)
-    4.1. Partida criada no banco
-        4.1.1. PARTIDA.DATETIMEINICIO é setado para (agora) e PARTIDA.DATETIMEFIM é setado para (agora + 10 minutos)
-        4.1.2. Quando os pontos serão registrados?
-            4.1.2.1. Pontos registrados toda vez que adiciona pontos a um jogador
-                4.1.2.1.1. - Testar, pode provocar lentidão/loading toda vez que clicar em um botão
-    4.2. Tempo da partida finaliza (agora = PARTIDA.DATETIMEFIM)
-    4.3. Alerta 'Partida finalizada'
-    4.4. Volta para tela de Eventos
-        4.4.1. Tolerancia de 30 minutos para iniciar nova partida no mesmo evento
-
-5. Evento é finalizado automaticamente
-    5.1. Botão para finalizar evento?
-    5.2. Histórico de eventos??
-        5.2.1. Da pra fazer um botao que quando clica vai pro histórico de partida e ja mostra as partidas daquele evento
+@Wont
+☐ Limitação de falta
