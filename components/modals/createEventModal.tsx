@@ -9,6 +9,7 @@ import { DateTimePickerForm } from "@/model/formModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { insertEvent } from "@/api/eventsApi";
+import Toast from "react-native-toast-message";
 
 interface CreateEventModalProps {
   visible?: boolean,
@@ -30,7 +31,8 @@ const CreateEventModal = ({ groupId, visible, dismiss = () => { } }: CreateEvent
       value: date || new Date(),
       onChange,
       mode: currentMode,
-      is24Hour: false
+      is24Hour: false,
+      minimumDate: new Date()
     })
   }
 
@@ -48,6 +50,14 @@ const CreateEventModal = ({ groupId, visible, dismiss = () => { } }: CreateEvent
   const timeRef = useRef<TextInput>(null)
   
   const createEvent = (data: DateTimePickerForm) => {
+    if (data.completeDate <= new Date()) {
+      Toast.show({
+        type: 'error',
+        text1: 'Data inválida',
+        text2: 'A data deve ser maior que a data atual'
+      })
+      return
+    }
     insertEventMutation.mutateAsync({
       date: data.completeDate.toISOString(),
       group_id: groupId

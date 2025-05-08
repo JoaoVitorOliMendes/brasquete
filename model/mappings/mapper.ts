@@ -179,13 +179,15 @@ PojosMetadataMap.create<Match>('Match', {
     updated_at: String,
     event: 'Event',
     event_id: String,
-    time_end: String,
     time_pause: String,
     time_start: String,
     team_a: 'Team',
     team_a_id: String,
     team_b: 'Team',
     team_b_id: String,
+    duration: Number,
+    pause_duration: Number,
+    time_end: String
 });
 PojosMetadataMap.create<MatchModel>('MatchModel', {
     id: String,
@@ -193,13 +195,15 @@ PojosMetadataMap.create<MatchModel>('MatchModel', {
     updated_at: Date,
     event: 'Event',
     event_id: String,
-    time_end: Date,
     time_pause: Date,
     time_start: Date,
     team_a: 'Team',
     team_a_id: String,
     team_b: 'Team',
     team_b_id: String,
+    duration: Number,
+    pause_duration: Number,
+    time_end: Date
 });
 
 PojosMetadataMap.create<Player>('Player', {
@@ -230,10 +234,9 @@ PojosMetadataMap.create<PlayerScore>('PlayerScore', {
     created_at: String,
     updated_at: String,
     count: Number,
-    host: Boolean,
     match: 'Match',
     match_id: String,
-    profiles: 'Profiles',
+    player: 'Player',
     score: 'Score',
     score_id: String,
     player_id: String,
@@ -243,10 +246,9 @@ PojosMetadataMap.create<PlayerScoreModel>('PlayerScoreModel', {
     created_at: Date,
     updated_at: Date,
     count: Number,
-    host: Boolean,
     match: 'Match',
     match_id: String,
-    profiles: 'Profiles',
+    player: 'Player',
     score: 'Score',
     score_id: String,
     player_id: String,
@@ -454,6 +456,24 @@ createMap<Match, MatchModel>(
         (destination) => destination.updated_at,
         mapFrom(
             (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_end,
+        mapFrom(
+            (source) => source.time_end ? new Date(source.time_end) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_pause,
+        mapFrom(
+            (source) => source.time_pause ? new Date(source.time_pause) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_start,
+        mapFrom(
+            (source) => source.time_start ? new Date(source.time_start) : ''
         )
     )
 )

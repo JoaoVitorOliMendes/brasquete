@@ -25,7 +25,6 @@ export const getEventsForGroups = async () => {
 }
 
 export const getEventByid = async (id: string) => {
-  console.log('getEventByid')
   const { data, error } = await supabase
   .from('event')
     .select(`

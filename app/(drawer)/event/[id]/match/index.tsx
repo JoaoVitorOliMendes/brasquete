@@ -1,10 +1,10 @@
 import { View, Text, Modal, TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CustomButton from '@/components/buttons/customButton';
-import { getMatchById, add30Seconds, pauseMatchTimer, startMatchTimer } from '@/api/matchApi';
-import { Match, Player, PlayerScore, Score, Team } from '@/model/models';
+import { getMatchById, add30Seconds, pauseMatchTimer, startMatchTimer, endMatch, add10Minutes } from '@/api/matchApi';
+import { Match, MatchModel, Player, PlayerScore, Score, Team } from '@/model/models';
 import Toast from 'react-native-toast-message';
 import { addPlayerScore, getTeamMatchScore } from '@/api/playerScoreApi';
 import { getScores } from '@/api/scoreApi';
@@ -12,26 +12,34 @@ import TeamPlayerModal from '@/components/modals/teamPlayerModal';
 import CustomTitle from '@/components/customTitle';
 import { getTeamById } from '@/api/teamApi';
 import NavHeader from '@/components/navHeader';
+import moment from 'moment';
+import ConfirmModal from '@/components/modals/confirmationModal';
+import EndMatchModal from '@/components/modals/endMatchModal';
 
 const EventMatch = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
-  const [time, setTime] = useState(600); // 10 minutes in seconds
+  const [time, setTime] = useState(600);
   const [isRunning, setIsRunning] = useState(false);
-  const [points, setPoints] = useState({ teamA: 0, teamB: 0 });
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-  const [selectedTeam, setSelectedTeam] = useState<'teamA' | 'teamB' | null>(null);
   const [selectedScore, setSelectedScore] = useState<Score | null>(null)
+  const queryClient = useQueryClient();
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false)
 
   const [teamPlayerModalVisible, setTeamPlayerModalVisible] = useState(false);
 
+  // const confirmModalMemo = useMemo(() => {
+  //   return <ConfirmModal message='Você tem certeza que deseja finalizar a partida?' title='Finalizar Partida' onConfirm={() => {
+  //     handleEndMatch()
+  //   }} visible={confirmModalVisible} dismiss={() => setConfirmModalVisible(false)} />
+  // }, [confirmModalVisible])
+
   // Fetch match data
-  const { data: matchData, isLoading: matchLoading } = useQuery(['match', matchId], () =>
-    getMatchById({
+  const { data: matchData, isLoading: matchLoading, isSuccess: matchSuccess, refetch: matchRefetch } = useQuery<MatchModel | undefined>(['match', matchId], () => {
+    return getMatchById({
       id: matchId,
-    } as Match)
-  );
+    } as Match);
+  });
 
 
   const { data: teamAData, isLoading: teamALoading } = useQuery(['team', matchData?.team_a_id], () => getTeamById({ id: matchData?.team_a_id } as Team), {
@@ -49,20 +57,37 @@ const EventMatch = () => {
   // Fetch Scores
   const { data: scores, isLoading: scoresLoading } = useQuery(['scores'], getScores)
 
-  const addPlayerScoreMutation = useMutation(addPlayerScore);
+  const addPlayerScoreMutation = useMutation(addPlayerScore, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['matchScore', matchId])
+    },
+    onError: () => {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to add player score.' });
+    },
+  });
 
   const addTimeMutation = useMutation(add30Seconds, {
     onSuccess: () => {
-      setTime((prevTime) => prevTime + 30); // Add 30 seconds
+      queryClient.invalidateQueries(['match', matchId])
     },
     onError: () => {
       Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to add time.' });
     },
   });
 
+  const resetTimerMutation = useMutation(add10Minutes, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['match', matchId])
+    },
+    onError: () => {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to reset timer.' });
+    },
+  });
+
   const pauseTimerMutation = useMutation(pauseMatchTimer, {
     onSuccess: () => {
-      setIsRunning(false);
+      setIsRunning(false)
+      queryClient.invalidateQueries(['match', matchId])
     },
     onError: () => {
       Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to pause timer.' });
@@ -71,12 +96,57 @@ const EventMatch = () => {
 
   const startTimerMutation = useMutation(startMatchTimer, {
     onSuccess: () => {
-      setIsRunning(true);
+      setIsRunning(true)
+      queryClient.invalidateQueries(['match', matchId])
     },
     onError: () => {
       Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to start timer.' });
     },
   });
+
+  const endMatchMutation = useMutation(endMatch, {
+    onSuccess: () => {
+      setIsRunning(false)
+      queryClient.invalidateQueries(['match', matchId])
+    },
+    onError: () => {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to start timer.' });
+    },
+  });
+
+  const confirmModalMemo = useMemo(() => {
+    if (teamBData && teamAData && matchScoreData) {
+      let winner;
+
+      if (matchScoreData.teamA.points > matchScoreData.teamB.points) {
+        winner = teamAData.name
+      } else if (matchScoreData.teamA.points < matchScoreData.teamB.points) {
+        winner = teamBData.name
+      } else {
+        winner = 'Empate'
+      }
+
+      return <EndMatchModal
+        add30sec={() => {
+          handleAddTime()
+          handleStartTimer()
+          setConfirmModalVisible(false)
+        }}
+        endMatch={() => {
+          handleEndMatch()
+          setConfirmModalVisible(false)
+          router.dismissTo(`/event/${id}`)
+        }}
+        resetTimer={() => {
+          handleResetTimer()
+          handleStartTimer()
+          setConfirmModalVisible(false)
+        }}
+        winnerTeam={winner}
+        visible={confirmModalVisible}
+      />
+    }
+  }, [confirmModalVisible, teamAData, teamBData, matchScoreData])
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -84,6 +154,11 @@ const EventMatch = () => {
       interval = setInterval(() => {
         setTime((prevTime) => {
           if (prevTime <= 0) {
+            queryClient.invalidateQueries(['match', matchId])
+            if (!confirmModalVisible) {
+              handlePauseTimer()
+              setConfirmModalVisible(true)
+            }
             clearInterval(interval);
             return 0;
           }
@@ -94,6 +169,26 @@ const EventMatch = () => {
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  useEffect(() => {
+    if (matchData) {
+      const startTime = moment(matchData.time_start || new Date());
+      const remainingMs = (matchData.duration + (matchData.pause_duration || 0)) - (moment((matchData.time_pause ? matchData.time_pause : new Date())).diff(startTime))
+      const remainingSeconds = moment.duration(remainingMs).asSeconds().toFixed(0) as unknown as number
+      if (remainingSeconds <= 0 || matchData.time_end) {
+        // router.dismissTo(`/event/${id}`)
+        setTime(0);
+        setConfirmModalVisible(true)
+      } else {
+        setTime(remainingSeconds);
+      }
+      if (!isRunning) {
+        setIsRunning(matchData.time_start && !matchData.time_pause);
+      }
+    } else {
+      setTime(600)
+    }
+  }, [matchData, matchSuccess]);
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -102,7 +197,6 @@ const EventMatch = () => {
 
   const handleMarkPoints = (player: Player) => {
     if (selectedScore) {
-      console.log('Selected Score:', selectedScore);
       addPlayerScoreMutation.mutate({
         player_id: player.id,
         match_id: matchId,
@@ -116,6 +210,7 @@ const EventMatch = () => {
   };
 
   const handleAddTime = () => {
+    console.log('add time', matchData)
     if (matchData) {
       addTimeMutation.mutate(matchData);
     }
@@ -133,6 +228,18 @@ const EventMatch = () => {
     }
   }
 
+  const handleEndMatch = () => {
+    if (matchData) {
+      endMatchMutation.mutate(matchData);
+    }
+  };
+
+  const handleResetTimer = () => {
+    if (matchData) {
+      resetTimerMutation.mutate(matchData);
+    }
+  };
+
 
   if (!matchData || !teamAData || !teamBData || !scores || !matchScoreData) {
     return (
@@ -146,7 +253,7 @@ const EventMatch = () => {
         title="Partida"
         iconProps={{
           iconProps: { color: 'white', icon: 'arrow-back' },
-          onPress: () => router.dismissTo(`/event/${id}`),
+          onPress: () => router.dismiss(),
         }}
         className="bg-secondary"
       />
@@ -155,15 +262,17 @@ const EventMatch = () => {
           <CustomTitle title={formatTime(time)} className="mb-5" sizeClass='text-5xl' />
           <View className='flex-row justify-between items-center w-full px-5 mb-10'>
             <View className='flex-1 items-center'>
-              <CustomTitle title={teamAData.name} sizeClass='text-3xl' />
-              <CustomTitle title={matchScoreData.teamA.toString()} sizeClass='text-3xl' />
+              <CustomTitle title={teamAData.name} sizeClass='text-4xl' />
+              <CustomTitle title={matchScoreData.teamA.points.toString()} sizeClass='text-3xl' />
+              <CustomTitle title={`Faltas: ${matchScoreData.teamA.fouls.toString()}`} className='mt-10' sizeClass='text-xl' />
             </View>
             <View className='flex-1 items-center'>
               <CustomTitle title='X' sizeClass='text-5xl' />
             </View>
             <View className='flex-1 items-center'>
-              <CustomTitle title={teamBData.name} sizeClass='text-3xl' />
-              <CustomTitle title={matchScoreData.teamB.toString()} sizeClass='text-3xl' />
+              <CustomTitle title={teamBData.name} sizeClass='text-4xl' />
+              <CustomTitle title={matchScoreData.teamB.points.toString()} sizeClass='text-3xl' />
+              <CustomTitle title={`Faltas: ${matchScoreData.teamB.fouls.toString()}`} className='mt-10' sizeClass='text-xl' />
             </View>
           </View>
           <View className='flex-column justify-center items-center w-full px-5 mb-10'>
@@ -174,21 +283,21 @@ const EventMatch = () => {
                 <CustomButton label="Start" onPress={handleStartTimer} className="mb-2 w-3/4" />
             }
             <CustomButton label="+30s" onPress={handleAddTime} className="mb-2 w-3/4" />
-            {
-              scores?.map((score) => {
-                return (
+            <View className="flex-row flex-wrap justify-center items-center w-full px-5 mb-10">
+              {scores?.map((score) => (
+                <View key={score.id} className="w-1/2 p-2">
                   <CustomButton
-                    key={score.id}
                     label={score.score}
                     onPress={() => {
-                      setSelectedScore(score)
-                      setTeamPlayerModalVisible(true)
+                      setSelectedScore(score);
+                      setTeamPlayerModalVisible(true);
                     }}
-                    className="mb-2 w-3/4"
+                    className="w-full"
                   />
-                )
-              })
-            }
+                </View>
+              ))}
+            </View>
+            <CustomButton label="Encerrar Partida" onPress={() => setConfirmModalVisible(true)} className="mb-2 w-3/4" />
           </View>
         </View>
       </ScrollView>
@@ -202,6 +311,7 @@ const EventMatch = () => {
         teamB={teamBData}
         visible={teamPlayerModalVisible}
       />
+      {confirmModalMemo}
     </>
   );
 };

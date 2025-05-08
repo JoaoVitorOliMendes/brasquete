@@ -95,7 +95,6 @@ const TeamPickerModal = ({ visible, dismiss, eventsData, team }: TeamPickerModal
     }, [team, reset])
 
     const handleSave = async (data: Team) => {
-        console.log(data)
         if (team) {
             const response = await updateTeamMutation.mutateAsync(data)
         } else {
@@ -108,7 +107,6 @@ const TeamPickerModal = ({ visible, dismiss, eventsData, team }: TeamPickerModal
     }
 
     const handleDelete = async (data: Team) => {
-        console.log(data)
         await deleteTeamMutation.mutateAsync(data);
         queryClient.invalidateQueries(['events', eventsData.id])
         queryClient.invalidateQueries(['teams', eventsData.id])

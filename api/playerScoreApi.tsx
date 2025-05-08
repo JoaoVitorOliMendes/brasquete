@@ -1,6 +1,6 @@
 import { mapper } from '@/model/mappings/mapper';
 import { supabase } from './supabase';
-import { Match, PlayerScore, Team } from '@/model/models';
+import { Match, Player, PlayerScore, Team } from '@/model/models';
 
 export const getTeamMatchScore = async (match: Match) => {
     const { data, error } = await supabase
@@ -9,39 +9,61 @@ export const getTeamMatchScore = async (match: Match) => {
         *,
         score(*),
         match(
-            *,
-            team_a:team!team_a_id(*),
-            team_b:team!team_b_id(*)
+            *
         ),
         player(*)
     `)
-    console.log('getTeamMatchScore', data);
-
-    const teamAPoints = data?.filter((item: any) => item.match_id == match.id && item.team_a.id != null).reduce((acc: number, item: any) => {
-        if (['1 Ponto', '2 Pontos', '3 Pontos'].includes(item.score.score)) {
-            let multiplier = 1;
-            if (item.score.score === '2 Pontos') multiplier = 2;
-            if (item.score.score === '3 Pontos') multiplier = 3;
-            return acc + (item.count * multiplier);
-        }
-        return acc;
-    }, 0) || 0;
-    const teamBPoints = data?.filter((item: any) => item.match_id == match.id && item.team_b.id != null).reduce((acc: number, item: any) => {
-        if (['1 Ponto', '2 Pontos', '3 Pontos'].includes(item.score.score)) {
-            let multiplier = 1;
-            if (item.score.score === '2 Pontos') multiplier = 2;
-            if (item.score.score === '3 Pontos') multiplier = 3;
-            return acc + (item.count * multiplier);
-        }
-        return acc;
-    }, 0) || 0;
 
     if (error)
         throw error;
 
+    const teamAData = data?.filter((item: any) => {
+        return item.match_id == match.id && item.match.team_a_id == item.player.team_id
+    })
+    const teamAPoints = teamAData.reduce((acc: number, item: any) => {
+        if (['1 Ponto', '2 Pontos', '3 Pontos'].includes(item.score.score)) {
+            let multiplier = 1;
+            if (item.score.score === '2 Pontos') multiplier = 2;
+            if (item.score.score === '3 Pontos') multiplier = 3;
+            return acc + (item.count * multiplier);
+        }
+        return acc;
+    }, 0) || 0;
+    const teamAFouls = teamAData.reduce((acc: number, item: any) => {
+        if (['Faltas'].includes(item.score.score)) {
+            return acc + item.count;
+        }
+        return acc;
+    }, 0) || 0;
+    
+    const teamBData = data?.filter((item: any) => {
+        return item.match_id == match.id && item.match.team_b_id == item.player.team_id
+    })
+    const teamBPoints = teamBData.reduce((acc: number, item: any) => {
+        if (['1 Ponto', '2 Pontos', '3 Pontos'].includes(item.score.score)) {
+            let multiplier = 1;
+            if (item.score.score === '2 Pontos') multiplier = 2;
+            if (item.score.score === '3 Pontos') multiplier = 3;
+            return acc + (item.count * multiplier);
+        }
+        return acc;
+    }, 0) || 0;
+    const teamBFouls = teamBData.reduce((acc: number, item: any) => {
+        if (['Faltas'].includes(item.score.score)) {
+            return acc + item.count;
+        }
+        return acc;
+    }, 0) || 0;
+
     return {
-        teamA: teamAPoints,
-        teamB: teamBPoints
+        teamA: {
+            points: teamAPoints,
+            fouls: teamAFouls,
+        },
+        teamB: {
+            points: teamBPoints,
+            fouls: teamBFouls,
+        }
     };
 };
 
@@ -53,7 +75,6 @@ export const addPlayerScore = async (playerScore: PlayerScore) => {
         .eq('match_id', playerScore.match_id)
         .eq('score_id', playerScore.score_id)
 
-    console.log('addPlayerScore', playerScoreData);
     if (playerScoreError)
         throw playerScoreError
 
@@ -85,10 +106,16 @@ export const addPlayerScore = async (playerScore: PlayerScore) => {
 export const getPlayerStatistics = async (userId: string) => {
     const { data, error } = await supabase.rpc('userstatistics', { _user_id: userId });
 
-    console.log('getPlayerStatistics', data);
-    console.log('getPlayerStatistics', userId);
-
     if (error) throw error;
 
     return data;
+}
+
+export const getMatchPlayersScores = async (match: Match) => {
+    const { data, error } = await supabase
+        .rpc('playerscoresformatch', { _match_id: match.id });
+
+    if (error) throw error;
+
+    return data
 }

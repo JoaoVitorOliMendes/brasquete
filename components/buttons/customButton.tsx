@@ -112,7 +112,7 @@ const CustomButton = ({ label, type='filled', color='primary', className, onPres
                     p-4
                     rounded-2xl
                     overflow-hidden
-                    border-solid border-2 
+                    border-solid border-2
                     ${typeColorBtn[type]?.[color] ?? typeColorBtn.filled?.primary}
                 `}
                 //have no fking idea
