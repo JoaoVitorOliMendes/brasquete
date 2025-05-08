@@ -13,8 +13,6 @@ export const getScores = async () => {
     .select('*')
   if (error)
     throw error;
-  // console.log('getScores', mapper.mapArray(data as Score[], 'Score', 'ScoreModel') as ScoreModel[])
-  console.log('getScores', data as Score[])
 
   return data as Score[];
 };

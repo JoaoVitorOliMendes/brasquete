@@ -14,7 +14,7 @@ import { fetchUser } from '@/api/authApi';
 import { changeStatusGroupMember } from '@/api/groupMemberApi';
 import { GroupEvent, GroupMember, MatchModel, Team } from '@/model/models';
 import { insertMatch } from '@/api/matchApi';
-import moment from 'moment';
+import moment, { duration } from 'moment';
 import TeamSelectionModal from '@/components/modals/selectTeamsModal';
 import { getTeamsForEvent } from '@/api/teamApi';
 
@@ -60,20 +60,18 @@ const EventsDetail = () => {
   const handleConfirmTeams = async (selectedTeams: Team[]) => {
     try {
       const now = new Date();
-      const endDate = moment(now).add(10, 'minutes').toDate();
       const match = {
         event_id: eventsData.id,
         team_a_id: selectedTeams[0].id,
         team_b_id: selectedTeams[1].id,
-        time_start: now,
-        time_end: endDate,
-        time_pause: now,
+        time_start: null,
+        time_pause: null,
+        duration: duration(10, 'minutes').asMilliseconds(),
       };
       const matchData = await insertMatch(match as unknown as MatchModel);
       setTeamSelectionVisible(false);
       router.push(`/event/${id}/match?matchId=${matchData[0].id}`);
     } catch (error) {
-      console.error('Error creating match:', error);
       Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to create match.' });
     }
   };

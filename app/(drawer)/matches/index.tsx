@@ -6,23 +6,39 @@ import CustomTitle from '@/components/customTitle'
 import CardMatch from '@/components/card/cardMatch'
 import CardGroup from '@/components/card/cardGroup'
 import { useRouter } from 'expo-router'
+import { useQuery } from '@tanstack/react-query'
+import { fetchUser } from '@/api/authApi'
+import Toast from 'react-native-toast-message'
+import { getClosedMatchesForUser } from '@/api/matchApi'
 
 const MatchesIndex = () => {
   const router = useRouter()
-  const data = null
+  const { data: user, isLoading: userIsLoading } = useQuery(['user'], fetchUser)
+  const { data: closedMatches, isLoading: matchIsLoading } = useQuery(['matches', 'closed', user?.id], () => getClosedMatchesForUser(user), {
+    enabled: !!user
+  })
 
-  if (!data)
-    router.back()
-  
+  if (userIsLoading || matchIsLoading)
+    return <></>
+
+  if (!(userIsLoading || matchIsLoading) && !user && !closedMatches) {
+    Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
+    router.dismissTo('/event')
+  }
+
   return (
     <View>
-      <CustomDrawerHeader />
-      <CustomTitle title='Partidas' sizeClass='text-4xl' className='m-4' />
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <CardGroup group={item} />}
-        keyExtractor={item => item.id.toString()}
-      />
+      <CustomDrawerHeader title='Partidas' />
+      <View className='p-4'>
+        {
+          (closedMatches && closedMatches.length > 0) &&
+          closedMatches?.map((match, index) => {
+            return (
+              <CardMatch key={index} match={match} />
+            )
+          })
+        }
+      </View>
     </View>
   )
 }
