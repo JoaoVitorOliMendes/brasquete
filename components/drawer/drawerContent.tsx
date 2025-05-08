@@ -1,4 +1,4 @@
-import { View, Image, ScrollView } from 'react-native'
+import { View, Image, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer'
 import { images } from '@/constants'
@@ -19,10 +19,12 @@ const DrawerContent = ({ descriptors, navigation, state }: DrawerContentComponen
     <View className='flex-1 bg-primary'>
       <SafeAreaView className='p-5'>
         <ScrollView className='w-full flex flex-column'>
+        <TouchableOpacity onPress={() => router.push('/editprofile')}>
           <Image
             className='rounded-full !w-48 !h-48 my-5 mb-20 self-center'
             source={images.person}
           />
+          </TouchableOpacity>
           {
             state.routes.map((val, idx) => {
               const options = descriptors[val.key].options
