@@ -127,7 +127,6 @@ export const getTeamsForEvent = async (event: GroupEvent) => {
 }
 
 export const getTeamById = async (team: Team) => {
-  console.log('getTeamByIdStart', team)
   const { data, error } = await supabase
     .from('team')
     .select(`
@@ -136,7 +135,6 @@ export const getTeamById = async (team: Team) => {
     `)
     .eq('id', team.id)
     .single()
-    console.log('getTeamById', data)
 
   if (error)
     throw error

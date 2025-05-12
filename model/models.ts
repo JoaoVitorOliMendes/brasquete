@@ -50,9 +50,9 @@ export type Match = Tables<'match'> & {
     team_b: Team
 }
 export type MatchModel = Modify<Match, {
-    time_end: Date,
     time_pause: Date,
     time_start: Date
+    time_end: Date,
 }>
 
 export type Player = Tables<'player'> & {
@@ -62,7 +62,7 @@ export type PlayerModel = Modify<Player, {}>
 
 export type PlayerScore = Tables<'player_score'> & {
     score?: Score,
-    profiles?: Profiles,
+    player?: Player,
     match?: Match
 }
 export type PlayerScoreModel = Modify<PlayerScore, {}>

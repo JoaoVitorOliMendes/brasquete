@@ -1,48 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import { colorsRGB } from '@/constants';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import Animated, { Easing, useSharedValue, withRepeat, withTiming, useAnimatedStyle, measure, useAnimatedRef, withSpring } from 'react-native-reanimated';
+import ProgressBar from 'react-native-progress/Bar';
 
 interface MovingLoadingBarProps {
-    className?: string
+    className?: string;
 }
 
 const MovingLoadingBar = ({ className }: MovingLoadingBarProps) => {
-    const width = useSharedValue(0)
-    const animatedRef = useAnimatedRef()
-
-    const progressBarWidthAnimated = useAnimatedStyle(() => {
-        
-        return {
-            left: width.value * 2,
-            transform: [{
-                translateX: withRepeat(
-                    withTiming(
-                        width.value * 2,
-                        {
-                            duration: 2500,
-                            easing: Easing.linear
-                        },
-                        () => {
-                            const boxLayout = measure(animatedRef)
-                            
-                        }
-                    ),
-                    -1,
-                    true
-                )
-            }]
-        }
-    }, [width])
-
+    const [dimention, setDimention] = useState(0)
     return (
-        <View className={className}>
-            <View
-                className='h-5 bg-gray-300 rounded-full'
-                onLayout={e => width.value = e.nativeEvent.layout.width}
-            >
-                <Animated.View className='h-full rounded-full bg-green-500' ref={animatedRef} style={progressBarWidthAnimated} />
-            </View>
-        </View>
+        <ProgressBar
+            width={dimention}
+            className='basis-full mb-5'
+            indeterminate={true}
+            indeterminateAnimationDuration={1250}
+            unfilledColor={colorsRGB.secondary}
+            color={colorsRGB.black}
+            borderColor={colorsRGB.light_gray}
+            borderWidth={0}
+            height={10}
+        />
     );
 };
 

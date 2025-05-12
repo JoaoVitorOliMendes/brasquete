@@ -7,6 +7,8 @@ import DropShadow from 'react-native-drop-shadow'
 import CustomTitle from '../customTitle'
 import { days, images } from '@/constants'
 import MovingLoadingBar from '../horizontalLoadingIndicator'
+import { useQuery } from '@tanstack/react-query'
+import { getOnGoingMatchForEvent } from '@/api/matchApi'
 
 interface CardGroupEventProps {
     event: GroupEventModel
@@ -14,6 +16,18 @@ interface CardGroupEventProps {
 
 const CardGroupEvent = ({ event }: CardGroupEventProps) => {
     const router = useRouter()
+    const { data: onGoingMatchData, refetch } = useQuery(['onGoingMatch', event.id], () => {
+        return getOnGoingMatchForEvent(event)
+    })
+
+    const handlePress = async () => {
+        const promOnGoingMatchData = await refetch()
+        if (promOnGoingMatchData.data && promOnGoingMatchData.data.length > 0) {
+            router.push(`/event/${event.id}/match?matchId=${onGoingMatchData[0].id}`)
+        } else {
+            router.push(`/event/${event.id}`)
+        }
+    }
 
     return (
         <DropShadow
@@ -28,12 +42,12 @@ const CardGroupEvent = ({ event }: CardGroupEventProps) => {
             }}
         >
             <TouchableOpacity
-                onPress={() => router.push(`/event/${event.id}`)}
+                onPress={handlePress}
                 activeOpacity={0.5}
                 className='bg-primary rounded-lg flex flex-column p-5 mb-10'
             >
                 <View className='flex flex-row flex-wrap justify-between items-center'>
-                    {/* <MovingLoadingBar className='basis-full' /> */}
+                    {/* <MovingLoadingBar className='basis-full mb-5' /> */}
                     <View className='basis-3/12 flex flex-row flex-wrap pr-4 border-solid border-white border-r-2'>
                         <CustomTitle title={event.date?.getDate().toString() || ''} color='white' sizeClass='text-4xl' className='basis-full text-center' />
                         <Text className='text-white text-center basis-full'>
