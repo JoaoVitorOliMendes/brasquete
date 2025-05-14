@@ -1,3 +1,5 @@
+import { OptionItem } from "./OptionItem";
+
 export interface RegisterForm {
     email: string;
     name: string;
@@ -6,5 +8,5 @@ export interface RegisterForm {
     confirmPassword: string;
     birthDate?: string;
     height?: number;
-    position?: string | null;
+    position?: OptionItem;
 }

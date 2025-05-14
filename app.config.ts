@@ -62,6 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                 backgroundColor: "#000000"
             }
         ],
+        "expo-image-picker",
         "expo-secure-store"
     ],
     experiments: {

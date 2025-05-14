@@ -10,7 +10,10 @@ export const register = async (registerForm: RegisterForm) => {
     options: {
       data: {
         first_name: registerForm.name,
-        last_name: registerForm.surname
+        last_name: registerForm.surname,
+        height: registerForm.height,
+        position: registerForm.position,
+        birth_date: registerForm.birthDate
       }
     }
   })
