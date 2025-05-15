@@ -1,5 +1,5 @@
 import { View, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { router, useRouter } from 'expo-router'
 import CardGroup from '@/components/card/cardGroup'
 import CustomDrawerHeader from '@/components/drawer/customDrawerHeader'
@@ -16,15 +16,17 @@ const GroupsIndex = () => {
 
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  const { data: groupsData, refetch } = useQuery(['groups'], () => getGroupsForUser(user!.id), {
-    enabled: !!user
+  const userId = user?.id
+
+  const { data: groupsData, refetch } = useQuery(['groups', userId], () => getGroupsForUser(userId), {
+    enabled: !!userId
   })
 
   useRefreshOnFocus(refetch)
-  
+
   if (isLoading)
     return <></>
-  
+
   if (!isLoading && !user) {
     Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
     router.dismissTo('/event')

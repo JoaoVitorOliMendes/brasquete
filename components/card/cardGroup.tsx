@@ -7,6 +7,7 @@ import MapView from 'react-native-maps'
 import { images } from '@/constants'
 import DropShadow from "react-native-drop-shadow";
 import { Groups } from '@/model/models'
+import CustomImage from '../customImage'
 
 interface CardGroupProps {
     group: Groups,
@@ -44,10 +45,10 @@ const CardGroup = ({ group }: CardGroupProps) => {
                     </Text> */}
                 </View>
                 <View className='basis-5/12 p-2'>
-                    <Image
+                    <CustomImage
                         className='rounded-lg'
-                        style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                        source={images.staticMapExample}
+                        imageUrl={group?.location?.location_img || ''}
+                        altImage={images.person}
                     />
                 </View>
                 {/* <View className='my-2'>

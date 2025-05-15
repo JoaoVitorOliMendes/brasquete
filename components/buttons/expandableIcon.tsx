@@ -77,7 +77,7 @@ const ExpandableIcon = ({ menuItems }: ExpandableIconProps) => {
                     })
                 }
             </Animated.View>
-            <CustomPressIcon iconProps={{ icon: isOpen ? 'close' : 'add', size: 36 }} onPress={() => setIsOpen(!isOpen)} className='w-20 h-20 mt-3 bg-emerald-700' />
+            <CustomPressIcon iconProps={{ icon: isOpen ? 'close' : 'add', size: 36 }} onPress={() => setIsOpen(!isOpen)} className='w-20 h-20 mt-3 bg-emerald-700 font-bold' />
         </View>
     )
 }

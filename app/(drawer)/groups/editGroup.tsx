@@ -11,19 +11,24 @@ import MapPickerModal from '@/components/forms/mapPickerModal'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import CustomStarRating from '@/components/forms/customStarRating'
 import CustomControlCheckbox from '@/components/forms/customControlCheckbox'
-import { Groups } from '@/model/models'
+import { GroupMember, Groups } from '@/model/models'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getGroupsById, insertGroup, updateGroup } from '@/api/groupsApi'
 import { fetchUser } from '@/api/authApi'
-import { insertLocation, updateLocation } from '@/api/locationApi'
+import { insertLocation, updateLocation, uploadLocationPic } from '@/api/locationApi'
+import { insertGroupMember } from '@/api/groupMemberApi'
+import { generateGroupsMapImage } from '@/api/services/mapsApiManager'
+import { Buffer } from 'buffer';
 
 const EditGroup = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
     const router = useRouter()
     const updateGroupMutation = useMutation(updateGroup)
     const insertGroupMutation = useMutation(insertGroup)
+    const insertGroupMemberMutation = useMutation(insertGroupMember)
     const updateLocationMutation = useMutation(updateLocation)
     const insertLocationMutation = useMutation(insertLocation)
+    const uploadLocationPicMutation = useMutation(uploadLocationPic)
     
     const { data: user, isLoading: userIsLoading } = useQuery(['user'], fetchUser)
 
@@ -55,7 +60,6 @@ const EditGroup = () => {
 
     const levelState = watch('level')
 
-
     const nameRef = useRef<TextInput>(null)
     const locationCityRef = useRef<TextInput>(null)
     const locationCountryRef = useRef<TextInput>(null)
@@ -69,7 +73,7 @@ const EditGroup = () => {
     const handleRegister = async (data: Groups) => {
         const locationObj = data.location
         delete data.location
-        console.log(data)
+        
         if (locationObj &&
             locationObj.add_city &&
             locationObj.add_country &&
@@ -77,25 +81,45 @@ const EditGroup = () => {
             locationObj.add_number &&
             locationObj.add_state &&
             locationObj.add_street
-        ) {
-            if (data.location_id) {
-                locationObj.id = data.location_id
-                console.log(locationObj)
-                await updateLocationMutation.mutateAsync(locationObj)
-            } else {
-                console.log(locationObj)
-                await insertLocationMutation.mutateAsync(locationObj).then((val) => {
-                    if (val) {
-                        data.location_id=val[0].id
-                    }
-                })
-            }
+        ) { 
+            await generateGroupsMapImage(locationObj.latitude, locationObj.longitude)
+            .then(async (res) => {
+                if (data.location_id) {
+                    locationObj.id = data.location_id
+                    
+                    await updateLocationMutation.mutateAsync(locationObj, {
+                        onSuccess: (val) => {
+                            uploadLocationPicMutation.mutate({
+                                file: new Uint8Array(res.data),
+                                location: val[0]
+                            })
+                        }
+                    })
+                } else {
+                    await insertLocationMutation.mutateAsync(locationObj, {
+                        onSuccess: (val) => {
+                            data.location_id=val[0].id
+                            uploadLocationPicMutation.mutate({
+                                file: new Uint8Array(res.data),
+                                location: val[0]
+                            })
+                        }
+                    })
+                }
+            })
         }
         if (id)
             await updateGroupMutation.mutateAsync(data)
         else {
             data.admin_id = user!.id
-            await insertGroupMutation.mutateAsync(data)
+            const createdGroup = await insertGroupMutation.mutateAsync(data)
+            if (createdGroup && createdGroup.length == 0 && createdGroup[0]) {
+                await insertGroupMemberMutation.mutateAsync({
+                    group_id: createdGroup[0].id,
+                    user_id: user!.id,
+                    confirmed: 1
+                } as GroupMember)
+            }
         }
         router.dismissTo('/groups')
     }
@@ -242,11 +266,10 @@ const EditGroup = () => {
                                     name: 'location'
                                 }}
                                 setValue={setValue}
-                                onChange={() => console.log('Change')}
                                 latitude={getValues().location?.latitude ? getValues().location?.latitude : undefined}
                                 longitude={getValues().location?.longitude ? getValues().location?.longitude : undefined}
                             />
-                            <CustomButton label='Criar Novo Grupo' onPress={handleSubmit(handleRegister)} className='basis-full' />
+                            <CustomButton label={id ? 'Atualizar Grupo' : 'Criar Novo Grupo'} onPress={handleSubmit(handleRegister)} className='basis-full' />
                         </View>
                     </View>
                 </ScrollView>

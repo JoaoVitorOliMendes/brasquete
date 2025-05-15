@@ -1,5 +1,5 @@
 import { View, Text, Modal, Image, Pressable, TextInput, TouchableOpacity } from 'react-native'
-import React, { useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import CustomPressIcon from '../buttons/customPressIcon'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet'
 import { colors, images } from '@/constants'
@@ -11,29 +11,105 @@ import IconConcat from '../iconConcat'
 import CustomTitle from '../customTitle'
 import { FullWindowOverlay } from 'react-native-screens'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
-import useGetEventsForUser from '@/api/eventsApi'
-import { Player, Team } from '@/model/models'
-import useGetGroupMemberForUser from '@/api/groupMemberApi'
+import { GroupEvent, GroupMember, Player, Team } from '@/model/models'
+import Toast from 'react-native-toast-message'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deleteTeam, insertTeam, updateTeam } from '@/api/teamApi'
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
+import { getPlayersForEvent } from '@/api/playerApi'
 
 interface TeamPickerModalProps {
     visible?: boolean,
-    dismiss: () => void
+    dismiss: () => void,
+    eventsData: GroupEvent,
+    team?: Team
 }
 
-const TeamPickerModal = ({ visible, dismiss = () => {} }: TeamPickerModalProps) => {
+const TeamPickerModal = ({ visible, dismiss, eventsData, team }: TeamPickerModalProps) => {
     const bottomSheetRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['50%'], [])
-    const { control, handleSubmit, formState: { errors } } = useForm<Team & {player: Player[]}>()
-    const { fields, append, remove } = useFieldArray({
+    const { control, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm<Team>()
+    const { fields, append, remove, update } = useFieldArray({
         control,
         name: 'player',
     });
 
+    const [availablePlayers, setAvailablePlayers] = useState<GroupMember[]>()
+    const { data: playerData } = useQuery(['player', eventsData.id], () => getPlayersForEvent(eventsData))
+    const insertTeamMutation = useMutation(insertTeam)
+    const updateTeamMutation = useMutation(updateTeam)
+    const deleteTeamMutation = useMutation(deleteTeam)
+    const queryClient = useQueryClient()
+
+    const availablePlayersMemo = useMemo(() => {
+        if (availablePlayers) {
+            return availablePlayers.map((item, idx) => {
+                return (
+                    <TouchableOpacity activeOpacity={0.5} key={idx} onPress={() => {
+                        const createdPlayerIdx = fields.findIndex((player) => player.group_member_id === item.id)
+                        if (fields[createdPlayerIdx]) {
+                            update(createdPlayerIdx, {
+                                ...fields[createdPlayerIdx],
+                                status: 0
+                            })
+                        } else {
+                            append({
+                                group_member_id: item.id,
+                                status: 0
+                            } as Player)
+                        }
+                        setAvailablePlayers(availablePlayers.slice(0, idx).concat(availablePlayers.slice(idx + 1)))
+                        bottomSheetRef.current?.close()
+                    }}>
+                        <PlayerCard player={{
+                            group_member: item
+                        } as Player} className={idx % 2 == 0 ? 'bg-gray-400' : 'bg-gray-300'} />
+                    </TouchableOpacity>
+                )
+            })
+        }
+    }, [availablePlayers])
+
     const teamNameRef = useRef<TextInput>(null)
 
 
-    const handleSave = (data: Team) => {
-        console.log(data)
+    useEffect(() => {
+        setAvailablePlayers(eventsData?.groups?.group_member?.filter((member) => member.confirmed === 1 && !(playerData?.find((player) => player.group_member_id === member.id && player.status === 0))))
+        setValue('event_id', eventsData.id)
+    }, [visible])
+
+    useEffect(() => {
+        if (team) {
+            reset({
+                id: team.id,
+                name: team.name,
+                player: team.player
+            })
+        } else {
+            reset({
+                id: '',
+                name: '',
+                player: []
+            })
+        }
+    }, [team, reset])
+
+    const handleSave = async (data: Team) => {
+        if (team) {
+            const response = await updateTeamMutation.mutateAsync(data)
+        } else {
+            const { id, ...otherProps } = data
+            const response = await insertTeamMutation.mutateAsync(otherProps as Team)
+        }
+        queryClient.invalidateQueries(['events', eventsData.id])
+        queryClient.invalidateQueries(['teams', eventsData.id])
+        dismiss()
+    }
+
+    const handleDelete = async (data: Team) => {
+        await deleteTeamMutation.mutateAsync(data);
+        queryClient.invalidateQueries(['events', eventsData.id])
+        queryClient.invalidateQueries(['teams', eventsData.id])
         dismiss()
     }
 
@@ -58,19 +134,7 @@ const TeamPickerModal = ({ visible, dismiss = () => {} }: TeamPickerModalProps) 
                             }}
                         >
                             <ScrollView className='bg-gray-300'>
-                                {/* {
-                                    eventsData?.groups?.groupMembers?.filter((item) => item.confirmed === 'confirmed').map((item, idx) => {
-                                        return (
-                                            <TouchableOpacity activeOpacity={0.5} key={idx} onPress={() => {
-                                                console.log(item)
-                                                append(item)
-                                                bottomSheetRef.current?.close()
-                                            }}>
-                                                <PlayerCard player={item} className={idx % 2 == 0 ? 'bg-gray-400' : 'bg-gray-300'} />
-                                            </TouchableOpacity>
-                                        )
-                                    })
-                                } */}
+                                {availablePlayersMemo}
                             </ScrollView>
                         </BottomSheetModal>
                         <View className='relative h-full w-full flex justify-center items-center'>
@@ -83,8 +147,12 @@ const TeamPickerModal = ({ visible, dismiss = () => {} }: TeamPickerModalProps) 
                             />
                             <View className='rounded-lg w-5/6 min-h-1/2 bg-secondary p-5'>
                                 <View className='flex flex-row flex-wrap justify-center items-center relative'>
-                                    <View className='basis-full items-end mb-5'>
+                                    <View className='basis-full justify-between flex-row-reverse mb-5'>
                                         <CustomPressIcon iconProps={{ icon: 'save', color: 'white' }} onPress={handleSubmit(handleSave)} />
+                                        {
+                                            team &&
+                                            <CustomPressIcon iconProps={{ icon: 'delete', color: 'primary' }} onPress={handleSubmit(handleDelete)} />
+                                        }
                                     </View>
                                     <CustomInput
                                         formProps={{
@@ -105,13 +173,29 @@ const TeamPickerModal = ({ visible, dismiss = () => {} }: TeamPickerModalProps) 
                                     <View className='basis-full bg-white rounded-lg overflow-hidden'>
                                         <ScrollView style={{ flexGrow: 0 }}>
                                             {
-                                                fields.map((item, idx) => {
+                                                fields.filter((item) => item.status == 0).map((item, idx) => {
+                                                    const playerEvent = eventsData?.groups?.group_member?.filter((member) => member.id === item.group_member_id)
                                                     return (
-                                                        <PlayerCard player={item} key={idx} className={idx % 2 == 0 ? 'bg-gray-400' : 'bg-gray-300'} onIconPress={() => remove(idx)} />
+                                                        <PlayerCard player={{
+                                                            ...item,
+                                                            group_member: playerEvent ? playerEvent[0] : undefined
+                                                        }} key={idx} className={idx % 2 == 0 ? 'bg-gray-400' : 'bg-gray-300'} onIconPress={() => {
+                                                            update(idx, {
+                                                                ...item,
+                                                                status: 1
+                                                            })
+                                                            setAvailablePlayers([...availablePlayers || [], ...playerEvent || []])
+                                                        }} />
                                                     )
                                                 })
                                             }
-                                            <TouchableOpacity className='p-4 flex flex-row flex-wrap items-center justify-center' onPress={() => bottomSheetRef.current?.present()}>
+                                            <TouchableOpacity className='p-4 flex flex-row flex-wrap items-center justify-center' onPress={() => {
+                                                if (availablePlayers?.length) {
+                                                    bottomSheetRef.current?.present()
+                                                } else {
+                                                    Toast.show({ type: 'info', text1: 'Sem jogadores restantes', text2: 'Todos os membros confirmados foram selecionados' })
+                                                }
+                                            }}>
                                                 <IconConcat icon='add' />
                                                 <CustomTitle title='Adicionar Jogador' color='black' sizeClass='text-xl' />
                                             </TouchableOpacity>

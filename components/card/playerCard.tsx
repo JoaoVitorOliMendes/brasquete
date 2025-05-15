@@ -2,10 +2,10 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { images } from '@/constants'
 import CustomPressIcon from '../buttons/customPressIcon'
-import { GroupMember } from '@/model/models'
+import { Player } from '@/model/models'
 
 interface PlayerCardProps {
-    player: GroupMember,
+    player: Player,
     className?: string,
     onIconPress?: () => void
 }
@@ -22,10 +22,10 @@ const PlayerCard = ({ player, className, onIconPress }: PlayerCardProps) => {
             </View>
             <View className='basis-1/2'>
                 <Text>
-                    {player.profiles? player.profiles.first_name + player.profiles.last_name : ''}
+                    {player.group_member?.profiles? player.group_member?.profiles.first_name + player.group_member?.profiles.last_name : ''}
                 </Text>
                 <Text>
-                    {player.profiles.position}
+                    {player.group_member?.profiles?.position}
                 </Text>
             </View>
             <View className='basis-1/4'>

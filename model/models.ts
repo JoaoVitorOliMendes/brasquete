@@ -25,14 +25,16 @@ export type Groups = Tables<'groups'> & {
 export type GroupsModel = Modify<Groups, {}>
 
 export type GroupEvent = Tables<'event'> & {
-    groups?: Groups
+    groups?: Groups,
+    player?: Player[]
 }
 export type GroupEventModel = Modify<GroupEvent, {
     date: Date
 }>
 
 export type Team = Tables<'team'> & {
-    event?: GroupEvent
+    event?: GroupEvent,
+    player?: Player[]
 }
 export type TeamModel = Modify<Team, {}>
 
@@ -43,31 +45,32 @@ export type GroupMember = Tables<'group_member'> & {
 export type GroupMemberModel = Modify<GroupMember, {}>
 
 export type Match = Tables<'match'> & {
-    event: GroupEvent
+    event: GroupEvent,
+    team_a: Team,
+    team_b: Team
 }
 export type MatchModel = Modify<Match, {
-    time_end: Date,
     time_pause: Date,
     time_start: Date
+    time_end: Date,
 }>
 
 export type Player = Tables<'player'> & {
-    team?: Team,
-    event?: GroupEvent,
     group_member?: GroupMember
 }
 export type PlayerModel = Modify<Player, {}>
 
 export type PlayerScore = Tables<'player_score'> & {
     score?: Score,
-    profiles?: Profiles,
+    player?: Player,
     match?: Match
 }
 export type PlayerScoreModel = Modify<PlayerScore, {}>
 
 export type Report = Tables<'report'> & {
     created_byReg?: Profiles,
-    targetReg?: Profiles
+    targetReg?: Profiles,
+    reportmotive?: ReportMotive[]
 }
 export type ReportModel = Modify<Report, {}>
 
@@ -77,6 +80,8 @@ export type ReportMotive = Tables<'report_motive'> & {
 }
 export type ReportMotiveModel = Modify<ReportMotive, {}>
 
+export type Motive = Tables<'motives'>
+export type MotiveModel = Modify<Motive, {}>
 
 
 export type Views<T extends keyof Database['public']['Views']> =

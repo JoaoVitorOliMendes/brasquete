@@ -1,0 +1,68 @@
+import React, { useState } from 'react';
+import { Modal, View, Text, FlatList, TouchableOpacity, Pressable, Image } from 'react-native';
+import CustomButton from '@/components/buttons/customButton';
+import { Player, Team, TeamModel } from '@/model/models';
+import { images } from '@/constants'
+import CustomTitle from '../customTitle';
+
+interface TeamPlayerModalProps {
+    teamA: TeamModel;
+    teamB: TeamModel;
+    visible: boolean;
+    onClose: () => void;
+    onConfirm: (player: Player) => void;
+}
+
+const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlayerModalProps) => {
+    return (
+        <Modal visible={visible} transparent>
+            <View className='relative h-full w-full flex justify-center items-center'>
+                <Pressable
+                    onPressOut={onClose}
+                    className='absolute h-full w-full bg-black opacity-25'
+                    style={{
+                        elevation: 3
+                    }}
+                />
+                <View className='rounded-lg w-5/6 bg-secondary p-10'>
+                    <View className='flex-column justify-center'>
+                        <CustomTitle title={teamA.name} className='text-white' sizeClass='text-3xl' />
+                        <View className='flex flex-row flex-wrap justify-center items-center'>
+                            {
+                                teamA.player?.map((player, index) => {
+                                    return (
+                                        <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
+                                            <Image
+                                                className='rounded-lg'
+                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
+                                                source={images.person}
+                                            />
+                                        </Pressable>
+                                    )
+                                })
+                            }
+                        </View>
+                        <CustomTitle title={teamB.name} className='text-white' sizeClass='text-3xl' />
+                        <View className='flex flex-row flex-wrap justify-center items-center'>
+                            {
+                                teamB.player?.map((player, index) => {
+                                    return (
+                                        <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
+                                            <Image
+                                                className='rounded-lg'
+                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
+                                                source={images.person}
+                                            />
+                                        </Pressable>
+                                    )
+                                })
+                            }
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    );
+};
+
+export default TeamPlayerModal;

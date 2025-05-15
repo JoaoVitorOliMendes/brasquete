@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "./authApi";
 
 export const getAvailableGroups = async (userId: string) => {
-  console.log('Query start getAvailableGroups')
+  
   const { data, error } = await supabase
     .from('groups')
     .select(`
@@ -13,15 +13,13 @@ export const getAvailableGroups = async (userId: string) => {
     group_member(*, profiles(*))
   `)
     .eq('private', false)
-    .neq('admin_id', userId)
-    .neq('group_member.user_id', userId)
 
   if (error)
     throw error
 
   if (data && data.length) {
     const validatedData = data.filter((item) => {
-      return (item.admin_id!=userId && item.group_member.find((item) => item.user_id!=userId))
+      return (item.admin_id!=userId && !(item.group_member.find((item) => item.user_id==userId && item.status!=1)))
     })
     return mapper.mapArray(validatedData as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
   }
@@ -29,12 +27,13 @@ export const getAvailableGroups = async (userId: string) => {
 }
 
 export const getGroupsForUser = async (userId: string) => {
-  console.log('Query start getGroupsForUser')
+  
   const { data, error } = await supabase
     .from('groups')
     .select(`
     *,
-    group_member(*, profiles(*))
+    group_member(*, profiles(*)),
+    location(*)
   `)
 
   if (error)
@@ -42,7 +41,7 @@ export const getGroupsForUser = async (userId: string) => {
 
   if (data && data.length) {
     const validatedData = data.filter((item) => {
-      return (item.admin_id==userId || item.group_member.find((item) => item.user_id==userId))
+      return (item.admin_id==userId || item.group_member.find((item) => item.user_id==userId && item.status!=1))
     })
     return mapper.mapArray(validatedData as Groups[], 'Groups', 'GroupsModel') as GroupsModel[]
   }
@@ -50,7 +49,6 @@ export const getGroupsForUser = async (userId: string) => {
 }
 
 export const getGroupsById = async (id: string) => {
-  console.log('Query start getGroupsById')
   const { data, error } = await supabase
     .from('groups')
     .select(`
@@ -65,8 +63,13 @@ export const getGroupsById = async (id: string) => {
   if (error)
     throw error
 
-  if (data)
+  if (data){
+    const validatedData = data.group_member.filter((item) => {
+      return item.status!=1
+    })
+    data.group_member = validatedData
     return mapper.map(data as Groups, 'Groups', 'GroupsModel') as GroupsModel
+  }
   return null
 }
 

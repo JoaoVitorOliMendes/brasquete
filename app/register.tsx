@@ -13,6 +13,7 @@ import { RegisterForm } from '@/model/RegisterForm'
 import Toast from 'react-native-toast-message'
 import { register } from '@/api/authApi'
 import { useMutation } from '@tanstack/react-query'
+import CustomDropdown from '@/components/forms/customDropdown'
 
 
 const Register = () => {
@@ -24,14 +25,14 @@ const Register = () => {
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const emailRef = useRef<TextInput>(null)
-  // const heightRef = useRef<TextInput>(null)
-  // const positionRef = useRef<TextInput>(null)
+  const heightRef = useRef<TextInput>(null)
+  const positionRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
   const confirmPassRef = useRef<TextInput>(null)
   const registerMutation = useMutation(register);
 
   const handleRegister = async (data: RegisterForm) => {
-    console.log('handleRegister')
+    
     const { session, user } = await registerMutation.mutateAsync(data)
     if (registerMutation.isSuccess)
       if (!session)
@@ -107,7 +108,7 @@ const Register = () => {
               className='mb-4'
             />
             {/* Only show required attributes */}
-            {/* <CustomInput
+            <CustomInput
               color='black'
               type='outline'
               inputRef={heightRef}
@@ -127,13 +128,13 @@ const Register = () => {
               data={[
                 {
                   label: 'Armador',
-                  value: 'armador'
+                  value: 'Armador'
                 }, {
                   label: 'Pivô',
-                  value: 'pivo'
+                  value: 'Pivô'
                 }, {
                   label: 'Ala',
-                  value: 'ala'
+                  value: 'Ala'
                 }
               ]}
               color='black'
@@ -147,7 +148,7 @@ const Register = () => {
                 onSubmitEditing: () => passwordRef.current?.focus(),
               }}
               className='mb-4'
-            /> */}
+            />
             <CustomInput
               rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowPass(!showPass) }}
               color='black'

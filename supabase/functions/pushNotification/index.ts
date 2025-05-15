@@ -3,7 +3,7 @@
 // This enables autocomplete, go to definition, etc.
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
-console.log('Hello from Functions!')
+
 
 interface Event {
   id: string,
@@ -27,28 +27,28 @@ const supabase = createClient(
 )
 
 Deno.serve(async (req) => {
-  console.log(req)
+  
   const payload: WebhookPayload = await req.json()
-  console.log(payload.record.group_id)
+  
   const { data: groupMemberData } = await supabase
     .from('group_member')
     .select('user_id')
     .eq('group_id', payload.record.group_id)
 
-  console.log(groupMemberData)
+  
 
   const userArray = groupMemberData.map((item: { user_id: string }) => {
     return item.user_id
   })
 
-  console.log(userArray)
+  
 
   const { data } = await supabase
     .from('profiles')
     .select('expo_push_token')
     .in('id', userArray)
 
-  console.log(data)
+  
 
   if (data && data.length > 0) {
     data.forEach(async (element: { expo_push_token: any }) => {
@@ -61,10 +61,10 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           to: element.expo_push_token,
           sound: 'default',
-          body: 'TEST',
+          body: 'Event created successfully',
         }),
       }).then((res) => res.json())
-      console.log(res)
+      
     });
   }
 

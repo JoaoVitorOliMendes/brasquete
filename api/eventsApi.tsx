@@ -5,30 +5,31 @@ import { GroupEvent } from '@/model/models'
 import { mapper } from "@/model/mappings/mapper";
 
 export const getEventsForGroups = async () => {
-  console.log('Query start getEventsForGroups')
+  
+  const today = new Date().toISOString()
   const { data, error } = await supabase
   .from('event')
     .select(`
     *,
     groups(*)
   `)
+  .gt('date', today)
 
   if (error)
     Toast.show({ type: 'error', text1: 'Error', text2: error.message })
 
-  console.log('Query finish getEventsForGroups', data)
+  
   if (data && data.length)
     return mapper.mapArray(data as GroupEvent[], 'GroupEvent', 'GroupEventModel') as GroupEventModel[]
   return []
 }
 
 export const getEventByid = async (id: string) => {
-  console.log('Query start getEventByid')
   const { data, error } = await supabase
   .from('event')
     .select(`
     *,
-    groups(*)
+    groups(*, group_member(*, profiles(*)))
   `)
   .eq('id', id)
   .single()
@@ -36,14 +37,13 @@ export const getEventByid = async (id: string) => {
   if (error)
     Toast.show({ type: 'error', text1: 'Error', text2: error.message })
 
-  console.log('Query finish getEventByid', data)
   if (data)
     return mapper.map(data as GroupEvent, 'GroupEvent', 'GroupEventModel') as GroupEventModel
   return null
 }
 
 export const insertEvent = async (event: GroupEvent) => {
-  console.log('Query start createEvent')
+  
   const { data, error } = await supabase
   .from('event')
   .insert(event)
@@ -52,7 +52,24 @@ export const insertEvent = async (event: GroupEvent) => {
   if (error)
     Toast.show({ type: 'error', text1: 'Error', text2: error.message })
 
-  console.log('Query finish createEvent', data)
+  if (data && data.length)
+    return mapper.mapArray(data as GroupEvent[], 'GroupEvent', 'GroupEventModel') as GroupEventModel[]
+  return []
+}
+
+export const changeEventStatus = async (event: GroupEvent) => {
+  
+  const { data, error } = await supabase
+  .from('event')
+  .update({
+    status: event.status
+  })
+  .eq('id', event.id)
+  .select()
+
+  if (error)
+    Toast.show({ type: 'error', text1: 'Error', text2: error.message })
+
   if (data && data.length)
     return mapper.mapArray(data as GroupEvent[], 'GroupEvent', 'GroupEventModel') as GroupEventModel[]
   return []

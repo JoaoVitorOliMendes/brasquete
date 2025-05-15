@@ -1,6 +1,6 @@
 import { createMap, createMapper, forMember, mapFrom, typeConverter } from '@automapper/core';
 import { pojos, PojosMetadataMap } from '@automapper/pojos'
-import { GroupEvent, GroupEventModel, GroupMember, GroupMemberModel, Groups, GroupsModel, Location, LocationModel, Match, MatchModel, Motives, MotivesModel, Player, PlayerModel, PlayerScore, PlayerScoreModel, Profiles, ProfilesModel, ReportMotive, ReportMotiveModel, Score, ScoreModel, Team, TeamModel } from '../models';
+import { GroupEvent, GroupEventModel, GroupMember, GroupMemberModel, Groups, GroupsModel, Location, LocationModel, Match, MatchModel, Motive, MotiveModel, Motives, MotivesModel, Player, PlayerModel, PlayerScore, PlayerScoreModel, Profiles, ProfilesModel, Report, ReportModel, ReportMotive, ReportMotiveModel, Score, ScoreModel, Team, TeamModel } from '../models';
 
 export const mapper = createMapper({
     strategyInitializer: pojos()
@@ -118,6 +118,7 @@ PojosMetadataMap.create<GroupEvent>('GroupEvent', {
     updated_at: String,
     date: String,
     group_id: String,
+    status: Number,
     groups: 'Groups'
 });
 PojosMetadataMap.create<GroupEventModel>('GroupEventModel', {
@@ -126,23 +127,28 @@ PojosMetadataMap.create<GroupEventModel>('GroupEventModel', {
     updated_at: Date,
     date: Date,
     group_id: String,
+    status: Number,
     groups: 'Groups'
 });
 
 PojosMetadataMap.create<Team>('Team', {
     id: String,
+    status: Number,
     created_at: String,
     updated_at: String,
     event_id: String,
     event: 'GroupEvent',
+    player: 'Player',
     name: String
 });
 PojosMetadataMap.create<TeamModel>('TeamModel', {
     id: String,
+    status: Number,
     created_at: Date,
     updated_at: Date,
     event_id: String,
     event: 'GroupEvent',
+    player: 'Player',
     name: String
 });
 
@@ -173,9 +179,15 @@ PojosMetadataMap.create<Match>('Match', {
     updated_at: String,
     event: 'Event',
     event_id: String,
-    time_end: String,
     time_pause: String,
-    time_start: String
+    time_start: String,
+    team_a: 'Team',
+    team_a_id: String,
+    team_b: 'Team',
+    team_b_id: String,
+    duration: Number,
+    pause_duration: Number,
+    time_end: String
 });
 PojosMetadataMap.create<MatchModel>('MatchModel', {
     id: String,
@@ -183,33 +195,37 @@ PojosMetadataMap.create<MatchModel>('MatchModel', {
     updated_at: Date,
     event: 'Event',
     event_id: String,
-    time_end: Date,
     time_pause: Date,
-    time_start: Date
+    time_start: Date,
+    team_a: 'Team',
+    team_a_id: String,
+    team_b: 'Team',
+    team_b_id: String,
+    duration: Number,
+    pause_duration: Number,
+    time_end: Date
 });
 
 PojosMetadataMap.create<Player>('Player', {
     id: String,
+    status: Number,
     created_at: String,
     updated_at: String,
-    event: 'Event',
     event_id: String,
     group_member: 'GroupMember',
     group_member_id: String,
     position: String,
-    team: 'Team',
     team_id: String
 });
 PojosMetadataMap.create<PlayerModel>('PlayerModel', {
     id: String,
+    status: Number,
     created_at: Date,
     updated_at: Date,
-    event: 'Event',
     event_id: String,
     group_member: 'GroupMember',
     group_member_id: String,
     position: String,
-    team: 'Team',
     team_id: String
 });
 
@@ -218,29 +234,50 @@ PojosMetadataMap.create<PlayerScore>('PlayerScore', {
     created_at: String,
     updated_at: String,
     count: Number,
-    host: Boolean,
     match: 'Match',
     match_id: String,
-    profiles: 'Profiles',
+    player: 'Player',
     score: 'Score',
     score_id: String,
-    user_id: String
+    player_id: String,
 });
 PojosMetadataMap.create<PlayerScoreModel>('PlayerScoreModel', {
     id: String,
     created_at: Date,
     updated_at: Date,
     count: Number,
-    host: Boolean,
     match: 'Match',
     match_id: String,
-    profiles: 'Profiles',
+    player: 'Player',
     score: 'Score',
     score_id: String,
-    user_id: String
+    player_id: String,
 });
 
-PojosMetadataMap.create<ReportMotive>('PlayerScore', {
+PojosMetadataMap.create<Report>('Report', {
+    id: String,
+    created_at: String,
+    updated_at: String,
+    created_by: String,
+    created_byReg: 'Profiles',
+    other_motive: String,
+    reportmotive: 'ReportMotive',
+    target: String,
+    targetReg: 'Profiles'
+});
+PojosMetadataMap.create<ReportModel>('ReportModel', {
+    id: String,
+    created_at: String,
+    updated_at: String,
+    created_by: String,
+    created_byReg: 'Profiles',
+    other_motive: String,
+    reportmotive: 'ReportMotive',
+    target: String,
+    targetReg: 'Profiles'
+});
+
+PojosMetadataMap.create<ReportMotive>('ReportMotive', {
     id: String,
     created_at: String,
     updated_at: String,
@@ -257,6 +294,32 @@ PojosMetadataMap.create<ReportMotiveModel>('ReportMotiveModel', {
     motive_id: String,
     report: 'Report',
     report_id: String
+});
+
+PojosMetadataMap.create<Score>('Score', {
+    created_at: String,
+    id: String,
+    score: String,
+    updated_at: String,
+});
+PojosMetadataMap.create<ScoreModel>('ReportMotiveModel', {
+    created_at: Date,
+    id: String,
+    score: String,
+    updated_at: Date
+});
+
+PojosMetadataMap.create<Motive>('Motive', {
+    created_at: String,
+    id: String,
+    motive: String,
+    updated_at: String
+});
+PojosMetadataMap.create<MotiveModel>('MotiveModel', {
+    created_at: Date,
+    id: String,
+    motive: String,
+    updated_at: Date
 });
 
 createMap<Location, LocationModel>(
@@ -357,6 +420,150 @@ createMap<GroupMember, GroupMemberModel>(
         (destination) => destination.groups,
         mapFrom(
             (source) => source.groups as unknown as Groups
+        )
+    )
+)
+
+createMap<Team, TeamModel>(
+    mapper,
+    'Team',
+    'TeamModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Player, PlayerModel>(
+    mapper,
+    'Player',
+    'PlayerModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Score, ScoreModel>(
+    mapper,
+    'Score',
+    'ScoreModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Motive, MotiveModel>(
+    mapper,
+    'Motive',
+    'MotiveModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Match, MatchModel>(
+    mapper,
+    'Match',
+    'MatchModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_end,
+        mapFrom(
+            (source) => source.time_end ? new Date(source.time_end) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_pause,
+        mapFrom(
+            (source) => source.time_pause ? new Date(source.time_pause) : ''
+        )
+    ),
+    forMember(
+        (destination) => destination.time_start,
+        mapFrom(
+            (source) => source.time_start ? new Date(source.time_start) : ''
+        )
+    )
+)
+
+createMap<PlayerScore, PlayerScoreModel>(
+    mapper,
+    'PlayerScore',
+    'PlayerScoreModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Report, ReportModel>(
+    mapper,
+    'Report',
+    'ReportModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
         )
     )
 )

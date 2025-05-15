@@ -47,7 +47,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 (async () => {
                                     let { status } = await Location.requestForegroundPermissionsAsync()
                                     if (status !== 'granted') {
-                                        console.log('Permission to access location was denied')
+                                        
                                         return
                                     }
 
@@ -118,7 +118,7 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 setValue('location.add_state', state)
                                 setValue('location.add_street', street)
                             } catch (e) {
-                                console.log(e)
+                                
                             } finally {
                                 bottomSheetRef.current?.close()
                             }

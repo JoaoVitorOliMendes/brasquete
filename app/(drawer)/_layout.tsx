@@ -63,11 +63,21 @@ const DrawerLayout = () => {
                         />
                     ),
                 }} />
-                <Drawer.Screen name='(profile)' options={{
-                    title: 'Perfil',
+                <Drawer.Screen name='statistics' options={{
+                    title: 'Desempenho',
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
-                            name='person'
+                            name='bar-chart'
+                            size={size}
+                            color={focused ? colors.black : colors.white}
+                        />
+                    ),
+                }} />
+                <Drawer.Screen name='editprofile' options={{
+                    title: 'Editar Perfil',
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name='cog'
                             size={size}
                             color={focused ? colors.black : colors.white}
                         />

@@ -13,6 +13,7 @@ import { fetchUser } from '@/api/authApi';
 import CreateEventModal from '@/components/modals/createEventModal';
 import ConfirmModal from '@/components/modals/confirmationModal';
 import { Groups } from '@/model/models';
+import CustomImage from '@/components/customImage';
 
 const GroupsDetails = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -28,13 +29,13 @@ const GroupsDetails = () => {
     }, [modalVisible])
     const confirmModalMemo = useMemo(() => {
         return <ConfirmModal message='Você tem certeza que deseja deletar o grupo?' title='Deletar o Grupo' onConfirm={() => {
-            deleteGroupMutation.mutateAsync({id: id} as Groups).then((val) => {
+            deleteGroupMutation.mutateAsync({ id: id } as Groups).then((val) => {
                 if (val)
                     router.dismissTo('/groups')
             })
         }} visible={confirmModalVisible} dismiss={() => setConfirmModalVisible(false)} />
     }, [confirmModalVisible])
-    
+
     const { data: user, isLoading: userIsLoading } = useQuery(['user'], fetchUser)
     const { data: groupById, isLoading: groupsIsLoading } = useQuery(['groups', id], () => getGroupsById(id), {
         enabled: !!user
@@ -49,7 +50,12 @@ const GroupsDetails = () => {
             <ScrollView overScrollMode='never' persistentScrollbar showsVerticalScrollIndicator className='flex-1'>
                 <SafeAreaView className='p-4'>
                     <View className='w-full h-[33vh]'>
-                        <Image source={images.staticMapExample} className='w-full h-full object-cover' />
+                        <CustomImage
+                            className='w-full h-full object-cover'
+                            altImage={images.map}
+                            imageUrl={groupById.location?.location_img || ''}
+                            style={null}
+                        />
                     </View>
                     <View className='flex flex-row flex-wrap'>
                         {/* <Text className='my-4 basis-full'>
