@@ -69,7 +69,8 @@ export type PlayerScoreModel = Modify<PlayerScore, {}>
 
 export type Report = Tables<'report'> & {
     created_byReg?: Profiles,
-    targetReg?: Profiles
+    targetReg?: Profiles,
+    reportmotive?: ReportMotive[]
 }
 export type ReportModel = Modify<Report, {}>
 
@@ -79,6 +80,8 @@ export type ReportMotive = Tables<'report_motive'> & {
 }
 export type ReportMotiveModel = Modify<ReportMotive, {}>
 
+export type Motive = Tables<'motives'>
+export type MotiveModel = Modify<Motive, {}>
 
 
 export type Views<T extends keyof Database['public']['Views']> =

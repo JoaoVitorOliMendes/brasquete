@@ -37,7 +37,7 @@ const separatorColors: { [K in Exclude<GroupMember['confirmed'], null | undefine
 
 const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = true }: GroupMemberListProps) => {
     const { id } = useLocalSearchParams<{ id: string }>()
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalVisible, setModalVisible] = useState<string | null>(null)
     const [removeMemberConfirmModalVisible, setRemoveMemberConfirmModalVisible] = useState(false)
     const [focusMember, setFocusMember] = useState<GroupMember>()
     const removeMemberMutation = useMutation(deleteGroupMember)
@@ -94,7 +94,7 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
                                                 <View className='flex flex-row flex-wrap'>
                                                     {
                                                         (item.profiles?.id != user?.id) &&
-                                                        <CustomPressIcon iconProps={{ icon: 'flag-outline' }} onPress={() => setModalVisible(true)} />
+                                                        <CustomPressIcon iconProps={{ icon: 'flag-outline' }} onPress={() => setModalVisible(item.profiles?.id)} />
                                                     }
 
                                                     {
@@ -160,7 +160,7 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
     }, [removeMemberConfirmModalVisible, focusMember])
 
     const reportMemberModalMemo = useMemo(() => {
-        return <ReportMemberModal visible={modalVisible} dismiss={() => setModalVisible(false)} />
+        return <ReportMemberModal visible={!!modalVisible} targetId={modalVisible} dismiss={() => setModalVisible(null)} />
     }, [modalVisible])
 
     
