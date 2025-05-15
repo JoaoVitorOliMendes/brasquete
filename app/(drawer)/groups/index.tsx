@@ -31,9 +31,6 @@ const GroupsIndex = () => {
     Toast.show({ type: 'error', text1: 'Error', text2: 'No User Found' })
     router.dismissTo('/event')
   }
-  useEffect(() => {
-    console.log('INSTANTIETED GroupsIndex')
-  }, [])
 
   return (
     <SafeAreaView className='flex-1 relative'>

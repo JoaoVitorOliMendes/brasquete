@@ -188,6 +188,7 @@ const EventsDetail = () => {
             <CustomImage
               className="w-full h-full object-cover"
               altImage={images.map}
+              style={null}
               imageUrl={eventsData?.groups?.location?.location_img || ''}
             />
           </View>
