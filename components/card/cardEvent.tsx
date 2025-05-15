@@ -9,6 +9,7 @@ import { days, images } from '@/constants'
 import MovingLoadingBar from '../horizontalLoadingIndicator'
 import { useQuery } from '@tanstack/react-query'
 import { getOnGoingMatchForEvent } from '@/api/matchApi'
+import CustomImage from '../customImage'
 
 interface CardGroupEventProps {
     event: GroupEventModel
@@ -71,10 +72,10 @@ const CardGroupEvent = ({ event }: CardGroupEventProps) => {
                         </Text>
                     </View>
                     <View className='basis-4/12'>
-                        <Image
+                        <CustomImage
                             className='rounded-lg'
-                            style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                            source={images.staticMapExample}
+                            altImage={images.map}
+                            imageUrl={event.groups?.location?.location_img || ''}
                         />
                     </View>
                 </View>

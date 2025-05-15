@@ -1,6 +1,6 @@
 import { createMap, createMapper, forMember, mapFrom, typeConverter } from '@automapper/core';
 import { pojos, PojosMetadataMap } from '@automapper/pojos'
-import { GroupEvent, GroupEventModel, GroupMember, GroupMemberModel, Groups, GroupsModel, Location, LocationModel, Match, MatchModel, Motives, MotivesModel, Player, PlayerModel, PlayerScore, PlayerScoreModel, Profiles, ProfilesModel, ReportMotive, ReportMotiveModel, Score, ScoreModel, Team, TeamModel } from '../models';
+import { GroupEvent, GroupEventModel, GroupMember, GroupMemberModel, Groups, GroupsModel, Location, LocationModel, Match, MatchModel, Motive, MotiveModel, Motives, MotivesModel, Player, PlayerModel, PlayerScore, PlayerScoreModel, Profiles, ProfilesModel, Report, ReportModel, ReportMotive, ReportMotiveModel, Score, ScoreModel, Team, TeamModel } from '../models';
 
 export const mapper = createMapper({
     strategyInitializer: pojos()
@@ -254,7 +254,30 @@ PojosMetadataMap.create<PlayerScoreModel>('PlayerScoreModel', {
     player_id: String,
 });
 
-PojosMetadataMap.create<ReportMotive>('PlayerScore', {
+PojosMetadataMap.create<Report>('Report', {
+    id: String,
+    created_at: String,
+    updated_at: String,
+    created_by: String,
+    created_byReg: 'Profiles',
+    other_motive: String,
+    reportmotive: 'ReportMotive',
+    target: String,
+    targetReg: 'Profiles'
+});
+PojosMetadataMap.create<ReportModel>('ReportModel', {
+    id: String,
+    created_at: String,
+    updated_at: String,
+    created_by: String,
+    created_byReg: 'Profiles',
+    other_motive: String,
+    reportmotive: 'ReportMotive',
+    target: String,
+    targetReg: 'Profiles'
+});
+
+PojosMetadataMap.create<ReportMotive>('ReportMotive', {
     id: String,
     created_at: String,
     updated_at: String,
@@ -283,6 +306,19 @@ PojosMetadataMap.create<ScoreModel>('ReportMotiveModel', {
     created_at: Date,
     id: String,
     score: String,
+    updated_at: Date
+});
+
+PojosMetadataMap.create<Motive>('Motive', {
+    created_at: String,
+    id: String,
+    motive: String,
+    updated_at: String
+});
+PojosMetadataMap.create<MotiveModel>('MotiveModel', {
+    created_at: Date,
+    id: String,
+    motive: String,
     updated_at: Date
 });
 
@@ -442,6 +478,24 @@ createMap<Score, ScoreModel>(
     )
 )
 
+createMap<Motive, MotiveModel>(
+    mapper,
+    'Motive',
+    'MotiveModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
 createMap<Match, MatchModel>(
     mapper,
     'Match',
@@ -482,6 +536,24 @@ createMap<PlayerScore, PlayerScoreModel>(
     mapper,
     'PlayerScore',
     'PlayerScoreModel',
+    forMember(
+        (destination) => destination.created_at,
+        mapFrom(
+            (source) => new Date(source.created_at)
+        )
+    ),
+    forMember(
+        (destination) => destination.updated_at,
+        mapFrom(
+            (source) => source.updated_at ? new Date(source.updated_at) : ''
+        )
+    )
+)
+
+createMap<Report, ReportModel>(
+    mapper,
+    'Report',
+    'ReportModel',
     forMember(
         (destination) => destination.created_at,
         mapFrom(

@@ -73,6 +73,16 @@ const DrawerLayout = () => {
                         />
                     ),
                 }} />
+                <Drawer.Screen name='editprofile' options={{
+                    title: 'Editar Perfil',
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name='cog'
+                            size={size}
+                            color={focused ? colors.black : colors.white}
+                        />
+                    ),
+                }} />
             </Drawer>
         </SafeAreaView>
     )
