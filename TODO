@@ -1,7 +1,7 @@
 @Must
-☐ Change map in group/[id] to static maps
+✔ Change map in group/[id] to static maps @done(25-05-15 03:42)
 --> 4
-☐ Editar perfil
+✔ Editar perfil @done(25-05-15 03:42)
 --> 2
 ✔ Finalizar partida - Joao @done(25-05-01 17:44)
 --> 3
@@ -41,7 +41,7 @@
 @Should
 ☐ Consertar compartilhamento de grupo
 --> 4
-☐ Foto de perfil
+✔ Foto de perfil @done(25-05-15 03:42)
 --> 5
 ☐ Reset de senha
 --> 3

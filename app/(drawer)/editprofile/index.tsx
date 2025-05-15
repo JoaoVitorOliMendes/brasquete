@@ -10,49 +10,74 @@ import { Profiles } from '@/model/models'
 import CustomButton from '@/components/buttons/customButton'
 import CustomInput from '@/components/forms/customInput'
 import CustomDropdown from '@/components/forms/customDropdown'
-import { updateProfile } from '@/api/profileApi'
+import { updateProfile, uploadProfilePic } from '@/api/profileApi'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { RegisterForm } from '@/model/RegisterForm'
 import CustomImagePicker from '@/components/customImagePicker'
+import { useIsFocused } from '@react-navigation/native'
+import * as ImagePicker from 'expo-image-picker';
 
 const EditProfile = () => {
   const router = useRouter()
-  const [image, setImage] = useState<string>('')
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset | null>(null)
+  const [imageUrl, setImageUrl] = useState<string>('')
   const queryClient = useQueryClient()
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<RegisterForm>()
+  const { control, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<RegisterForm>()
 
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const heightRef = useRef<TextInput>(null)
   const positionRef = useRef<TextInput>(null)
 
-  const updateProfileMutation = useMutation(updateProfile)
+  const isFocused = useIsFocused();
 
-  const handleSave = (data: RegisterForm) => {
-    updateProfileMutation.mutate(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['user']);
+  const updateProfileMutation = useMutation(updateProfile)
+  const updateProfilePicMutation = useMutation(uploadProfilePic)
+
+  const handleSave = async (data: RegisterForm) => {
+    await updateProfileMutation.mutate(data, {
+      onSuccess: async () => {
+        if (image) {
+          await updateProfilePicMutation.mutate({
+            user: user,
+            file: image,
+          }, {
+            onSuccess: () => {
+              console.log('updateProfilePicMutation SUCCESS')
+              queryClient.invalidateQueries(['user']);
+            }
+          })
+        } else {
+          console.log('updateProfileMutation SUCCESS')
+          queryClient.invalidateQueries(['user']);
+        }
       }
     })
   }
 
   useEffect(() => {
-    if (user) {
+    if (user && isFocused) {
       setValue('name', user?.user_metadata.first_name)
       setValue('surname', user?.user_metadata.last_name)
       setValue('height', user?.user_metadata.height)
       setValue('position', user?.user_metadata.position)
+      setImageUrl(user?.user_metadata.profile_img || '')
     }
-  }, [user])
+  }, [isFocused, user])
+
+  useEffect(() => {
+    if (image)
+      setImageUrl(image.uri)
+  }, [image])
 
   return (
     <SafeAreaView className='h-full'>
       <CustomDrawerHeader title='Perfil' />
       <ScrollView nestedScrollEnabled={true}>
         <View className='p-5'>
-          <CustomImagePicker imageUrl={image} setImage={setImage} />
+          <CustomImagePicker imageUrl={imageUrl} setImage={setImage} />
           <View className='mt-10'>
             <CustomInput
               color='black'
@@ -111,13 +136,13 @@ const EditProfile = () => {
               data={[
                 {
                   label: 'Armador',
-                  value: 'armador'
+                  value: 'Armador'
                 }, {
                   label: 'Pivô',
-                  value: 'pivo'
+                  value: 'Pivô'
                 }, {
                   label: 'Ala',
-                  value: 'ala'
+                  value: 'Ala'
                 }
               ]}
               color='black'

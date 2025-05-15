@@ -17,6 +17,7 @@ import { insertMatch } from '@/api/matchApi';
 import moment, { duration } from 'moment';
 import TeamSelectionModal from '@/components/modals/selectTeamsModal';
 import { getTeamsForEvent } from '@/api/teamApi';
+import CustomImage from '@/components/customImage';
 
 const EventsDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -184,16 +185,17 @@ const EventsDetail = () => {
       >
         <SafeAreaView className="p-4">
           <View className="w-full h-[33vh]">
-            <Image
-              source={images.staticMapExample}
+            <CustomImage
               className="w-full h-full object-cover"
+              altImage={images.map}
+              imageUrl={eventsData?.groups?.location?.location_img || ''}
             />
           </View>
           <View>
             <CustomTitle
               title={formattedDate}
               sizeClass="text-3xl"
-              className="text-center p-2 bg-primary m-4 rounded-full"
+              className="font-bold text-center p-2 bg-primary m-4 rounded-full"
             />
           </View>
         </SafeAreaView>

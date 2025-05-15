@@ -10,6 +10,21 @@ const reverseGeolocation = async (latitude: number, longitude: number) => {
     })
 }
 
+const generateGroupsMapImage = async (latitude: number, longitude: number) => {
+    return await mapsApi.get(MAPS_ENDPOINTS.STATIC_MAPS, {
+        params: {
+            center: `${latitude},${longitude}`,
+            zoom: '16',
+            maptype: 'roadmap',
+            size: '500x500',
+            markers: `color:red|${latitude},${longitude}`,
+            format: 'png'
+        },
+        responseType: 'arraybuffer'
+    })
+}
+
 export {
-    reverseGeolocation
+    reverseGeolocation,
+    generateGroupsMapImage
 }

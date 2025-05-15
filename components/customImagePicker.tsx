@@ -1,14 +1,18 @@
 import { View, Text, Pressable, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
+import IconConcat from './iconConcat';
+import { Ionicons } from '@expo/vector-icons';
+import { images } from '@/constants';
 
 interface CustomImagePickerProps {
     imageUrl: string,
-    setImage: (str: string) => void
+    setImage: (img: ImagePicker.ImagePickerAsset) => void
 }
 
 const CustomImagePicker = ({ imageUrl, setImage }: CustomImagePickerProps) => {
+    const [error, setError] = useState(false)
 
     const requestPermissions = async () => {
         if (Platform.OS !== 'web') {
@@ -24,20 +28,28 @@ const CustomImagePicker = ({ imageUrl, setImage }: CustomImagePickerProps) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            console.log(result.assets[0])
+            setImage(result.assets[0]);
         }
     }
 
+    useEffect(() => {
+        setError(false)
+    }, [imageUrl])
+    
     return (
         <Pressable onPress={selectImage}>
             <Image
-                className='rounded-full !w-48 !h-48 my-5 mb-10 self-center'
-                source={{ uri: imageUrl }}
+                className='rounded-full !w-48 !h-48 border-4 p-5 self-center'
+                source={!error ? { uri: imageUrl } : images.person}
+                onError={() => {
+                    setError(true)
+                }}
             />
         </Pressable>
     )

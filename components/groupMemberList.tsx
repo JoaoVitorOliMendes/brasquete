@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { deleteGroupMember, insertGroupMember } from '@/api/groupMemberApi'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { fetchUser } from '@/api/authApi'
+import CustomImage from './customImage'
 
 interface GroupMemberListProps {
     members?: Groups,
@@ -71,15 +72,15 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
                 <View className='flex flex-row' key={item.id}>
                     {/* I'm the fking best dude */}
                     < View className='basis-3/12 flex items-center justify-center p-5' >
-                        <Image
+                        <CustomImage
                             className='rounded-full'
-                            style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                            source={images.person}
+                            imageUrl={item?.profiles?.profile_img || ''}
+                            altImage={images.person}
                         />
                     </View >
                     <View className='basis-6/12 flex flex-column justify-center px-4'>
                         <CustomTitle title={item.profiles ? item.profiles.first_name + ' ' + item.profiles.last_name : ''} sizeClass='text-xl' />
-                        <CustomTitle title={item.profiles?.position || ''} sizeClass='text-xl' />
+                        <CustomTitle title={item.profiles?.position || ''} sizeClass='text-xl' className='font-bold' />
                     </View>
                     <View className='basis-3/12 flex flex-column justify-center items-center p-4'>
                         {
@@ -106,7 +107,7 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
                                 )
                                 :
                                 <View className='rounded-full bg-primary justify-center align-center' style={{ width: '85%', height: 'auto', aspectRatio: 1 / 1 }}>
-                                    <Text className='text-center'>
+                                    <Text className='text-center font-bold'>
                                         Admin
                                     </Text>
                                 </View>

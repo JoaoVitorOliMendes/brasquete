@@ -128,13 +128,13 @@ const Register = () => {
               data={[
                 {
                   label: 'Armador',
-                  value: 'armador'
+                  value: 'Armador'
                 }, {
                   label: 'Pivô',
-                  value: 'pivo'
+                  value: 'Pivô'
                 }, {
                   label: 'Ala',
-                  value: 'ala'
+                  value: 'Ala'
                 }
               ]}
               color='black'

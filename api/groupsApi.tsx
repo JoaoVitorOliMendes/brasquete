@@ -32,7 +32,8 @@ export const getGroupsForUser = async (userId: string) => {
     .from('groups')
     .select(`
     *,
-    group_member(*, profiles(*))
+    group_member(*, profiles(*)),
+    location(*)
   `)
 
   if (error)
