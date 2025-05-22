@@ -4,6 +4,7 @@ import CustomButton from '@/components/buttons/customButton';
 import { Player, Team, TeamModel } from '@/model/models';
 import { images } from '@/constants'
 import CustomTitle from '../customTitle';
+import CustomImage from '../customImage';
 
 interface TeamPlayerModalProps {
     teamA: TeamModel;
@@ -32,11 +33,14 @@ const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlay
                                 teamA.player?.map((player, index) => {
                                     return (
                                         <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
-                                            <Image
+                                            <CustomImage
                                                 className='rounded-lg'
-                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                                                source={images.person}
+                                                imageUrl={player.group_member?.profiles?.profile_img}
+                                                altImage={images.person}
                                             />
+                                            <Text>
+                                                {player.group_member?.profiles?.first_name + ' ' + player.group_member?.profiles?.last_name}
+                                            </Text>
                                         </Pressable>
                                     )
                                 })
@@ -48,11 +52,14 @@ const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlay
                                 teamB.player?.map((player, index) => {
                                     return (
                                         <Pressable key={index} className='basis-4/12 p-2' onPress={() => onConfirm(player)}>
-                                            <Image
+                                            <CustomImage
                                                 className='rounded-lg'
-                                                style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                                                source={images.person}
+                                                imageUrl={player.group_member?.profiles?.profile_img}
+                                                altImage={images.person}
                                             />
+                                            <Text>
+                                                {player.group_member?.profiles?.first_name + ' ' + player.group_member?.profiles?.last_name}
+                                            </Text>
                                         </Pressable>
                                     )
                                 })

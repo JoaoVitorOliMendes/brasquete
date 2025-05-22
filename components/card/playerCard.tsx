@@ -3,6 +3,7 @@ import React from 'react'
 import { images } from '@/constants'
 import CustomPressIcon from '../buttons/customPressIcon'
 import { Player } from '@/model/models'
+import CustomImage from '../customImage'
 
 interface PlayerCardProps {
     player: Player,
@@ -14,10 +15,10 @@ const PlayerCard = ({ player, className, onIconPress }: PlayerCardProps) => {
     return (
         <View className={`flex flex-row flex-wrap items-center ${className}`}>
             <View className='basis-1/4 p-5'>
-                <Image
+                <CustomImage
                     className='rounded-full'
-                    style={{ width: '100%', height: 'auto', aspectRatio: 1 / 1 }}
-                    source={images.person}
+                    imageUrl={player.group_member?.profiles?.profile_img}
+                    altImage={images.person}
                 />
             </View>
             <View className='basis-1/2'>

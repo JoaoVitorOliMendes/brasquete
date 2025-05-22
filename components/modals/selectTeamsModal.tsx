@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, FlatList, TouchableOpacity, Pressable } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Modal, View, Text, FlatList, TouchableOpacity, Pressable, TextInput } from 'react-native';
 import CustomButton from '@/components/buttons/customButton';
 import { Team } from '@/model/models';
 import CustomTitle from '../customTitle';
+import { TimerPickerModal } from "react-native-timer-picker";
+import CustomInput from '../forms/customInput';
+import { useForm } from 'react-hook-form';
+import { TimePickerForm } from '@/model/formModels';
 
 interface TeamSelectionModalProps {
   teams: Team[]; // Accepts filtered teams
   visible: boolean;
   onClose: () => void;
-  onConfirm: (selectedTeams: Team[]) => void;
+  onConfirm: (selectedTeams: Team[], duration: number) => void;
 }
 
 const TeamSelectionModal = ({ teams, visible, onClose, onConfirm }: TeamSelectionModalProps) => {
   const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
+  const [duration, setDuration] = useState(600000)
+  const [showPicker, setShowPicker] = useState(false)
+  const durationRef = useRef<TextInput>(null)
+
+  const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm<TimePickerForm>()
+
+  const formatTime = ({
+    hours = 0,
+    minutes = 0,
+    seconds = 0,
+  }: {
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+  }) => {
+    return ((minutes * 60) + seconds) * 1000;
+  };
 
   const toggleTeamSelection = (team: Team) => {
     setSelectedTeams((prev) => {
@@ -52,13 +73,34 @@ const TeamSelectionModal = ({ teams, visible, onClose, onConfirm }: TeamSelectio
               </TouchableOpacity>
             )}
           />
+          <Pressable
+            onPress={() => setShowPicker(true)}
+          >
+            <CustomInput
+              color='white'
+              type='filled'
+              inputRef={durationRef}
+              formProps={{
+                control,
+                name: 'duration',
+                rules: {
+                  required: 'Duração é obrigatório'
+                }
+              }}
+              inputProps={{
+                defaultValue: '10:00'
+              }}
+              className='mb-4'
+              disabled
+            />
+          </Pressable>
           <View className='flex-row justify-between mt-10'>
             <CustomButton label="Cancel" onPress={onClose} color='black' />
             <CustomButton
               label="Confirm"
               onPress={() => {
                 if (selectedTeams.length === 2) {
-                  onConfirm(selectedTeams);
+                  onConfirm(selectedTeams, duration);
                 } else {
                   alert('Please select exactly two teams.');
                 }
@@ -67,6 +109,27 @@ const TeamSelectionModal = ({ teams, visible, onClose, onConfirm }: TeamSelectio
           </View>
         </View>
       </View>
+      <TimerPickerModal
+        visible={showPicker}
+        setIsVisible={setShowPicker}
+        onConfirm={(pickedDuration) => {
+          setValue('duration', pickedDuration.minutes + ':' + pickedDuration.seconds)
+          setDuration(formatTime(pickedDuration))
+          setShowPicker(false);
+        }}
+        modalTitle="Duração da Partida"
+        onCancel={() => setShowPicker(false)}
+        initialValue={
+          {
+            minutes: 10
+          }
+        }
+        closeOnOverlayPress
+        hideHours
+        modalProps={{
+          overlayOpacity: 0.2,
+        }}
+      />
     </Modal>
   );
 };

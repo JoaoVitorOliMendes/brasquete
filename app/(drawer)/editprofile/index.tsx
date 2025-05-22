@@ -24,7 +24,7 @@ const EditProfile = () => {
   const queryClient = useQueryClient()
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  const { control, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<RegisterForm>()
+  const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<RegisterForm>()
 
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
@@ -133,6 +133,7 @@ const EditProfile = () => {
               className='mb-4'
             />
             <CustomDropdown
+              watch={watch}
               data={[
                 {
                   label: 'Armador',
