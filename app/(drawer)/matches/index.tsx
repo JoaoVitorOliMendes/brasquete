@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchUser } from '@/api/authApi'
 import Toast from 'react-native-toast-message'
 import { getClosedMatchesForUser } from '@/api/matchApi'
+import IconConcat from '@/components/iconConcat'
 
 const MatchesIndex = () => {
   const router = useRouter()
@@ -31,12 +32,23 @@ const MatchesIndex = () => {
       <CustomDrawerHeader title='Partidas' />
       <View className='p-4'>
         {
-          (closedMatches && closedMatches.length > 0) &&
-          closedMatches?.map((match, index) => {
-            return (
-              <CardMatch key={index} match={match} />
-            )
-          })
+          (closedMatches && closedMatches.length) ?
+            closedMatches?.map((match, index) => {
+              return (
+                <CardMatch key={index} match={match} />
+              )
+            })
+
+            :
+            <View
+              className='flex-row justify-center align-center opacity-50 mt-20'
+            >
+              <CustomTitle
+                title='Sem partidas jogadas'
+                sizeClass='text-2xl'
+              />
+              <IconConcat icon='basketball-outline' className='ml-4' />
+            </View>
         }
       </View>
     </View>

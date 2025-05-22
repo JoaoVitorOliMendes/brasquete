@@ -11,9 +11,13 @@ export const getEventsForGroups = async () => {
   .from('event')
     .select(`
     *,
-    groups(*)
+    groups(
+      *,
+      location(*)
+    )
   `)
   .gt('date', today)
+  .neq('status', 2)
 
   if (error)
     Toast.show({ type: 'error', text1: 'Error', text2: error.message })
@@ -29,7 +33,14 @@ export const getEventByid = async (id: string) => {
   .from('event')
     .select(`
     *,
-    groups(*, group_member(*, profiles(*)))
+    groups(
+      *,
+      group_member(
+        *,
+        profiles(*)
+      ),
+      location(*)
+    )
   `)
   .eq('id', id)
   .single()

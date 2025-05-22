@@ -171,10 +171,10 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
                 addMemberBtn &&
                 (
                     admin ?
-                        <CustomButton label='Adicionar membros' color='secondary' className='w-1/2' onPress={inviteMembers} />
+                        <CustomButton label='Adicionar membros' color='secondary' className='w-1/2 mb-4' onPress={inviteMembers} />
                         :
                         !isMember ?
-                            <CustomButton label='Entrar no grupo' color='primary' className='w-1/2' onPress={joinGroup} />
+                            <CustomButton label='Entrar no grupo' color='primary' className='w-1/2 mb-4' onPress={joinGroup} />
                             :
                             <></>
                 )

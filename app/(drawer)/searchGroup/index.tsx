@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchUser } from '@/api/authApi'
 import { getAvailableGroups } from '@/api/groupsApi'
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
+import IconConcat from '@/components/iconConcat'
 
 const SearchGroupIndex = () => {
     const router = useRouter()
@@ -28,10 +29,20 @@ const SearchGroupIndex = () => {
             <ScrollView>
                 <View className='p-4'>
                     {
-                        groupsData &&
-                        groupsData.map((item) => {
-                            return <CardGroup group={item} key={item.id} />
-                        })
+                        (groupsData && groupsData.length) ?
+                            groupsData.map((item) => {
+                                return <CardGroup group={item} key={item.id} />
+                            })
+                            :
+                            <View
+                                className='flex-row justify-center align-center opacity-50 mt-20'
+                            >
+                                <CustomTitle
+                                    title='Sem grupos disponíveis'
+                                    sizeClass='text-2xl'
+                                />
+                                <IconConcat icon='basketball-outline' className='ml-4' />
+                            </View>
                     }
                 </View>
             </ScrollView>
@@ -40,14 +51,14 @@ const SearchGroupIndex = () => {
                     icon: 'filter',
                     label: 'Filtros',
                     onPress: () => {
-                        
+
                     }
                 },
                 {
                     icon: 'map',
                     label: 'Mapa',
                     onPress: () => {
-                        
+                        router.push('/searchGroup/groupMap')
                     }
                 }
             ]} />

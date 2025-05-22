@@ -1,10 +1,11 @@
 import { View, Text, TextInput, TextInputProps, Modal, TouchableWithoutFeedback, TouchableOpacity, GestureResponderEvent, Pressable, FlatList, StatusBar, ListRenderItemInfo } from 'react-native'
-import React, { forwardRef, RefObject, useRef, useState } from 'react'
+import React, { forwardRef, RefObject, useEffect, useRef, useState } from 'react'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { ClassColor, ClassTypeColor } from '@/model/ClassTypeColor'
-import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
+import { Controller, FieldValues, UseControllerProps, UseFormWatch } from 'react-hook-form'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { OptionItem } from '@/model/OptionItem'
+import { RegisterForm } from '@/model/RegisterForm'
 
 interface CustomDropdownProps<FormType extends FieldValues> {
     data: OptionItem[],
@@ -12,10 +13,11 @@ interface CustomDropdownProps<FormType extends FieldValues> {
     color: keyof ClassColor,
     className?: string,
     formProps: UseControllerProps<FormType>,
-    inputProps: TextInputProps
+    inputProps: TextInputProps,
+    watch: UseFormWatch<RegisterForm>
 }
 
-const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, className = '', formProps, inputProps }: CustomDropdownProps<FormType>) => {
+const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, className = '', formProps, inputProps, watch }: CustomDropdownProps<FormType>) => {
     const [dropdownOpened, setDropdownOpened] = useState(false)
     const [dropdownCoords, setDropdownCoords] = useState({
         top: 0,
@@ -75,6 +77,12 @@ const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, cl
         }
         setDropdownOpened(!dropdownOpened)
     }
+
+    const positionVal = watch(formProps.name)
+
+    useEffect(() => {
+        handleSelect(positionVal)
+    }, [positionVal])
 
     return (
         <Controller
