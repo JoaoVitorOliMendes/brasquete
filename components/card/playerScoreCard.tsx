@@ -4,10 +4,12 @@ import { Json } from '@/model/supabaseTypes';
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import CustomImage from '../customImage';
 
 interface PlayerScoreCardProps {
     player: {
         name: string;
+        profile_img: string;
         player_score: Json;
     }
 }
@@ -27,11 +29,11 @@ const PlayerScoreCard = ({ player }: PlayerScoreCardProps) => {
                 className="flex flex-row items-center p-4"
             >
                 {/* Square Image */}
-                <Image
-                    //   source={{ uri: player.group_member?.profiles.image_url }}
-                    source={images.person}
+                <CustomImage
+                    imageUrl={player.profile_img}
+                    altImage={images.person}
                     className="w-16 h-16 rounded-md mr-4"
-                    resizeMode="cover"
+                    style={null}
                 />
                 {/* Text */}
                 <Text className="text-lg font-bold text-black">{player.name}</Text>

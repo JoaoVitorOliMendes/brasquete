@@ -10,6 +10,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { upsertExpoToken } from '@/api/profileApi';
 import { Profiles } from '@/model/models';
+import * as Location from 'expo-location'
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -101,7 +102,15 @@ const Index = () => {
     useEffect(() => {
         // if (!isLoading && user)
         //     router.replace("/(drawer)/event/");
-        
+
+        Location.getBackgroundPermissionsAsync().then((val) => {
+            if (val.status !== 'granted')
+                Location.requestBackgroundPermissionsAsync()
+        })
+        Location.getForegroundPermissionsAsync().then((val) => {
+            if (val.status !== 'granted')
+                Location.requestForegroundPermissionsAsync()
+        })
 
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -112,12 +121,11 @@ const Index = () => {
         });
 
         supabase.auth.onAuthStateChange(async (_event, session) => {
-            
             if (session) {
                 await registerForPushNotificationsAsync()
                     .then(token => {
                         setExpoPushToken(token ?? '')
-                        
+
                         if (token && session.user) {
                             useUpsertExpoToken.mutateAsync({ id: session.user.id, expo_push_token: token } as Profiles)
                         }

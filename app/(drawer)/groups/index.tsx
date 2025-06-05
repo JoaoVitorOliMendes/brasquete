@@ -10,6 +10,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getGroupsForUser } from '@/api/groupsApi'
 import { fetchUser } from '@/api/authApi'
 import Toast from 'react-native-toast-message'
+import CustomTitle from '@/components/customTitle'
+import IconConcat from '@/components/iconConcat'
 
 const GroupsIndex = () => {
   const router = useRouter()
@@ -39,10 +41,21 @@ const GroupsIndex = () => {
         <View className='p-4'>
           {/* <CustomTitle title='Meus Grupos' sizeClass='text-4xl' className='mb-4' /> */}
           {
-            groupsData &&
-            groupsData.map((item) => {
-              return <CardGroup group={item} key={item.id} />
-            })
+            (groupsData && groupsData.length) ?
+              groupsData.map((item) => {
+                return <CardGroup group={item} key={item.id} />
+              })
+              :
+              <View
+                className='flex-row justify-center align-center opacity-50 mt-20 px-20'
+              >
+                <CustomTitle
+                  title='Você ainda não ingressou em nenhum grupo'
+                  sizeClass='text-2xl'
+                  className='text-center'
+                />
+                <IconConcat icon='basketball-outline' className='ml-4' />
+              </View>
           }
         </View>
       </ScrollView>

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import { GroupMember, GroupMemberModel } from "@/model/models";
+import { GroupEvent, GroupMember, GroupMemberModel } from "@/model/models";
 import { mapper } from "@/model/mappings/mapper";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "./authApi";
@@ -10,18 +10,17 @@ export const insertGroupMember = async (groupMember: GroupMember) => {
     .select('*')
     .eq('user_id', groupMember.user_id)
     .eq('group_id', groupMember.group_id)
-    .single()
 
   if (groupMemberError)
     throw groupMemberError
 
-  if (groupMemberData) {
+  if (groupMemberData && groupMemberData[0]) {
     const { error, data } = await supabase
       .from('group_member')
       .update({
         status: 0
       })
-      .eq('id', groupMemberData.id)
+      .eq('id', groupMemberData[0].id)
       .select()
 
     if (error)
@@ -46,14 +45,34 @@ export const insertGroupMember = async (groupMember: GroupMember) => {
 }
 
 export const changeStatusGroupMember = async (groupMember: GroupMember) => {
-  
-  
   const { error, data } = await supabase
     .from('group_member')
     .update({
       confirmed: groupMember.confirmed
     })
     .eq('id', groupMember.id)
+    .select()
+
+  
+
+  if (error)
+    throw error
+
+  
+
+  if (data && data.length)
+    return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
+
+  return []
+}
+
+export const unconfirmGroupMemberForEvent = async (event: GroupEvent) => {
+  const { error, data } = await supabase
+    .from('group_member')
+    .update({
+      confirmed: 0
+    })
+    .eq('group_id', event.group_id)
     .select()
 
   

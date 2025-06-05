@@ -7,6 +7,7 @@ import CardStatistics from '@/components/card/cardStatistics'
 import { useQuery } from '@tanstack/react-query'
 import { fetchUser } from '@/api/authApi'
 import { getPlayerStatistics } from '@/api/playerScoreApi'
+import CustomImage from '@/components/customImage'
 
 const PersonalAvg = () => {
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
@@ -17,9 +18,10 @@ const PersonalAvg = () => {
   return (
     <View>
       <CustomDrawerHeader title='Desempenho' />
-      <Image
+      <CustomImage
         className='rounded-full !w-48 !h-48 my-5 mb-20 self-center'
-        source={images.person}
+        imageUrl={user?.user_metadata?.profile_img}
+        altImage={images.person}
       />
       <ScrollView>
         <View className='p-4'>

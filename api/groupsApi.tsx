@@ -10,7 +10,8 @@ export const getAvailableGroups = async (userId: string) => {
     .from('groups')
     .select(`
     *,
-    group_member(*, profiles(*))
+    group_member(*, profiles(*)),
+    location(*)
   `)
     .eq('private', false)
 

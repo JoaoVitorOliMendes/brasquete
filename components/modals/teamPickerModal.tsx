@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { deleteTeam, insertTeam, updateTeam } from '@/api/teamApi'
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
 import { getPlayersForEvent } from '@/api/playerApi'
+import { useLocalSearchParams } from 'expo-router'
 
 interface TeamPickerModalProps {
     visible?: boolean,
@@ -26,6 +27,7 @@ interface TeamPickerModalProps {
 }
 
 const TeamPickerModal = ({ visible, dismiss, eventsData, team }: TeamPickerModalProps) => {
+    const { id: eventId } = useLocalSearchParams<{ id: string }>();
     const bottomSheetRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['50%'], [])
     const { control, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm<Team>()
@@ -83,13 +85,15 @@ const TeamPickerModal = ({ visible, dismiss, eventsData, team }: TeamPickerModal
             reset({
                 id: team.id,
                 name: team.name,
-                player: team.player
+                player: team.player,
+                event_id: eventId
             })
         } else {
             reset({
                 id: '',
                 name: '',
-                player: []
+                player: [],
+                event_id: eventId
             })
         }
     }, [team, reset])

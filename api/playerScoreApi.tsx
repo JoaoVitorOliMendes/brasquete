@@ -35,7 +35,7 @@ export const getTeamMatchScore = async (match: Match) => {
         }
         return acc;
     }, 0) || 0;
-    
+
     const teamBData = data?.filter((item: any) => {
         return item.match_id == match.id && item.match.team_b_id == item.player.team_id
     })
