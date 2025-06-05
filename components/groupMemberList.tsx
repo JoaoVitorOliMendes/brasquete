@@ -123,8 +123,8 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
             const link = Linking.createURL(`/groups/${members.id}`);
             Share.share({
                 title: 'Compartilhar Grupo',
-                message: link,
-                url: link
+                message: `https://joaovitorolimendes.github.io/deep-linker?url=${link}`,
+                url: `https://joaovitorolimendes.github.io/deep-linker?url=${link}`
             })
         } else
             Toast.show({ type: 'error', text1: 'Error', text2: 'No URL Found' })

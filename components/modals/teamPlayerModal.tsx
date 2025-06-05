@@ -15,6 +15,7 @@ interface TeamPlayerModalProps {
 }
 
 const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlayerModalProps) => {
+    console.log("Player", teamA.player && teamA.player.length>0 ? teamA.player[0].group_member : 0)
     return (
         <Modal visible={visible} transparent>
             <View className='relative h-full w-full flex justify-center items-center'>
@@ -38,7 +39,7 @@ const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlay
                                                 imageUrl={player.group_member?.profiles?.profile_img}
                                                 altImage={images.person}
                                             />
-                                            <Text>
+                                            <Text className='color-white'>
                                                 {player.group_member?.profiles?.first_name + ' ' + player.group_member?.profiles?.last_name}
                                             </Text>
                                         </Pressable>
@@ -57,7 +58,7 @@ const TeamPlayerModal = ({ teamA, teamB, visible, onClose, onConfirm }: TeamPlay
                                                 imageUrl={player.group_member?.profiles?.profile_img}
                                                 altImage={images.person}
                                             />
-                                            <Text>
+                                            <Text className='color-white'>
                                                 {player.group_member?.profiles?.first_name + ' ' + player.group_member?.profiles?.last_name}
                                             </Text>
                                         </Pressable>

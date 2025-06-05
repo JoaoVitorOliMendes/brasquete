@@ -131,7 +131,13 @@ export const getTeamById = async (team: Team) => {
     .from('team')
     .select(`
       *,
-      player(*)
+      player(
+        *,
+        group_member(
+        *,
+        profiles(*)
+        )
+      )
     `)
     .eq('id', team.id)
     .single()

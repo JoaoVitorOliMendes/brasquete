@@ -210,7 +210,6 @@ const EventMatch = () => {
   };
 
   const handleAddTime = () => {
-    console.log('add time', matchData)
     if (matchData) {
       addTimeMutation.mutate(matchData);
     }
@@ -259,20 +258,20 @@ const EventMatch = () => {
       />
       <ScrollView className="flex-1 bg-secondary">
         <View className="flex-1 justify-center items-center">
-          <CustomTitle title={formatTime(time)} className="mb-5" sizeClass='text-5xl' />
+          <CustomTitle title={formatTime(time)} className="mb-5" sizeClass='text-5xl' color='white' />
           <View className='flex-row justify-between items-center w-full px-5 mb-10'>
             <View className='flex-1 items-center'>
-              <CustomTitle title={teamAData.name} sizeClass='text-4xl' />
-              <CustomTitle title={matchScoreData.teamA.points.toString()} sizeClass='text-3xl' />
-              <CustomTitle title={`Faltas: ${matchScoreData.teamA.fouls.toString()}`} className='mt-10' sizeClass='text-xl' />
+              <CustomTitle title={teamAData.name} sizeClass='text-3xl' color='white' />
+              <CustomTitle title={matchScoreData.teamA.points.toString()} sizeClass='text-3xl' color='white' />
+              <CustomTitle title={`Faltas: ${matchScoreData.teamA.fouls.toString()}`} className='mt-10' sizeClass='text-xl' color='white' />
             </View>
             <View className='flex-1 items-center'>
-              <CustomTitle title='X' sizeClass='text-5xl' />
+              <CustomTitle title='X' sizeClass='text-5xl' color='white' />
             </View>
             <View className='flex-1 items-center'>
-              <CustomTitle title={teamBData.name} sizeClass='text-4xl' />
-              <CustomTitle title={matchScoreData.teamB.points.toString()} sizeClass='text-3xl' />
-              <CustomTitle title={`Faltas: ${matchScoreData.teamB.fouls.toString()}`} className='mt-10' sizeClass='text-xl' />
+              <CustomTitle title={teamBData.name} sizeClass='text-3xl' color='white' />
+              <CustomTitle title={matchScoreData.teamB.points.toString()} sizeClass='text-3xl' color='white' />
+              <CustomTitle title={`Faltas: ${matchScoreData.teamB.fouls.toString()}`} className='mt-10' sizeClass='text-xl' color='white' />
             </View>
           </View>
           <View className='flex-column justify-center items-center w-full px-5 mb-10'>

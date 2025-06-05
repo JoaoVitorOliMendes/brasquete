@@ -21,17 +21,13 @@ const GroupMap = () => {
     const router = useRouter();
 
     useEffect(() => {
-        console.log('Location')
         Location.getCurrentPositionAsync().then((val) => {
-            console.log(val)
             setInitialLocation({
                 latitude: val.coords.latitude,
                 longitude: val.coords.longitude,
                 longitudeDelta: 0.005,
                 latitudeDelta: 0.005
             })
-        }).catch((error) => {
-            console.log(error)
         })
     }, [])
 
@@ -42,7 +38,7 @@ const GroupMap = () => {
                 <MapView
                     style={{ flex: 1 }}
                     provider={PROVIDER_GOOGLE}
-                    googleMapsApiKey={envVars.MAPS_API_KEY}
+                    googleMapsApiKey={'AIzaSyCmCQA1Xfjk9mt-FQZ-Zqn9c6VLirzpe70'}
                     loadingEnabled={true}
                     region={initialLocation}
                 >
