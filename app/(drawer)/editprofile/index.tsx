@@ -45,12 +45,10 @@ const EditProfile = () => {
             file: image,
           }, {
             onSuccess: () => {
-              console.log('updateProfilePicMutation SUCCESS')
               queryClient.invalidateQueries(['user']);
             }
           })
         } else {
-          console.log('updateProfileMutation SUCCESS')
           queryClient.invalidateQueries(['user']);
         }
       }

@@ -41,10 +41,6 @@ const ReportMemberModal = ({ visible, dismiss = () => {}, targetId }: ReportMemb
     }
   }, [otherFlag, setValue]);
 
-  useEffect(() => {
-    console.log(motivesData)
-  }, [motivesData])
-
   const toggleMotive = (motiveId: string) => {
     setSelectedMotives((prev) =>
       prev.includes(motiveId) ? prev.filter((id) => id !== motiveId) : [...prev, motiveId]
@@ -52,7 +48,6 @@ const ReportMemberModal = ({ visible, dismiss = () => {}, targetId }: ReportMemb
   };
 
   const handleReport = (data: any) => {
-    console.log(user.id, targetId)
     if (user && targetId) {
       const report: Report = {
         reportmotive: selectedMotives.map((motiveId) => ({
@@ -62,8 +57,7 @@ const ReportMemberModal = ({ visible, dismiss = () => {}, targetId }: ReportMemb
         created_by: user?.id,
         other_motive: otherFlag ? data.other_motive : '',
       };
-  
-      console.log('Report Submitted:', report);
+      
       addReportMutation.mutate(report, {
         onSuccess: () => {
           dismiss();

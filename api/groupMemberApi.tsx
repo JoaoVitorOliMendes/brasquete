@@ -14,8 +14,6 @@ export const insertGroupMember = async (groupMember: GroupMember) => {
   if (groupMemberError)
     throw groupMemberError
 
-  console.log(groupMemberData)
-
   if (groupMemberData && groupMemberData[0]) {
     const { error, data } = await supabase
       .from('group_member')

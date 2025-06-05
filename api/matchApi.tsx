@@ -159,8 +159,6 @@ export const getClosedMatchesForUser = async (user: User) => {
 
     if (error) throw error;
 
-    console.log(data)
-
     if (data && data.length) {
         return data
     }

@@ -57,8 +57,9 @@ const TeamSelectionModal = ({ teams, visible, onClose, onConfirm }: TeamSelectio
           }}
         />
         <View className='rounded-lg w-5/6 bg-secondary p-10'>
-          <CustomTitle title='Selecione dois times' sizeClass='text-2xl' className='mb-10' />
+          <CustomTitle title='Selecione dois times' sizeClass='text-2xl' className='mb-10' color='white' />
           <FlatList
+            className='mb-5'
             data={teams}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
@@ -88,6 +89,7 @@ const TeamSelectionModal = ({ teams, visible, onClose, onConfirm }: TeamSelectio
                 }
               }}
               inputProps={{
+                placeholder: 'Duração',
                 defaultValue: '10:00'
               }}
               className='mb-4'
