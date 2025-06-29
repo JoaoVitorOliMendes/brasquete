@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import NavHeader from '@/components/navHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -18,12 +18,14 @@ import moment, { duration } from 'moment';
 import TeamSelectionModal from '@/components/modals/selectTeamsModal';
 import { getTeamsForEvent } from '@/api/teamApi';
 import CustomImage from '@/components/customImage';
+import ConfirmModal from '@/components/modals/confirmationModal';
 
 const EventsDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [teamSelectionVisible, setTeamSelectionVisible] = useState(false);
+  const [endEventVisible, setEndEventVisible] = useState(false);
 
   // Fetch user data
   const { data: user } = useQuery(['user'], fetchUser);
@@ -44,6 +46,13 @@ const EventsDetail = () => {
   const changeStatusGMMutation = useMutation(changeStatusGroupMember);
   const changeStatusEVMutation = useMutation(changeEventStatus);
 
+  useEffect(() => {
+    if (eventsData && eventsData.status == 2) {
+      Toast.show({ type: 'info', text1: 'Encerrado', text2: 'Evento Encerrado' })
+      router.dismissTo('/event')
+    }
+  }, [eventsData])
+
   // Determine if the user is a group member
   const userMember = eventsData?.groups?.group_member?.find((item) => item.user_id === user?.id);
 
@@ -58,7 +67,7 @@ const EventsDetail = () => {
   ) : null;
 
   // Handle confirming teams
-  const handleConfirmTeams = async (selectedTeams: Team[]) => {
+  const handleConfirmTeams = async (selectedTeams: Team[], durationMs: number) => {
     try {
       const now = new Date();
       const match = {
@@ -67,7 +76,7 @@ const EventsDetail = () => {
         team_b_id: selectedTeams[1].id,
         time_start: null,
         time_pause: null,
-        duration: duration(10, 'minutes').asMilliseconds(),
+        duration: durationMs,
       };
       const matchData = await insertMatch(match as unknown as MatchModel);
       setTeamSelectionVisible(false);
@@ -94,6 +103,11 @@ const EventsDetail = () => {
             icon: 'play',
             label: 'Iniciar Partida',
             onPress: () => setTeamSelectionVisible(true),
+          },
+          {
+            icon: 'flag',
+            label: 'Encerrar Evento',
+            onPress: () => setEndEventVisible(true),
           }
         );
       } else {
@@ -147,13 +161,14 @@ const EventsDetail = () => {
     return null;
   }
 
+
   // Format event date
   const formattedDate = eventsData?.date
     ? `${new Date(eventsData.date).getDate().toString().padStart(2, '0')}/${(
-        new Date(eventsData.date).getMonth() + 1
-      )
-        .toString()
-        .padStart(2, '0')}/${new Date(eventsData.date).getFullYear().toString().slice(-2)} ${new Date(
+      new Date(eventsData.date).getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${new Date(eventsData.date).getFullYear().toString().slice(-2)} ${new Date(
         eventsData.date
       )
         .getHours()
@@ -198,11 +213,31 @@ const EventsDetail = () => {
               sizeClass="text-3xl"
               className="font-bold text-center p-2 bg-primary m-4 rounded-full"
             />
+
+            <View className='flex flex-row flex-wrap'>
+              <CustomTitle title={`${eventsData?.groups?.location?.add_number},  ${eventsData?.groups?.location?.add_street}, ${eventsData?.groups?.location?.add_neighborhood}, ${eventsData?.groups?.location?.add_city} - ${eventsData?.groups?.location?.add_state}`} sizeClass='text-xl' className='my-4 basis-full' />
+            </View>
           </View>
         </SafeAreaView>
         {groupMemberList}
       </ScrollView>
       <ExpandableIcon menuItems={extendedMenu} />
+      {
+        eventsData &&
+        <ConfirmModal
+          visible={endEventVisible}
+          title={'Encerrar Evento'}
+          message={'Você tem certeza que deseja encerrar o evento?'}
+          onConfirm={async () => {
+            await changeStatusEVMutation.mutateAsync({
+              id: eventsData.id,
+              status: 2,
+            } as GroupEvent);
+            queryClient.invalidateQueries(['events', id]);
+          }}
+          dismiss={() => setEndEventVisible(false)}
+        />
+      }
     </>
   );
 };

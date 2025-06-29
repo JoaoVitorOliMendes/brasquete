@@ -8,3 +8,7 @@ export interface DateTimePickerForm {
     time: string,
     completeDate: Date
 }
+
+export interface TimePickerForm {
+    duration: string
+}

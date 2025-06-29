@@ -24,7 +24,7 @@ const EditProfile = () => {
   const queryClient = useQueryClient()
   const { data: user, isLoading } = useQuery(['user'], fetchUser)
 
-  const { control, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<RegisterForm>()
+  const { control, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<RegisterForm>()
 
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
@@ -45,12 +45,10 @@ const EditProfile = () => {
             file: image,
           }, {
             onSuccess: () => {
-              console.log('updateProfilePicMutation SUCCESS')
               queryClient.invalidateQueries(['user']);
             }
           })
         } else {
-          console.log('updateProfileMutation SUCCESS')
           queryClient.invalidateQueries(['user']);
         }
       }
@@ -133,6 +131,7 @@ const EditProfile = () => {
               className='mb-4'
             />
             <CustomDropdown
+              watch={watch}
               data={[
                 {
                   label: 'Armador',

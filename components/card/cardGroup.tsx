@@ -48,7 +48,7 @@ const CardGroup = ({ group }: CardGroupProps) => {
                     <CustomImage
                         className='rounded-lg'
                         imageUrl={group?.location?.location_img || ''}
-                        altImage={images.person}
+                        altImage={images.map}
                     />
                 </View>
                 {/* <View className='my-2'>

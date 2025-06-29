@@ -25,7 +25,7 @@ const Teams = () => {
     eventsData ? getTeamsForEvent(eventsData) : Promise.resolve([])
   );
 
-  const handleEditTeam = (team: Team) => {
+  const handleEditTeam = (team: Team | null) => {
     setSelectedTeam(team);
     setModalVisible(true);
   };
@@ -55,7 +55,7 @@ const Teams = () => {
       <ScrollView className="flex-1 bg-secondary">
         <CustomButton
           label="Criar Time"
-          onPress={() => handleEditTeam({ id: '', name: '', player: [] })}
+          onPress={() => handleEditTeam(null)}
           className="m-4"
         />
         {teamsData?.map((team) => (

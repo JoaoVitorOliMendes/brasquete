@@ -113,7 +113,7 @@ const EditGroup = () => {
         else {
             data.admin_id = user!.id
             const createdGroup = await insertGroupMutation.mutateAsync(data)
-            if (createdGroup && createdGroup.length == 0 && createdGroup[0]) {
+            if (createdGroup && createdGroup.length == 1 && createdGroup[0]) {
                 await insertGroupMemberMutation.mutateAsync({
                     group_id: createdGroup[0].id,
                     user_id: user!.id,

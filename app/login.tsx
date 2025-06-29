@@ -24,7 +24,11 @@ const Login = () => {
   const loginMutation = useMutation(login)
 
   const signIn = async (data: LoginForm) => {
-    const { session } = await loginMutation.mutateAsync(data)
+    try {
+      const { session } = await loginMutation.mutateAsync(data)
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Erro ao fazer login', text2: 'Verifique suas credenciais e tente novamente.' })
+    }
   }
 
   return (
@@ -83,7 +87,6 @@ const Login = () => {
                 className='mb-4'
               />
               <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(signIn)} />
-              <Link href={'/forgotPass'} className='color-white underline'>Esqueci minha senha</Link>
             </View>
           </View>
         </ScrollView>
