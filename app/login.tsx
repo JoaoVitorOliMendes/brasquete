@@ -87,7 +87,6 @@ const Login = () => {
                 className='mb-4'
               />
               <CustomButton color='primary' type='filled' label='Entrar' className='mb-5' onPress={handleSubmit(signIn)} />
-              <Link href={'/forgotPass'} className='color-white underline'>Esqueci minha senha</Link>
             </View>
           </View>
         </ScrollView>
