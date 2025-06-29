@@ -1,4 +1,4 @@
-import { GroupEvent } from "@/model/models";
+import { GroupEvent, GroupMember } from "@/model/models";
 import { useForm } from "react-hook-form";
 import { Modal, Pressable, View, Text, TextInput } from "react-native";
 import CustomTitle from "../customTitle";
@@ -7,9 +7,12 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import CustomInput from "../forms/customInput";
 import { DateTimePickerForm } from "@/model/formModels";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { insertEvent } from "@/api/eventsApi";
 import Toast from "react-native-toast-message";
+import { changeStatusGroupMember } from "@/api/groupMemberApi";
+import { fetchUser } from "@/api/authApi";
+import { useRouter } from "expo-router";
 
 interface CreateEventModalProps {
   visible?: boolean,
@@ -20,7 +23,10 @@ interface CreateEventModalProps {
 const CreateEventModal = ({ groupId, visible, dismiss = () => { } }: CreateEventModalProps) => {
   const [date, setDate] = useState<Date | null>(null)
   const insertEventMutation = useMutation(insertEvent)
-  
+  const changeStatusGMMutation = useMutation(changeStatusGroupMember)
+  const { data: user } = useQuery(['user'], fetchUser);
+  const router = useRouter();
+
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setDate(currentDate);
@@ -44,12 +50,12 @@ const CreateEventModal = ({ groupId, visible, dismiss = () => { } }: CreateEvent
     showMode('time')
   }
 
-  
+
   const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm<DateTimePickerForm>()
   const dateRef = useRef<TextInput>(null)
   const timeRef = useRef<TextInput>(null)
-  
-  const createEvent = (data: DateTimePickerForm) => {
+
+  const createEvent = async (data: DateTimePickerForm) => {
     if (data.completeDate <= new Date()) {
       Toast.show({
         type: 'error',
@@ -58,11 +64,21 @@ const CreateEventModal = ({ groupId, visible, dismiss = () => { } }: CreateEvent
       })
       return
     }
-    insertEventMutation.mutateAsync({
+    const event = await insertEventMutation.mutateAsync({
       date: data.completeDate.toISOString(),
       group_id: groupId
     } as GroupEvent)
+    await changeStatusGMMutation.mutateAsync({
+      confirmed: 1,
+      id: user?.id,
+    } as GroupMember)
+    Toast.show({
+      type: 'success',
+      text1: 'Evento Criado',
+      text2: 'Evento agendado com sucesso!'
+    })
     dismiss()
+    router.dismiss()
   }
 
   useEffect(() => {

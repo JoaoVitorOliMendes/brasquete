@@ -53,12 +53,8 @@ export const changeStatusGroupMember = async (groupMember: GroupMember) => {
     .eq('id', groupMember.id)
     .select()
 
-  
-
   if (error)
     throw error
-
-  
 
   if (data && data.length)
     return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
@@ -75,12 +71,8 @@ export const unconfirmGroupMemberForEvent = async (event: GroupEvent) => {
     .eq('group_id', event.group_id)
     .select()
 
-  
-
   if (error)
     throw error
-
-  
 
   if (data && data.length)
     return mapper.mapArray(data as GroupMember[], 'GroupMember', 'GroupMemberModel') as GroupMemberModel[]
