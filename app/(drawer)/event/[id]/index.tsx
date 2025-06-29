@@ -11,7 +11,7 @@ import CustomTitle from '@/components/customTitle';
 import { images } from '@/constants';
 import { changeEventStatus, getEventByid } from '@/api/eventsApi';
 import { fetchUser } from '@/api/authApi';
-import { changeStatusGroupMember, unconfirmGroupMemberForEvent } from '@/api/groupMemberApi';
+import { changeStatusGroupMember } from '@/api/groupMemberApi';
 import { GroupEvent, GroupMember, MatchModel, Team } from '@/model/models';
 import { insertMatch } from '@/api/matchApi';
 import moment, { duration } from 'moment';
@@ -45,8 +45,7 @@ const EventsDetail = () => {
   // Mutations
   const changeStatusGMMutation = useMutation(changeStatusGroupMember);
   const changeStatusEVMutation = useMutation(changeEventStatus);
-  const unconfirmGroupMemberForEventMutation = useMutation(unconfirmGroupMemberForEvent)
-  
+
   useEffect(() => {
     if (eventsData && eventsData.status == 2) {
       Toast.show({ type: 'info', text1: 'Encerrado', text2: 'Evento Encerrado' })
@@ -214,13 +213,17 @@ const EventsDetail = () => {
               sizeClass="text-3xl"
               className="font-bold text-center p-2 bg-primary m-4 rounded-full"
             />
+
+            <View className='flex flex-row flex-wrap'>
+              <CustomTitle title={`${eventsData?.groups?.location?.add_number},  ${eventsData?.groups?.location?.add_street}, ${eventsData?.groups?.location?.add_neighborhood}, ${eventsData?.groups?.location?.add_city} - ${eventsData?.groups?.location?.add_state}`} sizeClass='text-xl' className='my-4 basis-full' />
+            </View>
           </View>
         </SafeAreaView>
         {groupMemberList}
       </ScrollView>
       <ExpandableIcon menuItems={extendedMenu} />
       {
-        eventsData && 
+        eventsData &&
         <ConfirmModal
           visible={endEventVisible}
           title={'Encerrar Evento'}
@@ -230,11 +233,10 @@ const EventsDetail = () => {
               id: eventsData.id,
               status: 2,
             } as GroupEvent);
-            await unconfirmGroupMemberForEventMutation.mutateAsync(eventsData)
             queryClient.invalidateQueries(['events', id]);
           }}
           dismiss={() => setEndEventVisible(false)}
-          />
+        />
       }
     </>
   );

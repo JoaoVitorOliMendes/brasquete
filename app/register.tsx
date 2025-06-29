@@ -21,7 +21,7 @@ const Register = () => {
   const [showPass, setShowPass] = useState(true)
 
   const router = useRouter()
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm<RegisterForm>()
+  const { control, handleSubmit, formState: { errors }, getValues, watch } = useForm<RegisterForm>()
   const nameRef = useRef<TextInput>(null)
   const surnameRef = useRef<TextInput>(null)
   const emailRef = useRef<TextInput>(null)
@@ -148,6 +148,7 @@ const Register = () => {
                 onSubmitEditing: () => passwordRef.current?.focus(),
               }}
               className='mb-4'
+              watch={watch}
             />
             <CustomInput
               rightIcon={{ iconProps: { icon: 'eye' }, onPress: (e) => setShowPass(!showPass) }}
