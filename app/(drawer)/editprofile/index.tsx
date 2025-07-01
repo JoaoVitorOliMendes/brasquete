@@ -61,7 +61,7 @@ const EditProfile = () => {
       setValue('surname', user?.user_metadata.last_name)
       setValue('height', user?.user_metadata.height)
       setValue('position', user?.user_metadata.position)
-      setImageUrl(user?.user_metadata.profile_img || '')
+      setImageUrl(user?.user_metadata.profile_img ?? '')
     }
   }, [isFocused, user])
 

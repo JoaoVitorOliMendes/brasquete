@@ -185,7 +185,7 @@ const Register = () => {
                 rules: {
                   required: 'Por favor, confirme sua senha',
                   validate: (val) => {
-                    return val === getValues().password || 'As senhas devem ser iguais'
+                    return val === getValues().password ?? 'As senhas devem ser iguais'
                   },
                   minLength: {
                     value: 8,

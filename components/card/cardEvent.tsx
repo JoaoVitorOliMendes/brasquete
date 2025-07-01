@@ -50,7 +50,7 @@ const CardGroupEvent = ({ event }: CardGroupEventProps) => {
                 <View className='flex flex-row flex-wrap justify-between items-center'>
                     {/* <MovingLoadingBar className='basis-full mb-5' /> */}
                     <View className='basis-3/12 flex flex-row flex-wrap pr-4 border-solid border-white border-r-2'>
-                        <CustomTitle title={event.date?.getDate().toString() || ''} color='white' sizeClass='text-4xl' className='basis-full text-center' />
+                        <CustomTitle title={event.date?.getDate().toString() ?? ''} color='white' sizeClass='text-4xl' className='basis-full text-center' />
                         <Text className='text-white text-center basis-full'>
                             {days.days[event.date?.getDay() || 0].acron.toUpperCase()}
                         </Text>
@@ -75,7 +75,7 @@ const CardGroupEvent = ({ event }: CardGroupEventProps) => {
                         <CustomImage
                             className='rounded-lg'
                             altImage={images.map}
-                            imageUrl={event.groups?.location?.location_img || ''}
+                            imageUrl={event.groups?.location?.location_img ?? ''}
                         />
                     </View>
                 </View>

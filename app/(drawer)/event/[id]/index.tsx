@@ -111,17 +111,30 @@ const EventsDetail = () => {
           }
         );
       } else {
-        extendedMenu.push({
-          icon: 'play',
-          label: 'Iniciar',
-          onPress: async () => {
-            await changeStatusEVMutation.mutateAsync({
-              id: eventsData.id,
-              status: 1,
-            } as GroupEvent);
-            queryClient.invalidateQueries(['events', id]);
+        extendedMenu.push(
+          {
+            icon: 'play',
+            label: 'Iniciar',
+            onPress: async () => {
+              await changeStatusEVMutation.mutateAsync({
+                id: eventsData.id,
+                status: 1,
+              } as GroupEvent);
+              queryClient.invalidateQueries(['events', id]);
+            },
           },
-        });
+          {
+            icon: 'ban-outline',
+            label: 'Cancelar Evento',
+            onPress: async () => {
+              await changeStatusEVMutation.mutateAsync({
+                id: eventsData.id,
+                status: 2,
+              } as GroupEvent);
+              queryClient.invalidateQueries(['events', id]);
+            },
+          }
+        );
       }
     } else {
       if (userMember?.confirmed !== 1) {
@@ -204,7 +217,7 @@ const EventsDetail = () => {
               className="w-full h-full object-cover"
               altImage={images.map}
               style={null}
-              imageUrl={eventsData?.groups?.location?.location_img || ''}
+              imageUrl={eventsData?.groups?.location?.location_img ?? ''}
             />
           </View>
           <View>

@@ -22,7 +22,7 @@ const CustomDrawerHeader = ({ title }: CustomDrawerHeaderProps) => {
                     navigation.openDrawer()
                 }} />
             </Text>
-            <CustomTitle title={title || ''} color='white' sizeClass='text-2xl' />
+            <CustomTitle title={title ?? ''} color='white' sizeClass='text-2xl' />
         </SafeAreaView>
     )
 }

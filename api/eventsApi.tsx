@@ -64,7 +64,7 @@ export const insertEvent = async (event: GroupEvent) => {
       if (adminGroupMember) {
         await changeStatusGroupMember({
           confirmed: 1,
-          id: adminGroupMember?.id || '',
+          id: adminGroupMember?.id ?? '',
         } as GroupMember)
         const { data, error } = await supabase
         .from('event')

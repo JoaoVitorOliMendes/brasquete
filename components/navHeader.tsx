@@ -15,7 +15,7 @@ const NavHeader = ({ iconProps, className, title }: NavHeaderProps) => {
             <Text className='absolute left-2'>
                 <CustomPressIcon {...iconProps} />
             </Text>
-            <CustomTitle title={title || ''} color='white' sizeClass='text-2xl' />
+            <CustomTitle title={title ?? ''} color='white' sizeClass='text-2xl' />
         </View>
     )
 }

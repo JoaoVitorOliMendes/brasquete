@@ -1,5 +1,7 @@
 @Bugs
 ☐ Eventos - Mostrando todos os Eventos
+✔ Grupos - Possivel deletar grupo com evento @done(25-07-01 12:39)
+✔ Membro - Adicionar altura @done(25-07-01 12:47)
 
 @Must
 ✔ Change map in group/[id] to static maps @done(25-05-15 03:42)
