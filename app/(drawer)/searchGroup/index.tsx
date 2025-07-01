@@ -48,13 +48,6 @@ const SearchGroupIndex = () => {
             </ScrollView>
             <ExpandableIcon menuItems={[
                 {
-                    icon: 'filter',
-                    label: 'Filtros',
-                    onPress: () => {
-
-                    }
-                },
-                {
                     icon: 'map',
                     label: 'Mapa',
                     onPress: () => {
