@@ -24,7 +24,7 @@ const PersonalAvg = () => {
         altImage={images.person}
       />
       <ScrollView>
-        <View className='p-4'>
+        <View className='p-4 mb-2'>
           {
             userAvg && userAvg.map((item, idx) => (
               <CardStatistics key={idx} title={item.score} value={item.avgstat} />

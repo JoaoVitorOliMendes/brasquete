@@ -90,22 +90,22 @@ const MapPickerModal = <FormType extends FieldValues,>({ formProps, className = 
                                 const addressComponents = res.data.results[0].address_components
 
                                 const streetNumber = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("street_number"))?.long_name || ''
+                                    component.types.includes("street_number"))?.long_name ?? ''
 
                                 const street = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("route"))?.long_name || ''
+                                    component.types.includes("route"))?.long_name ?? ''
 
                                 const neighborhood = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("neighborhood") || component.types.includes("sublocality"))?.long_name || ''
+                                    component.types.includes("neighborhood") || component.types.includes("sublocality"))?.long_name ?? ''
 
                                 const city = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("administrative_area_level_2"))?.long_name || ''
+                                    component.types.includes("administrative_area_level_2"))?.long_name ?? ''
 
                                 const state = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("administrative_area_level_1"))?.long_name || ''
+                                    component.types.includes("administrative_area_level_1"))?.long_name ?? ''
 
                                 const country = addressComponents.find((component: { types: string | string[] }) =>
-                                    component.types.includes("country"))?.short_name || ''
+                                    component.types.includes("country"))?.short_name ?? ''
 
                                 if (onChange)
                                     onChange()

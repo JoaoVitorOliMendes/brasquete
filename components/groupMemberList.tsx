@@ -74,13 +74,14 @@ const GroupMemberList = ({ members, separator = false, admin, addMemberBtn = tru
                     < View className='basis-3/12 flex items-center justify-center p-5' >
                         <CustomImage
                             className='rounded-full'
-                            imageUrl={item?.profiles?.profile_img || ''}
+                            imageUrl={item?.profiles?.profile_img ?? ''}
                             altImage={images.person}
                         />
                     </View >
                     <View className='basis-6/12 flex flex-column justify-center px-4'>
                         <CustomTitle title={item.profiles ? item.profiles.first_name + ' ' + item.profiles.last_name : ''} sizeClass='text-xl' />
-                        <CustomTitle title={item.profiles?.position || ''} sizeClass='text-xl' className='font-bold' />
+                        <CustomTitle title={item.profiles?.position ?? ''} sizeClass='text-xl' className='font-bold' />
+                        <CustomTitle title={item.profiles?.height?.toFixed(2).toString() ?? ''} sizeClass='text-xl' className='font-bold' />
                     </View>
                     <View className='basis-3/12 flex flex-column justify-center items-center p-4'>
                         {

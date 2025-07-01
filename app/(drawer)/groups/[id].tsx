@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Stars from '@/components/stars';
 import GroupMemberList from '@/components/groupMemberList';
 import { images } from '@/constants';
-import ExpandableIcon from '@/components/buttons/expandableIcon';
+import ExpandableIcon, { MenuItem } from '@/components/buttons/expandableIcon';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { deleteGroup, getGroupsById } from '@/api/groupsApi';
 import { fetchUser } from '@/api/authApi';
@@ -46,6 +46,54 @@ const GroupsDetails = () => {
         enabled: !!groupById
     })
 
+    // Generate menu items dynamically
+    const extendedMenu: MenuItem[] = [];
+
+    if (!eventGroupsIsLoading) {
+        extendedMenu.push(
+            {
+                icon: 'pencil',
+                label: 'Editar Grupo',
+                onPress: () => {
+                    router.push({
+                        pathname: '/groups/editGroup',
+                        params: {
+                            id: id
+                        }
+                    })
+                }
+            }
+        )
+        if (eventGroupById?.length && eventGroupById[0]) {
+            extendedMenu.push(
+                {
+                    icon: 'alarm-outline',
+                    label: 'Ir para Evento',
+                    onPress: () => {
+                        router.push(`/event/${eventGroupById[0].id}`)
+                    }
+                }
+            )
+        } else {
+            extendedMenu.push(
+                {
+                    icon: 'alarm-outline',
+                    label: 'Agendar Evento',
+                    onPress: () => {
+                        setModalVisible(true)
+                    }
+                },
+                {
+                    icon: 'trash-bin',
+                    label: 'Excluir Grupo',
+                    onPress: () => {
+                        setConfirmModalVisible(true)
+                    }
+                }
+            )
+        }
+    }
+
     if (userIsLoading || groupsIsLoading || eventGroupsIsLoading || !groupById)
         return (<></>)
 
@@ -58,7 +106,7 @@ const GroupsDetails = () => {
                         <CustomImage
                             className='w-full h-full object-cover'
                             altImage={images.map}
-                            imageUrl={groupById.location?.location_img || ''}
+                            imageUrl={groupById.location?.location_img ?? ''}
                             style={null}
                         />
                     </View>
@@ -78,43 +126,7 @@ const GroupsDetails = () => {
             {confirmModalMemo}
             {
                 (user?.id == groupById.admin_id) &&
-                <ExpandableIcon menuItems={[
-                    {
-                        icon: 'pencil',
-                        label: 'Editar Grupo',
-                        onPress: () => {
-                            router.push({
-                                pathname: '/groups/editGroup',
-                                params: {
-                                    id: id
-                                }
-                            })
-                        }
-                    },
-                    (eventGroupById?.length && eventGroupById[0]) ?
-                    {
-                        icon: 'alarm-outline',
-                        label: 'Ir para Evento',
-                        onPress: () => {
-                            router.push(`/event/${eventGroupById[0].id}`)
-                        }
-                    }
-                    :
-                    {
-                        icon: 'alarm-outline',
-                        label: 'Agendar Evento',
-                        onPress: () => {
-                            setModalVisible(true)
-                        }
-                    },
-                    {
-                        icon: 'trash-bin',
-                        label: 'Excluir Grupo',
-                        onPress: () => {
-                            setConfirmModalVisible(true)
-                        }
-                    }
-                ]} />
+                <ExpandableIcon menuItems={extendedMenu} />
             }
         </>
     )

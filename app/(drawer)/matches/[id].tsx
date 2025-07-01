@@ -49,18 +49,18 @@ const MatchDetail = () => {
                         <View className="flex flex-row justify-between items-center px-5">
                             {/* Team A */}
                             <View className="flex items-center">
-                                <CustomTitle title={matchScores?.team_a_name || ''} sizeClass='text-3xl' color='black' />
-                                <CustomTitle title={matchScores?.team_a_points || ''} sizeClass='text-3xl' color='black' />
-                                <CustomTitle title={`Faltas: ${matchScores?.team_a_faltas || ''}`} sizeClass='text-xl' className='mt-5' color='black' />
+                                <CustomTitle title={matchScores?.team_a_name ?? ''} sizeClass='text-3xl' color='black' />
+                                <CustomTitle title={matchScores?.team_a_points ?? ''} sizeClass='text-3xl' color='black' />
+                                <CustomTitle title={`Faltas: ${matchScores?.team_a_faltas ?? ''}`} sizeClass='text-xl' className='mt-5' color='black' />
                             </View>
 
                             <CustomTitle title='X' sizeClass='text-5xl' color='black' />
 
                             {/* Team B */}
                             <View className="flex items-center">
-                                <CustomTitle title={matchScores?.team_b_name || ''} sizeClass='text-3xl' color='black' />
-                                <CustomTitle title={matchScores?.team_b_points || ''} sizeClass='text-3xl' color='black' />
-                                <CustomTitle title={`Faltas: ${matchScores?.team_b_faltas || ''}`} sizeClass='text-xl' className='mt-5' color='black' />
+                                <CustomTitle title={matchScores?.team_b_name ?? ''} sizeClass='text-3xl' color='black' />
+                                <CustomTitle title={matchScores?.team_b_points ?? ''} sizeClass='text-3xl' color='black' />
+                                <CustomTitle title={`Faltas: ${matchScores?.team_b_faltas ?? ''}`} sizeClass='text-xl' className='mt-5' color='black' />
                             </View>
                         </View>
                     </View>

@@ -120,7 +120,7 @@ const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, cl
                             </View>
                             <Text>
                                 {
-                                    data.filter((val) => val.value==field.value)?.at(0)?.label || ''
+                                    data.filter((val) => val.value==field.value)?.at(0)?.label ?? ''
                                 }
                             </Text>
                         </View>
@@ -142,7 +142,7 @@ const CustomDropdown = <FormType extends FieldValues, > ({ data, type, color, cl
                                     <FlatList
                                         data={data}
                                         renderItem={(item) => (
-                                            <TouchableOpacity className={`p-4 w-full ${item.item.value === (field.value && field.value['value'] || '') && 'bg-black-50'}`} onPress={() => {
+                                            <TouchableOpacity className={`p-4 w-full ${item.item.value === (field.value && (field.value['value'] ?? '')) && 'bg-black-50'}`} onPress={() => {
                                                 field.onChange(item.item.value)
                                                 handleSelect(item.item)
                                             }}>

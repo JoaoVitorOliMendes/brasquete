@@ -59,8 +59,8 @@ class LargeSecureStore {
   }
 }
 
-const supabaseUrl = envVars.SUPABASE_URL || ''
-const supabaseAnonKey = envVars.SUPABASE_ANON_KEY || '  '
+const supabaseUrl = envVars.SUPABASE_URL ?? ''
+const supabaseAnonKey = envVars.SUPABASE_ANON_KEY ?? '  '
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
